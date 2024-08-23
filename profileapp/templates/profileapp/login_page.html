@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    {% load static %}
+    <style>
+        body {
+            background-image: url(/static/images/LoginBG4.jpeg);
+            background-size: cover;
+            /* This ensures it covers the available space */
+            background-position: center;
+            /* This centers the image in the view */
+            background-repeat: no-repeat;
+            /* Prevents the image from repeating */
+            font-family: Arial, sans-serif;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            /* Adds this to hide any scrollbars that might appear */
+        }
+
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            /* Needed to position the branding absolutely */
+        }
+
+        .login-box {
+            background-color: rgba(10, 58, 131, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+            width: 300px;
+            position: relative;
+            margin-top: 20px;
+            z-index: 1;
+        }
+
+        .branding {
+
+            position: absolute;
+            left: 100px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 60px;
+            font-weight: bolder;
+            color: #fff;
+            /* Adjust color as needed */
+            z-index: 1000;
+            /* Make sure it's visible on top of other elements */
+        }
+
+        .notification-container {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(19, 164, 222, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            z-index: 9999;
+        }
+
+        .login-box h1 {
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #eee;
+            color: #333;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1686d1;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #082247;
+        }
+
+        .notification-container img {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .notification-container p {
+            margin: 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="branding">
+            You &amp; SK+F
+        </div>
+        <div class="login-box">
+            {% if messages %}
+            <div class="notification-container">
+                <div class="notification">
+                    {% for message in messages %}
+                    <p {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
+                    {% endfor %}
+                    <img id='cross' src="{% static 'images/close.png' %}" width="15px" height="15px" alt="close">
+                </div>
+            </div>
+            {% endif %}
+            <h1>Employee Self - Service</h1>
+            <form action="{% url 'login' %}" method="post" autocomplete="on">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="employee_id">Employee ID</label>
+                    <input type="text" id="employee_id" name="employee_id" placeholder="Enter Employee ID" required
+                        autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter Password" required
+                        autocomplete="current-password">
+                </div>
+                <button type="submit">Log In</button>
+                <a href="{% url 'enter_employee_id' %}">
+                    <p style="margin-left: 40px; color: #fff; text-decoration: underline;">New User?/ Forgot Password?
+                    </p>
+                </a>
+            </form>
+        </div>
+    </div>
+    <script>
+        var cross = document.getElementById('cross');
+        cross.addEventListener('click', () => {
+            document.getElementsByClassName('notification-container')[0].style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>

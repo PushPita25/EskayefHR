@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Report</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        h2,
+        h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            width: 100%;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .column {
+            width: 48%;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 10px);
+            padding: 10px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        input[type="text"]::placeholder {
+            color: #888;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 2px solid #333;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+
+        .subheader {
+            background-color: #d0d0d0;
+            font-weight: bold;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .explanation-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #333;
+            padding: 20px;
+        }
+
+        .explanation-section .left,
+        .explanation-section .right {
+            width: 50%;
+        }
+
+        .explanation-section .left {
+            border-right: 2px solid #333;
+            padding-right: 20px;
+        }
+
+        .explanation-section .right {
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .explanation-section .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .explanation-section .row label {
+            width: 70%;
+            font-weight: normal;
+        }
+
+        .explanation-section .row input {
+            width: 30%;
+            border: none;
+            border-bottom: 2px solid #333;
+            text-align: right;
+            outline: none;
+            background-color: transparent;
+        }
+
+        .explanation-section .right p {
+            margin: 10px 0;
+            /* border-bottom: 2px solid #333; */
+            padding-bottom: 5px;
+            width: 100%;
+            font-weight: bold;
+        }
+
+       
+
+        
+        @media (max-width: 600px) {
+            .row {
+                display: block;
+            }
+
+            .column {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+                width: 100%;
+            }
+
+            tr {
+                margin-bottom: 15px;
+            }
+
+            td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding-left: 15px;
+                font-weight: bold;
+                text-align: left;
+            }
+
+            .explanation-section {
+                flex-direction: column;
+            }
+
+            .explanation-section .left,
+            .explanation-section .right {
+                width: 100%;
+                border-right: none;
+                padding-left: 0;
+            }
+
+            .explanation-section .right p {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <!-- <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const monthNames = [
+                "January 2024", "February 2024", "March 2024", "April 2024", "May 2024", "June 2024", "July 2024",
+                "August 2024", "September 2024", "October 2024", "November 2024", "December 2024" 
+            ];
+            const currentDate = new Date();
+            const currentMonth = monthNames[currentDate.getMonth()];
+            document.getElementById("month").value = currentMonth;
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Update the total whenever any input changes
+            document.querySelectorAll('.expense-input').forEach(function (input) {
+                input.addEventListener('input', function () {
+                    updateTotal();
+                });
+            });
+
+            function updateTotal() {
+                let total = 0;
+                document.querySelectorAll('.expense-input').forEach(function (input) {
+                    let value = parseFloat(input.value) || 0;
+                    total += value;
+                });
+                document.getElementById('total_taka').value = total.toFixed(2); // Format to 2 decimal places
+            }
+        });
+    </script> -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const monthNames = [
+                "January 2024", "February 2024", "March 2024", "April 2024", "May 2024", "June 2024", 
+                "July 2024", "August 2024", "September 2024", "October 2024", "November 2024", "December 2024"
+            ];
+            const currentDate = new Date();
+            const currentMonth = monthNames[currentDate.getMonth()];
+            document.getElementById("month").value = currentMonth;
+
+            document.querySelectorAll('.expense-input').forEach(function (input) {
+                input.addEventListener('input', function () {
+                    updateTotal();
+                });
+            });
+
+            function updateTotal() {
+                let total = 0;
+                document.querySelectorAll('.expense-input').forEach(function (input) {
+                    let value = parseFloat(input.value) || 0;
+                    total += value;
+                });
+                document.getElementById('total_taka').value = total.toFixed(2); // Format to 2 decimal places
+            }
+
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+                document.getElementById('submitBtn').disabled = true;
+                document.getElementById('submitBtn').textContent = 'Submitted';
+
+                // Here you might want to add actual form submission logic
+                form.submit(); // This will submit the form. Remove this line if using AJAX or another method to submit the form.
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>ESKAYEF PHARMACEUTICALS LIMITED</h2>
+        <h3>EXPENSE REPORT</h3>
+
+        <form method="post" autocomplete="off">
+            {% csrf_token %}
+            <div class="row">
+                <div class="column">
+                    <div class="form-group">
+                        <label for="id_no">ID #</label>
+                        <input type="text" id="id_no" name="id_no" value="{{ form.id_no.value|default_if_none:'' }}"
+                            required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" value="{{ form.name.value|default_if_none:'' }}"
+                            required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="designation">Designation</label>
+                        <input type="text" id="designation" name="designation"
+                            value="{{ form.designation.value|default_if_none:'' }}" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location"
+                            value="{{ form.location.value|default_if_none:'' }}" required autocomplete="off">
+                    </div>
+                    
+                </div>
+                <div class="column">
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <input type="text" id="department" name="department"
+                            value="{{ form.department.value|default_if_none:'' }}" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="month">Month</label>
+                        <input type="text" id="month" name="month" value="{{ form.month.value|default_if_none:'' }}"
+                            required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="unit">Unit</label>
+                        <input type="text" id="unit" name="unit" value="{{ form.unit.value|default_if_none:'' }}"
+                            required autocomplete="off">
+                    </div>
+                
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>EXPENSES HEAD</th>
+                        <th>TAKA</th>
+                        <th>REMARKS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Utility-Water Gas Electricity</td>
+                        <td><input type="text" name="utility" class="expense-input"
+                                value="{{ form.utility.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="utility_remarks" class="remarks-input"
+                                value="{{ form.utility_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Driver Wages</td>
+                        <td><input type="text" name="driver_wages" class="expense-input"
+                                value="{{ form.driver_wages.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="driver_wages_remarks" class="remarks-input"
+                                value="{{ form.driver_wages_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Service Staff Wages</td>
+                        <td><input type="text" name="service_staff_wages" class="expense-input"
+                                value="{{ form.service_staff_wages.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
+                        <td><input type="text" name="service_staff_wages_remarks" class="remarks-input"
+                                value="{{ form.service_staff_wages_remarks.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Security Staff Wages</td>
+                        <td><input type="text" name="security_staff_wages" class="expense-input"
+                                value="{{ form.security_staff_wages.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="security_staff_wages_remarks" class="remarks-input"
+                                value="{{ form.security_staff_wages_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Leave Fare Assistance-LFA</td>
+                        <td><input type="text" name="leave_fare_assistance" class="expense-input"
+                                value="{{ form.leave_fare_assistance.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="leave_fare_assistance_remarks" class="remarks-input"
+                                value="{{ form.leave_fare_assistance_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="subheader">Car Expenses</td>
+                    </tr>
+                    <tr>
+                        <td>Fuel Cost</td>
+                        <td><input type="text" name="fuel_cost" class="expense-input"
+                                value="{{ form.fuel_cost.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
+                        <td><input type="text" name="fuel_cost_remarks" class="remarks-input"
+                                value="{{ form.fuel_cost_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Gas Cost</td>
+                        <td><input type="text" name="gas_cost" class="expense-input"
+                                value="{{ form.gas_cost.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
+                        <td><input type="text" name="gas_cost_remarks" class="remarks-input"
+                                value="{{ form.gas_cost_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Repair & Maintenance Allowance</td>
+                        <td><input type="text" name="repair_maintenance" class="expense-input"
+                                value="{{ form.repair_maintenance.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
+                        <td><input type="text" name="repair_maintenance_remarks" class="remarks-input"
+                                value="{{ form.repair_maintenance_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="subheader">Car Maintenance Expenses</td>
+                    </tr>
+                    <tr>
+                        <td>Tyre(s)</td>
+                        <td><input type="text" name="tyres" class="expense-input"
+                                value="{{ form.tyres.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="tyres_remarks" class="remarks-input"
+                                value="{{ form.tyres_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Battery</td>
+                        <td><input type="text" name="battery" class="expense-input"
+                                value="{{ form.battery.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="battery_remarks" class="remarks-input"
+                                value="{{ form.battery_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Car Denting & Painting</td>
+                        <td><input type="text" name="car_denting_painting" class="expense-input"
+                                value="{{ form.car_denting_painting.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="car_denting_painting_remarks" class="remarks-input"
+                                value="{{ form.car_denting_painting_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Car Decorations</td>
+                        <td><input type="text" name="car_decorations" class="expense-input"
+                                value="{{ form.car_decorations.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="car_decorations_remarks" class="remarks-input"
+                                value="{{ form.car_decorations_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Toll</td>
+                        <td><input type="text" name="toll" class="expense-input"
+                                value="{{ form.toll.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="toll_remarks" class="remarks-input"
+                                value="{{ form.toll_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Others</td>
+                        <td><input type="text" name="others" class="expense-input"
+                                value="{{ form.others.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="others_remarks" class="remarks-input"
+                                value="{{ form.others_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="subheader">Mobile Expenses</td>
+                    </tr>
+                    <tr>
+                        <td>Telephone</td>
+                        <td><input type="text" name="telephone" class="expense-input"
+                                value="{{ form.telephone.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
+                        <td><input type="text" name="telephone_remarks" class="remarks-input"
+                                value="{{ form.telephone_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Mobile Set</td>
+                        <td><input type="text" name="mobile_set" class="expense-input"
+                                value="{{ form.mobile_set.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="mobile_set_remarks" class="remarks-input"
+                                value="{{ form.mobile_set_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="subheader">Medical Expenses</td>
+                    </tr>
+                    <tr>
+                        <td>Medical Expense</td>
+                        <td><input type="text" name="medical_expense" class="expense-input"
+                                value="{{ form.medical_expense.value|default_if_none:'' }}" autocomplete="off"></td>
+                        <td><input type="text" name="medical_expense_remarks" class="remarks-input"
+                                value="{{ form.medical_expense_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td>Medical Expense[Non-taxable, e.g., surgery cost related to heart, kidney, eye, liver and cancer]</td>
+                        <td><input type="text" name="medical_expense_surgery" class="expense-input"
+                                value="{{ form.medical_expense_surgery.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
+                        <td><input type="text" name="medical_expense_surgery_remarks" class="remarks-input"
+                                value="{{ form.medical_expense_surgery_remarks.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total Taka</td>
+                        <td><input type="text" id="total_taka" name="total_taka"
+                            value="{{ form.total_taka.value|default_if_none:'' }}" required autocomplete="off"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 class="explanation-heading">Explanation</h3>
+            <div class="explanation-section">
+        
+                <div class="left">
+                    <div class="row">
+                        <label>I.O.U / Advance Drawn(Tk.):</label>
+                        <input type="text" name="advance" autocomplete="off"/>
+                        
+                    </div>
+                    <div class="row">
+                        <label>Expenses as Above(Tk.):</label>
+                        <input type="text" name="expenses_as_above" autocomplete="off"/>
+                       
+                    </div>
+                    <div class="row">
+                        <label>Amount due to Company / Employees(Tk.):</label>
+                        <input type="text" name="amount_due" autocomplete="off"/>
+                        
+                    </div>
+                </div>
+                <div class="right">
+                    <p>Signature:</p>
+                    <p style="border-bottom: 1px solid #333;">Date:</p>
+                    <p>Checked By:</p>
+                    <p>Forwarded By:</p>
+                    <p>Approved By:</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" id="submitBtn">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

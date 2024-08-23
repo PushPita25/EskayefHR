@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Report PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            line-height: 1.2;
+            font-size: 10px;
+        }
+        .container {
+            margin: 0;
+            padding: 10px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .content {
+            margin-bottom: 10px;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .column {
+            width: 48%;
+        }
+        p {
+            margin: 0;
+            padding: 3px 0;
+            font-size: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 3px;
+            font-size: 10px;
+        }
+        th {
+            background-color: #d0d0d0;
+        }
+        .subheader {
+            background-color: #d0d0d0;
+            font-weight: bold;
+            text-align: center;
+        }
+        .explanation-section {
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #333;
+            padding: 5px;
+            font-size: 10px;
+        }
+        .explanation-section .left,
+        .explanation-section .right {
+            width: 48%;
+        }
+        .explanation-section .left {
+            border-right: 1px solid #333;
+            padding-right: 5px;
+        }
+        .explanation-section .right {
+            padding-left: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .explanation-section .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .explanation-section .row label {
+            width: 60%;
+        }
+        .explanation-section .row p {
+            width: 35%;
+            text-align: right;
+            margin: 0;
+        }
+        .explanation-section .right p {
+            margin: 5px 0;
+            padding-bottom: 3px;
+            font-weight: bold;
+        }
+        @media (max-width: 600px) {
+            .explanation-section {
+                flex-direction: column;
+            }
+            .explanation-section .left,
+            .explanation-section .right {
+                width: 100%;
+                border-right: none;
+                padding-left: 0;
+            }
+            .explanation-section .right p {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2 style="font-size: 14px;">ESKAYEF PHARMACEUTICALS LIMITED</h2>
+            <h2 style="font-size: 14px;">Expense Report</h2>
+        </div>
+        <div class="content">
+            <div class="row">
+                <div class="column">
+                    <p><strong>ID:</strong> {{ expense.id_no }}</p>
+                    <p><strong>Name:</strong> {{ expense.name }}</p>
+                    <p><strong>Designation:</strong> {{ expense.designation }}</p>
+                </div>
+                <div class="column">
+                    <p><strong>Department:</strong> {{ expense.department }}</p>
+                    <p><strong>Month:</strong> {{ expense.month }}</p>
+                    <p><strong>Unit:</strong> {{ expense.unit }}</p>
+                    <p><strong>Location:</strong> {{ expense.location }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Expense Head</th>
+                        <th>Taka</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Utility-Water Gas Electricity</td>
+                        <td>{{ expense.utility }}</td>
+                        <td>{{ expense.utility_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Driver Wages</td>
+                        <td>{{ expense.driver_wages }}</td>
+                        <td>{{ expense.driver_wages_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Service Staff Wages</td>
+                        <td>{{ expense.service_staff_wages }}</td>
+                        <td>{{ expense.service_staff_wages_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Security Staff Wages</td>
+                        <td>{{ expense.security_staff_wages }}</td>
+                        <td>{{ expense.security_staff_wages_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Leave Fare Assistance-LFA</td>
+                        <td>{{ expense.leave_fare_assistance }}</td>
+                        <td>{{ expense.leave_fare_assistance_remarks }}</td>
+                    </tr>
+                    <tr class="subheader">
+                        <td colspan="3">Car Expenses</td>
+                    </tr>
+                    <tr>
+                        <td>Fuel Cost</td>
+                        <td>{{ expense.fuel_cost }}</td>
+                        <td>{{ expense.fuel_cost_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Gas Cost</td>
+                        <td>{{ expense.gas_cost }}</td>
+                        <td>{{ expense.gas_cost_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Repair & Maintenance Allowance</td>
+                        <td>{{ expense.repair_maintenance }}</td>
+                        <td>{{ expense.repair_maintenance_remarks }}</td>
+                    </tr>
+                    <tr class="subheader">
+                        <td colspan="3">Car Maintenance Expenses</td>
+                    </tr>
+                    <tr>
+                        <td>Tyre(s)</td>
+                        <td>{{ expense.tyres }}</td>
+                        <td>{{ expense.tyres_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Battery</td>
+                        <td>{{ expense.battery }}</td>
+                        <td>{{ expense.battery_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Car Denting & Painting</td>
+                        <td>{{ expense.car_denting_painting }}</td>
+                        <td>{{ expense.car_denting_painting_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Car Decorations</td>
+                        <td>{{ expense.car_decorations }}</td>
+                        <td>{{ expense.car_decorations_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Toll</td>
+                        <td>{{ expense.toll }}</td>
+                        <td>{{ expense.toll_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Others</td>
+                        <td>{{ expense.others }}</td>
+                        <td>{{ expense.others_remarks }}</td>
+                    </tr>
+                    <tr class="subheader">
+                        <td colspan="3">Mobile Expenses</td>
+                    </tr>
+                    <tr>
+                        <td>Telephone</td>
+                        <td>{{ expense.telephone }}</td>
+                        <td>{{ expense.telephone_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Mobile Set</td>
+                        <td>{{ expense.mobile_set }}</td>
+                        <td>{{ expense.mobile_set_remarks }}</td>
+                    </tr>
+                    <tr class="subheader">
+                        <td colspan="3">Medical Expenses</td>
+                    </tr>
+                    <tr>
+                        <td>Medical Expense</td>
+                        <td>{{ expense.medical_expense }}</td>
+                        <td>{{ expense.medical_expense_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Medical Expense[Non-taxable, e.g., surgery cost related to heart, kidney, eye, liver and cancer]</td>
+                        <td>{{ expense.medical_expense_surgery }}</td>
+                        <td>{{ expense.medical_expense_surgery_remarks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Taka</td>
+                        <td>{{expense.total_taka}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 class="explanation-heading">Explanation</h3>
+            <div class="explanation-section">
+            
+                <div class="left">
+                    <div class="row">
+                        <label>I.O.U / Advance Drawn(Tk.):</label>
+                        <p>{{ expense.advance }}</p>
+                    </div>
+                    <div class="row">
+                        <label>Expenses as Above(Tk.):</label>
+                        <p>{{ expense.expenses_as_above }}</p>
+                    </div>
+                    <div class="row">
+                        <label>Amount due to Company/Employees(Tk.):</label>
+                        <p>{{ expense.amount_due }}</p>
+                    </div>
+                </div>
+                <div class="right">
+                    <p>Signature:</p>
+                    <p style="border-bottom: 1px solid #333;">Date:</p>
+                    <p>Checked By:</p>
+                    <p>Forwarded By:</p>
+                    <p>Approved By:</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

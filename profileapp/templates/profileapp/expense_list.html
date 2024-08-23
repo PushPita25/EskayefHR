@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Reports</title>
+    <!-- Add Bootstrap CDN for styling if needed -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
+</head>
+<body>
+    <div class="container mt-4" style="margin: 0;">
+        <h2 style="text-align: left; font-weight: bold; margin-top: 10px; margin-bottom: 20px; color: rgb(9, 9, 126);">Manager Expense Report</h2>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID No</th>
+                    <th>Name</th>
+                    <th>Designation</th>
+                    <th>Department</th>
+                    <th>Month</th>
+                    <th>Unit</th>
+                    <th>WGE</th>
+                    <th>Driver</th>
+                    <th>Service Staff</th>
+                    <th>Security Staff</th>
+                    <th>LFA</th>
+                    <th>Fuel</th>
+                    <th>Gas</th>
+                    <th>R&M</th>
+                    <th>Tyre</th>
+                    <th>Battery</th>
+                    <th>Car Paint</th>
+                    <th>Car Decoration</th>
+                    <th>Toll</th>
+                    <th>Others</th>
+                    <th>Telephone</th>
+                    <th>Mobile Set</th>
+                    <th>Medical</th>
+                    <th>Medical-NonTaxable</th>
+                    <th>Total Tk.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.id_no }}</td>
+                    <td>{{ expense.name }}</td>
+                    <td>{{ expense.designation }}</td>
+                    <td>{{ expense.department }}</td>
+                    <td>{{expense.unit}}</td>
+                    <td>{{ expense.month }}</td>
+                    <td>{{expense.utility}}</td>
+                    <td>{{expense.driver_wages}}</td>
+                    <td>{{expense.service_staff_wages}}</td>
+                    <td>{{expense.security_staff_wages}}</td>
+                    <td>{{expense.leave_fare_assistance}}</td>
+                    <td>{{expense.fuel_cost}}</td>
+                    <td>{{expense.gas_cost}}</td>
+                    <td>{{expense.repair_maintenance}}</td>
+                    <td>{{expense.tyres}}</td>
+                    <td>{{expense.battery}}</td>
+                    <td>{{expense.car_denting_painting}}</td>
+                    <td>{{expense.car_decorations}}</td>
+                    <td>{{expense.toll}}</td>
+                    <td>{{expense.others}}</td>
+                    <td>{{expense.telephone}}</td>
+                    <td>{{expense.mobile_set}}</td>
+                    <td>{{expense.medical_expense}}</td>
+                    <td>{{expense.medical_expense_surgery}}</td>
+                    <td>{{expense.total_taka}}</td>                
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'export_expenses_excel' %}" class="btn btn-success" style="margin-bottom: 50px; font-weight: bold;">Export as Excel</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruitment Detail</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+
+        .btn-primary,
+        .btn-success {
+            margin-top: 10px;
+        }
+
+        .fa-trash-alt {
+            color: white;
+        }
+
+        .table .btn-danger {
+            padding: 5px 10px;
+        }
+
+        .section-title {
+            background-color: #e9ecef;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h2 class="text-center">Recruitment Requisition Form (RRF)</h2>
+    
+    <div class="section-title">Requisition Details</div>
+    <div class="form-row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <p><strong>Requisition Raised By:</strong> {{ recruitment_form.raised_by }}</p>
+            </div>
+            <div class="form-group">
+                <p><strong>Department:</strong> {{ recruitment_form.department }}</p>
+            </div>
+            <div class="form-group">
+                <p><strong>Date:</strong> {{ recruitment_form.date }}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <p><strong>Requisition Approved By:</strong> {{ recruitment_form.approved_by }}</p>
+            </div>
+            <div class="form-group">
+                <p><strong>Unit Name:</strong> {{ recruitment_form.unit_name }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-title">Vacancy Information</div>
+    <div class="form-row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <p><strong>Designation:</strong> {{ recruitment_form.designation }}</p>
+            </div>
+            <div class="form-group">
+                <p><strong>Recruitment Type:</strong> {{ recruitment_form.recruitment_type }}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <p><strong>Number of Vacant Position:</strong> {{ recruitment_form.vacant_position }}</p>
+            </div>
+            <div class="form-group">
+                <p><strong>Job Role:</strong>{{recruitment_form.job_role}}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <p><strong>Location:</strong>{{recruitment_form.location}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">Headcount Budget/Replacement Details</div>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Vacancy Type</th>
+                <th>Resigned Employee Name</th>
+                <th>Employee ID</th>
+                <th>Designation</th>
+                <th>Resignation Date</th>
+                <th>Last Working Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vacancy in recruitment_form.vacancies.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ vacancy.vacancy_type }}</td>
+                    <td>{{ vacancy.resigned_name }}</td>
+                    <td>{{ vacancy.employee_id }}</td>
+                    <td>{{ vacancy.designation }}</td>
+                    <td>{{ vacancy.resignation_date }}</td>
+                    <td>{{ vacancy.last_date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+   
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</div>
+</body>
+</html>

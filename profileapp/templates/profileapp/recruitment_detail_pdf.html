@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruitment Detail</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            background-color: #e9ecef;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #343a40;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h2 class="text-center">Recruitment Requisition Form (RRF)</h2>
+    
+    <div class="section-title">Requisition Details</div>
+    <p><strong>Requisition Raised By:</strong> {{ recruitment_form.raised_by }}</p>
+    <p><strong>Department:</strong> {{ recruitment_form.department }}</p>
+    <p><strong>Date:</strong> {{ recruitment_form.date }}</p>
+    <p><strong>Requisition Approved By:</strong> {{ recruitment_form.approved_by }}</p>
+    <p><strong>Unit Name:</strong> {{ recruitment_form.unit_name }}</p>
+    
+    <div class="section-title">Vacancy Information</div>
+    <p><strong>Designation:</strong> {{ recruitment_form.designation }}</p>
+    <p><strong>Recruitment Type:</strong> {{ recruitment_form.recruitment_type }}</p>
+    <p><strong>Number of Vacant Position:</strong> {{ recruitment_form.vacant_position }}</p>
+    <p><strong>Job Role:</strong> {{ recruitment_form.job_role }}</p>
+    <p><strong>Location:</strong> {{ recruitment_form.location }}</p>
+
+    <div class="section-title">Headcount Budget/Replacement Details</div>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Vacancy Type</th>
+                <th>Resigned Employee Name</th>
+                <th>Employee ID</th>
+                <th>Designation</th>
+                <th>Resignation Date</th>
+                <th>Last Working Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vacancy in recruitment_form.vacancies.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ vacancy.vacancy_type }}</td>
+                    <td>{{ vacancy.resigned_name }}</td>
+                    <td>{{ vacancy.employee_id }}</td>
+                    <td>{{ vacancy.designation }}</td>
+                    <td>{{ vacancy.resignation_date }}</td>
+                    <td>{{ vacancy.last_date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

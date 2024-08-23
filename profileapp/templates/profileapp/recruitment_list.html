@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Recruitment List</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-4">
+        <h2 class="text-center">Recruitment List</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Raised By</th>
+                    <th>Date</th>
+                    <th>Department</th>
+                    <th>Unit Name</th>
+                    <th>Approved By</th>
+                    <th>Designation</th>
+                    <th>Recruitment Type</th>
+                    <th>Vacant Position</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for form in recruitment_forms %}
+                <tr>
+                    <td>{{ form.raised_by }}</td>
+                    <td>{{ form.date }}</td>
+                    <td>{{ form.department }}</td>
+                    <td>{{ form.unit_name }}</td>
+                    <td>{{ form.approved_by }}</td>
+                    <td>{{ form.designation }}</td>
+                    <td>{{ form.recruitment_type }}</td>
+                    <td>{{ form.vacant_position }}</td>
+                    <td><a href="{% url 'recruitment_detail' form.id %}" class="btn btn-info btn-sm">View</a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="text-center">No recruitment forms found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_rrf_admin %}
+    <a href="{% url 'export_rrf_data_to_excel' %}" class="btn btn-info btn-sm" style="margin-left: 45%; margin-bottom: 20px;">Download Recruitment Data</a>  
+    {% endif %}
+
+</body>
+
+</html>

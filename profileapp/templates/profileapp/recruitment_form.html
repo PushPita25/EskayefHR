@@ -1,0 +1,345 @@
+{%load static%}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Recruitment Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #343a40;
+            font-weight: bold;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+
+        .btn-primary,
+        .btn-success {
+            margin-top: 10px;
+            background-color: #04274b;
+            border-color: #07284c;
+        }
+
+
+        .fa-trash-alt {
+            color: white;
+        }
+
+        .table .btn-danger {
+            padding: 5px 10px;
+        }
+
+        .section-title {
+            background-color: #2d8594;
+            color: white;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            background-color: #e9ecef;
+            border: 1px solid #343a40;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        .form-control:focus {
+            background-color: #dee2e6;
+            border-color: #007bff;
+            box-shadow: none;
+        }
+
+        .table {
+            border: 2px solid #343a40;
+        }
+
+        .table th,
+        .table td {
+            border: 2px solid #343a40;
+            vertical-align: middle;
+            padding: 8px;
+        }
+
+        .table th {
+            background-color: #2d8594;
+            color: white;
+        }
+
+        .table td input,
+        .table td select {
+            background-color: #e9ecef;
+            border: 1px solid #495057;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        textarea.form-control {
+            resize: none;
+            width: 100%;
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            /* Light grey */
+            border-top: 16px solid #3498db;
+            /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <script>
+        function handleVacantPositionsChange() {
+            const vacantPosition = parseInt(document.getElementById("vacant-position").value) || 0;
+            const tableBody = document.querySelector("table tbody");
+            tableBody.innerHTML = ""; // Clear previous rows
+            document.getElementById("row-count").value = vacantPosition; // Set row count
+
+            for (let i = 1; i <= vacantPosition; i++) {
+                const newRow = document.createElement("tr");
+                newRow.id = `row-${i}`;
+
+                newRow.innerHTML = `
+                    <td>${i}</td>
+                    <td>
+                        <select id="vacancy-type-${i}" name="vacancy_type_${i}" class="form-control" onchange="handleVacancyTypeChange(this, ${i})" autocomplete="off" required>
+                            <option value="" selected disabled></option>
+                            <option value="Replacement">Replacement</option>
+                            <option value="AOP New">AOP New</option>
+                        </select>
+                    </td>
+                    <td><input type="text" id="resigned-name-${i}" name="resigned_name_${i}" class="form-control" autocomplete="off" required /></td>
+                    <td><input type="text" id="employee-id-${i}" name="employee_id_${i}" class="form-control" autocomplete="off" required /></td>
+                    <td><input type="text" id="designation-${i}" name="designation_${i}" class="form-control" autocomplete="off" required /></td>
+                    <td><input type="date" id="resignation-date-${i}" name="resignation_date_${i}" class="form-control" autocomplete="off" required /></td>
+                    <td><input type="date" id="last-date-${i}" name="last_date_${i}" class="form-control" autocomplete="off" required /></td>
+                `;
+
+                tableBody.appendChild(newRow);
+            }
+        }
+
+        function handleVacancyTypeChange(selectElement, rowNumber) {
+            const nameField = document.getElementById(`resigned-name-${rowNumber}`);
+            const employeeIdField = document.getElementById(`employee-id-${rowNumber}`);
+            const designationField = document.getElementById(`designation-${rowNumber}`);
+            const resignationDateField = document.getElementById(`resignation-date-${rowNumber}`);
+            const lastDateField = document.getElementById(`last-date-${rowNumber}`);
+
+            if (selectElement.value === "AOP New") {
+                // Set values to '----'
+                nameField.value = "----";
+                employeeIdField.value = "----";
+                designationField.value = "----";
+                resignationDateField.value = "----";
+                lastDateField.value = "----";
+
+                // Disable the fields
+                nameField.disabled = true;
+                employeeIdField.disabled = true;
+                designationField.disabled = true;
+                resignationDateField.disabled = true;
+                lastDateField.disabled = true;
+            } else {
+                // Enable the fields and clear values
+                nameField.value = "";
+                employeeIdField.value = "";
+                designationField.value = "";
+                resignationDateField.value = "";
+                lastDateField.value = "";
+
+                nameField.disabled = false;
+                employeeIdField.disabled = false;
+                designationField.disabled = false;
+                resignationDateField.disabled = false;
+                lastDateField.disabled = false;
+            }
+        }
+
+
+        function disableSubmitButton() {
+            document.querySelector('button[type="submit"]').disabled = true;
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="container mt-4">
+        <h2 class="text-center">Recruitment Requisition Form (RRF)</h2>
+        <form method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="disableSubmitButton()">
+            {% csrf_token %}
+
+            <div class="section-title">Requisition Details</div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="raised-by"><i class="fas fa-user"></i> Requisition Raised By</label>
+                        <input type="text" id="raised-by" name="raised_by" class="form-control"
+                            value="{{ form.raised_by.value|default_if_none:'' }}" readonly autocomplete="off"
+                            required />
+                    </div>
+                    <div class="form-group">
+                        <label for="department"><i class="fas fa-building"></i> Department:</label>
+                        <input type="text" id="department" name="department" class="form-control"
+                            value="{{ form.department.value|default_if_none:'' }}" readonly autocomplete="off"
+                            required />
+                    </div>
+                    <div class="form-group">
+                        <label for="date"><i class="fas fa-calendar"></i> Date:</label>
+                        <input type="date" id="date" name="date" class="form-control"
+                            value="{{ form.date.value|default_if_none:'' }}" readonly required />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="approved-by"><i class="fas fa-check"></i> Requisition Approved By:</label>
+                        <select id="approved-by" name="approved_by" class="form-control" autocomplete="off" required>
+                            <option value="" selected disabled></option>
+                            <option value="Executive Director-Commercial & HR">Executive Director-Commercial & HR
+                            </option>
+                            <option value="Executive Director-Finance">Executive Director-Finance</option>
+                            <option value="Executive Director-Marketing & Sales">Executive Director-Marketing & Sales
+                            </option>
+                            <option value="Executive Director-Plant(Rupgonj & Mirpur)">Executive Director-Plant(Rupgonj & Mirpur)</option>
+                            <option value="Executive Director-Plant(Tongi & Salna)">Executive Director-Plant(Tongi & Salna)</option>
+                            <option value="Executive Director-Technical">Executive Director-Technical</option>
+                            <option value="Executive Director-Quality Assurance">Executive Director-Quality Assurance
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="unit-name"><i class="fas fa-sitemap"></i> Unit Name:</label>
+                        <select name="unit_name" id="unit-name" class="form-control" autocomplete="off" required>
+                            {% for unit in units %}
+                            <option value="{{ unit }}">{{ unit }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loading"></div>
+
+
+            <div class="section-title">Vacancy Information</div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="designation"><i class="fas fa-briefcase"></i> Designation/Job Title:</label>
+                        <input type="text" id="designation" name="designation" class="form-control" autocomplete="off"
+                            required />
+                    </div>
+                    <div class="form-group">
+                        <label for="recruitment-type"><i class="fas fa-user-tie"></i> Recruitment Type:</label>
+                        <select id="recruitment-type" name="recruitment_type" class="form-control" autocomplete="off"
+                            required>
+                            <option value="" selected disabled></option>
+                            <option value="Internal Hiring">Internal Hiring (IJP)</option>
+                            <option value="External Hiring">External Hiring</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="vacant-position"><i class="fas fa-user-plus"></i> Number of Vacant
+                            Positions:</label>
+                        <input type="number" id="vacant-position" name="vacant_position" class="form-control"
+                            oninput="handleVacantPositionsChange()" autocomplete="off" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="location"><i class="fas fa-map-marker-alt"></i> Location:</label>
+                        <select id="location" name="location" class="form-control" autocomplete="off" required>
+                            <option value="" selected disabled></option>
+                            <option value="OHQ">OHQ</option>
+                            <option value="Tongi Plant">Tongi Plant</option>
+                            <option value="Salna Plant">Salna Plant</option>
+                            <option value="Mirpur Plant">Mirpur Plant</option>
+                            <option value="Rupgonj Plant">Rupgonj Plant</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="job-role"><i class="fas fa-briefcase"></i> Job Role (if new hiring):</label>
+                        <textarea id="job-role" name="job_role" class="form-control" rows="4" autocomplete="off"
+                            required></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title" >Headcount Budget/Replacement Details</div>
+            <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Vacancy Type</th>
+                        <th>Name of the resigned employee</th>
+                        <th>Employee ID</th>
+                        <th>Designation</th>
+                        <th>Date of Resignation</th>
+                        <th>Last date at office</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <input type="hidden" id="row-count" name="row_count" />
+            <button type="submit" class="btn btn-success" style="margin-left: 45%; margin-bottom: 40px;"><i
+                    class="fas fa-paper-plane"></i> Submit</button>
+        </form>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the form from submitting immediately
+                document.getElementById('loading').style.display = 'flex'; // Show the loader
+        
+                // Optional: simulate a delay or handle form validation
+                setTimeout(function() {
+                    form.submit(); // Submit the form programmatically after a delay
+                }, 1000); // Adjust the delay as needed or remove if handling asynchronously
+            });
+        });
+        </script>
+        
+</body>
+
+</html>

@@ -1,0 +1,153 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url(../images/HRbg.avif);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.notification-container {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    width: 450px; /* Match the width of the login box */
+    text-align: center;
+}
+
+.notification-container img {
+    cursor: pointer;
+    float: right;
+    margin-top: -20px;
+    margin-right: -20px;
+}
+
+.login-box {
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.28);
+    padding: 20px;
+    width: 450px;
+    text-align: center;
+}
+
+.login-box .logo {
+    margin-bottom: 20px;
+}
+
+.login-box .logo img {
+    width: 100px;
+}
+
+.login-box h1 {
+    color: #0f336d;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    font-weight: 800;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+    margin-left: 50px;
+    width: 80%;
+}
+
+.input-group label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #0f336d;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 10px 10px 40px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    background-color: #f0f0ff;
+}
+
+.forgot-password {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.forgot-password a {
+    color: #0f336d;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.login-button {
+    background-color: #0f336d;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 30px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.remember-me {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.remember-me input {
+    margin-right: 5px;
+}
+
+.create-account {
+    margin-top: 20px;
+}
+
+.create-account p {
+    font-size: 12px;
+    color: #0f336d;
+}
+
+.create-account a {
+    color: #0f336d;
+    text-decoration: none;
+}
+
+.footer-links {
+    margin-top: 20px;
+}
+
+.footer-links a {
+    color: #0f336d;
+    text-decoration: none;
+    font-size: 14px;
+    margin: 0 10px;
+}
+
+#remember {
+    margin-top: 10px;
+}
