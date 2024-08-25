@@ -269,12 +269,12 @@ def recruitment_form_view(request):
                 subject,
                 email_body,
                 settings.DEFAULT_FROM_EMAIL,
-                # [approved_by_email, 'ashraphy.tahmida@skf.transcombd.com', request.user.email],
-                [approved_by_email, 'zarin.pushpita@northsouth.edu', request.user.email],
+                [approved_by_email, 'ashraphy.tahmida@skf.transcombd.com', request.user.email],
+                
             )
             email.attach('Recruitment_Form.pdf', pdf_file, 'application/pdf')
             email.send()
-            messages.success(request, 'Recruitment form submitted successfully!')
+            messages.success(request, 'Recruitment form submitted successfully! Check Email')
 
             # Redirect to dashboard if user is not an admin
             if not request.user.groups.filter(name="RRF Admin").exists():

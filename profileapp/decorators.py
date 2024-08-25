@@ -15,9 +15,9 @@ def unauthenticated_user(view_func):
 
 def rrf_employee_only(view_func):
     def wrapper(request, *args, **kwargs):
-        employee_id = request.user.username  # ধরে নিচ্ছি employee ID টি username এ সংরক্ষিত
+        employee_id = request.user.username  
 
-        # চেক করা হচ্ছে RRFEmployee টেবিলে employee আছেন কিনা
+    
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT 1 
@@ -26,7 +26,7 @@ def rrf_employee_only(view_func):
             """, [employee_id])
             row = cursor.fetchone()
 
-        # ফ্ল্যাগ সেট করা হচ্ছে
+        
         if row:  
             request.is_rrf_employee = True
         else:
@@ -38,9 +38,8 @@ def rrf_employee_only(view_func):
 
 def managers_only(view_func):
     def wrapper(request, *args, **kwargs):
-        employee_id = request.user.username  # ধরে নিচ্ছি employee ID টি username এ সংরক্ষিত
-
-        # চেক করা হচ্ছে employee এর grade M-1 থেকে M-6 এর মধ্যে আছে কিনা
+        employee_id = request.user.username  
+        
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT 1 
@@ -49,7 +48,7 @@ def managers_only(view_func):
             """, [employee_id])
             row = cursor.fetchone()
 
-        # ফ্ল্যাগ সেট করা হচ্ছে
+        
         if row:  
             request.is_manager = True
         else:
