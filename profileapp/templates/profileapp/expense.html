@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -163,9 +164,9 @@
             font-weight: bold;
         }
 
-       
 
-        
+
+
         @media (max-width: 600px) {
             .row {
                 display: block;
@@ -223,40 +224,11 @@
         }
     </style>
 
-    <!-- <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const monthNames = [
-                "January 2024", "February 2024", "March 2024", "April 2024", "May 2024", "June 2024", "July 2024",
-                "August 2024", "September 2024", "October 2024", "November 2024", "December 2024" 
-            ];
-            const currentDate = new Date();
-            const currentMonth = monthNames[currentDate.getMonth()];
-            document.getElementById("month").value = currentMonth;
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            // Update the total whenever any input changes
-            document.querySelectorAll('.expense-input').forEach(function (input) {
-                input.addEventListener('input', function () {
-                    updateTotal();
-                });
-            });
-
-            function updateTotal() {
-                let total = 0;
-                document.querySelectorAll('.expense-input').forEach(function (input) {
-                    let value = parseFloat(input.value) || 0;
-                    total += value;
-                });
-                document.getElementById('total_taka').value = total.toFixed(2); // Format to 2 decimal places
-            }
-        });
-    </script> -->
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const monthNames = [
-                "January 2024", "February 2024", "March 2024", "April 2024", "May 2024", "June 2024", 
+                "January 2024", "February 2024", "March 2024", "April 2024", "May 2024", "June 2024",
                 "July 2024", "August 2024", "September 2024", "October 2024", "November 2024", "December 2024"
             ];
             const currentDate = new Date();
@@ -279,17 +251,48 @@
             }
 
             const form = document.querySelector('form');
-            form.addEventListener('submit', function(event) {
+            form.addEventListener('submit', function (event) {
                 event.preventDefault(); // Prevent the default form submission
                 document.getElementById('submitBtn').disabled = true;
                 document.getElementById('submitBtn').textContent = 'Submitted';
 
+                const formData = new FormData(form);
+                const url = window.location.href;
+
+                // console.log('form',form);
+
+                // Example: Send form data using AJAX
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.blob())
+                .then(blob => {
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'expense_report.pdf';
+
+                    document.body.appendChild(link);
+                    link.click();
+
+                    document.body.removeChild(link);
+
+                    window.location.href = '/';
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+
                 // Here you might want to add actual form submission logic
-                form.submit(); // This will submit the form. Remove this line if using AJAX or another method to submit the form.
+                 // This will submit the form. Remove this line if using AJAX or another method to submit the form.
             });
+
+            
+
         });
     </script>
 </head>
+
 <body>
     <div class="container">
         <h2>ESKAYEF PHARMACEUTICALS LIMITED</h2>
@@ -319,7 +322,7 @@
                         <input type="text" id="location" name="location"
                             value="{{ form.location.value|default_if_none:'' }}" required autocomplete="off">
                     </div>
-                    
+
                 </div>
                 <div class="column">
                     <div class="form-group">
@@ -337,7 +340,7 @@
                         <input type="text" id="unit" name="unit" value="{{ form.unit.value|default_if_none:'' }}"
                             required autocomplete="off">
                     </div>
-                
+
                 </div>
             </div>
 
@@ -362,7 +365,8 @@
                         <td><input type="text" name="driver_wages" class="expense-input"
                                 value="{{ form.driver_wages.value|default_if_none:'' }}" autocomplete="off"></td>
                         <td><input type="text" name="driver_wages_remarks" class="remarks-input"
-                                value="{{ form.driver_wages_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                                value="{{ form.driver_wages_remarks.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                     </tr>
                     <tr>
                         <td>Service Staff Wages</td>
@@ -370,22 +374,27 @@
                                 value="{{ form.service_staff_wages.value|default_if_none:'' }}" autocomplete="off">
                         </td>
                         <td><input type="text" name="service_staff_wages_remarks" class="remarks-input"
-                                value="{{ form.service_staff_wages_remarks.value|default_if_none:'' }}" autocomplete="off">
+                                value="{{ form.service_staff_wages_remarks.value|default_if_none:'' }}"
+                                autocomplete="off">
                         </td>
                     </tr>
                     <tr>
                         <td>Security Staff Wages</td>
                         <td><input type="text" name="security_staff_wages" class="expense-input"
-                                value="{{ form.security_staff_wages.value|default_if_none:'' }}" autocomplete="off"></td>
+                                value="{{ form.security_staff_wages.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                         <td><input type="text" name="security_staff_wages_remarks" class="remarks-input"
-                                value="{{ form.security_staff_wages_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                                value="{{ form.security_staff_wages_remarks.value|default_if_none:'' }}"
+                                autocomplete="off"></td>
                     </tr>
                     <tr>
                         <td>Leave Fare Assistance-LFA</td>
                         <td><input type="text" name="leave_fare_assistance" class="expense-input"
-                                value="{{ form.leave_fare_assistance.value|default_if_none:'' }}" autocomplete="off"></td>
+                                value="{{ form.leave_fare_assistance.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                         <td><input type="text" name="leave_fare_assistance_remarks" class="remarks-input"
-                                value="{{ form.leave_fare_assistance_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                                value="{{ form.leave_fare_assistance_remarks.value|default_if_none:'' }}"
+                                autocomplete="off"></td>
                     </tr>
                     <tr>
                         <td colspan="3" class="subheader">Car Expenses</td>
@@ -412,7 +421,8 @@
                                 value="{{ form.repair_maintenance.value|default_if_none:'' }}" autocomplete="off">
                         </td>
                         <td><input type="text" name="repair_maintenance_remarks" class="remarks-input"
-                                value="{{ form.repair_maintenance_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                                value="{{ form.repair_maintenance_remarks.value|default_if_none:'' }}"
+                                autocomplete="off"></td>
                     </tr>
                     <tr>
                         <td colspan="3" class="subheader">Car Maintenance Expenses</td>
@@ -434,16 +444,19 @@
                     <tr>
                         <td>Car Denting & Painting</td>
                         <td><input type="text" name="car_denting_painting" class="expense-input"
-                                value="{{ form.car_denting_painting.value|default_if_none:'' }}" autocomplete="off"></td>
+                                value="{{ form.car_denting_painting.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                         <td><input type="text" name="car_denting_painting_remarks" class="remarks-input"
-                                value="{{ form.car_denting_painting_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                                value="{{ form.car_denting_painting_remarks.value|default_if_none:'' }}"
+                                autocomplete="off"></td>
                     </tr>
                     <tr>
                         <td>Car Decorations</td>
                         <td><input type="text" name="car_decorations" class="expense-input"
                                 value="{{ form.car_decorations.value|default_if_none:'' }}" autocomplete="off"></td>
                         <td><input type="text" name="car_decorations_remarks" class="remarks-input"
-                                value="{{ form.car_decorations_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                                value="{{ form.car_decorations_remarks.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                     </tr>
                     <tr>
                         <td>Toll</td>
@@ -485,42 +498,45 @@
                         <td><input type="text" name="medical_expense" class="expense-input"
                                 value="{{ form.medical_expense.value|default_if_none:'' }}" autocomplete="off"></td>
                         <td><input type="text" name="medical_expense_remarks" class="remarks-input"
-                                value="{{ form.medical_expense_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
+                                value="{{ form.medical_expense_remarks.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                     </tr>
                     <tr>
-                        <td>Medical Expense[Non-taxable, e.g., surgery cost related to heart, kidney, eye, liver and cancer]</td>
+                        <td>Medical Expense[Non-taxable, e.g., surgery cost related to heart, kidney, eye, liver and
+                            cancer]</td>
                         <td><input type="text" name="medical_expense_surgery" class="expense-input"
                                 value="{{ form.medical_expense_surgery.value|default_if_none:'' }}" autocomplete="off">
                         </td>
                         <td><input type="text" name="medical_expense_surgery_remarks" class="remarks-input"
-                                value="{{ form.medical_expense_surgery_remarks.value|default_if_none:'' }}" autocomplete="off">
+                                value="{{ form.medical_expense_surgery_remarks.value|default_if_none:'' }}"
+                                autocomplete="off">
                         </td>
                     </tr>
                     <tr>
                         <td>Total Taka</td>
                         <td><input type="text" id="total_taka" name="total_taka"
-                            value="{{ form.total_taka.value|default_if_none:'' }}" required autocomplete="off"></td>
+                                value="{{ form.total_taka.value|default_if_none:'' }}" required autocomplete="off"></td>
                     </tr>
                 </tbody>
             </table>
             <h3 class="explanation-heading">Explanation</h3>
             <div class="explanation-section">
-        
+
                 <div class="left">
                     <div class="row">
                         <label>I.O.U / Advance Drawn(Tk.):</label>
-                        <input type="text" name="advance" autocomplete="off"/>
-                        
+                        <input type="text" name="advance" autocomplete="off" />
+
                     </div>
                     <div class="row">
                         <label>Expenses as Above(Tk.):</label>
-                        <input type="text" name="expenses_as_above" autocomplete="off"/>
-                       
+                        <input type="text" name="expenses_as_above" autocomplete="off" />
+
                     </div>
                     <div class="row">
                         <label>Amount due to Company / Employees(Tk.):</label>
-                        <input type="text" name="amount_due" autocomplete="off"/>
-                        
+                        <input type="text" name="amount_due" autocomplete="off" />
+
                     </div>
                 </div>
                 <div class="right">
@@ -536,7 +552,10 @@
                 <button type="submit" id="submitBtn">Submit</button>
             </div>
         </form>
+        
     </div>
+
+
 </body>
 
 </html>

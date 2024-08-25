@@ -63,7 +63,6 @@ class Department(models.Model):
     
 
 class Expense(models.Model):
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     id_no = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     designation = models.CharField(max_length=255)
@@ -119,3 +118,7 @@ class Expense(models.Model):
 
     def __str__(self):
         return f"Expense {self.id} for {self.name} ({self.id_no})"
+    
+
+
+

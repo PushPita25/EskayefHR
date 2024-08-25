@@ -20,9 +20,13 @@ import os
 
 # Dashboard
 @login_required(login_url='login')
+@rrf_employee_only
+@managers_only
 def index(request):
     # Employee ID from logged-in user
     employee_id = request.user.username
+    is_rrf_employee = getattr(request, 'is_rrf_employee', False)
+    is_manager = getattr(request, 'is_manager', False)
     
     # Fetching the corresponding name, designation, and department from the Employees table
     with connection.cursor() as cursor:
@@ -43,6 +47,8 @@ def index(request):
         'user_name': user_name,  # Pass the name to the template
         'user_designation': user_designation,  # Pass the designation to the template
         'user_department': user_department,  # Pass the department to the template
+        'is_rrf_employee': is_rrf_employee,
+        'is_manager': is_manager
     }
     return render(request, 'profileapp/dashboard.html', context)
 
@@ -263,10 +269,12 @@ def recruitment_form_view(request):
                 subject,
                 email_body,
                 settings.DEFAULT_FROM_EMAIL,
-                [approved_by_email, 'ashraphy.tahmida@skf.transcombd.com', request.user.email],
+                # [approved_by_email, 'ashraphy.tahmida@skf.transcombd.com', request.user.email],
+                [approved_by_email, 'zarin.pushpita@northsouth.edu', request.user.email],
             )
             email.attach('Recruitment_Form.pdf', pdf_file, 'application/pdf')
             email.send()
+            messages.success(request, 'Recruitment form submitted successfully!')
 
             # Redirect to dashboard if user is not an admin
             if not request.user.groups.filter(name="RRF Admin").exists():
@@ -369,7 +377,7 @@ def expense(request):
             pdf_file = HTML(string=html_string).write_pdf()
 
             # Success message after form submission
-            # messages.success(request, 'Your Expense Report is submitted Successfully.')
+            messages.success(request, 'Your Expense Report is submitted Successfully.')
 
             # Clear the form
             form = ExpenseForm()
@@ -415,14 +423,34 @@ def expense_list_view(request):
 #ExportExpenseExcel
 @login_required(login_url='login')
 def export_expenses_excel(request):
-    data = Expense.objects.all().values()  # Removed filter for current user
+    # Fetch all form data excluding the 'id' field
+    data = Expense.objects.all().values(
+        'id_no', 'name', 'designation', 'department', 'month', 'unit', 'location',
+        'utility', 'utility_remarks', 'driver_wages', 'driver_wages_remarks',
+        'service_staff_wages', 'service_staff_wages_remarks', 'security_staff_wages',
+        'security_staff_wages_remarks', 'leave_fare_assistance', 'leave_fare_assistance_remarks',
+        'fuel_cost', 'fuel_cost_remarks', 'gas_cost', 'gas_cost_remarks',
+        'repair_maintenance', 'repair_maintenance_remarks', 'tyres', 'tyres_remarks',
+        'battery', 'battery_remarks', 'car_denting_painting', 'car_denting_painting_remarks',
+        'car_decorations', 'car_decorations_remarks', 'toll', 'toll_remarks',
+        'others', 'others_remarks', 'telephone', 'telephone_remarks',
+        'mobile_set', 'mobile_set_remarks', 'medical_expense', 'medical_expense_remarks',
+        'medical_expense_surgery', 'medical_expense_surgery_remarks',
+        'total_taka', 'advance', 'expenses_as_above', 'amount_due'
+    )
+
+    # Convert the queryset to a DataFrame
     df = pd.DataFrame(list(data))
+
+    # Define the HttpResponse with Excel content type
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="expenses.xlsx"'
+
+    # Write the DataFrame to Excel file
     with pd.ExcelWriter(response, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Expenses')
+    
     return response
-
 @login_required(login_url='login')
 def export_rrf_data_to_excel(request):
     if not request.user.groups.filter(name="RRF Admin").exists():
