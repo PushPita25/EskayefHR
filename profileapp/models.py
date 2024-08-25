@@ -118,7 +118,54 @@ class Expense(models.Model):
 
     def __str__(self):
         return f"Expense {self.id} for {self.name} ({self.id_no})"
-    
+
+
+
+# class Employee(models.Model):
+#     EmployeeID = models.AutoField(primary_key=True)
+#     Name = models.CharField(max_length=100)
+#     Unit = models.CharField(max_length=100, blank=True, null=True)
+#     Department = models.CharField(max_length=50, blank=True, null=True)
+#     Grade = models.CharField(max_length=50, blank=True, null=True)
+#     Designation = models.CharField(max_length=100, blank=True, null=True)
+#     Email = models.EmailField(max_length=100, unique=True)
+#     ContactNo = models.CharField(max_length=15, blank=True, null=True)
+#     Location = models.CharField(max_length=100, blank=True, null=True)
+#     Head_of_Dept = models.CharField(max_length=100, blank=True, null=True)
+#     BU_Head = models.CharField(max_length=100, blank=True, null=True)
+
+#     class Meta:
+#         db_table = 'Employees'
+#         verbose_name = 'Employee'
+#         verbose_name_plural = 'Employees'
+
+# class RRFEmployee(models.Model):
+#     HODID = models.IntegerField()
+#     Name = models.CharField(max_length=100)
+#     Designation = models.CharField(max_length=100, blank=True, null=True)
+#     Unit = models.CharField(max_length=100, blank=True, null=True)
+#     Department = models.CharField(max_length=50, blank=True, null=True)
+#     BU_Head = models.CharField(max_length=100, blank=True, null=True)
+
+#     class Meta:
+#         db_table = 'RRFEmployee'
+#         verbose_name = 'RRF Employee'
+#         verbose_name_plural = 'RRF Employees'
+
+# class ExecutiveDirectors(models.Model):
+#     EDID = models.IntegerField(primary_key=True)
+#     EDDesg = models.CharField(max_length=100, blank=True, null=True)
+#     EDEmail = models.CharField(max_length=100, unique=True, blank=True, null=True)
+
+#     class Meta:
+#         db_table = 'Executive_Directors'
+#         verbose_name = 'Executive Director'
+#         verbose_name_plural = 'Executive Directors'
+
+#     ### SMALL CONSIDERATION ###
+#     #Meta class consists of few fields
+#     ##db_table name defines the table name in the database
+#     ##verbose name and verbose name plural defines the human readable version of the database name
 
 
 
