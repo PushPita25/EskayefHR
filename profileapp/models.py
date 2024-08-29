@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db import connection
 
+#profile 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null=True, blank=True)
@@ -26,6 +27,7 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s profile"
 
+#RRF
 class RecruitmentForm(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     raised_by = models.CharField(max_length=255)
@@ -54,6 +56,7 @@ class VacancyDetail(models.Model):
     def __str__(self):
         return f"Vacancy Detail {self.id} for {self.recruitment_form}"
 
+#Department(not needed)
 class Department(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     department_name = models.CharField(max_length=100)
@@ -62,8 +65,8 @@ class Department(models.Model):
         return self.department_name
     
 
+#Manager Expense 
 class Expense(models.Model):
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     id_no = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     designation = models.CharField(max_length=255)
@@ -119,3 +122,38 @@ class Expense(models.Model):
 
     def __str__(self):
         return f"Expense {self.id} for {self.name} ({self.id_no})"
+    
+
+
+#NOC
+class NOC(models.Model):
+    applicant_id = models.CharField(max_length=20)
+    applicant_name = models.CharField(max_length=100)
+    designation = models.CharField(max_length=100)
+    department = models.CharField(max_length=100)
+    joining_date = models.DateField()
+    travel_date_from = models.DateField()
+    travel_date_to = models.DateField()
+    type = models.CharField(max_length=20, choices=[('NOC', 'NOC'), ('Immigration', 'Immigration')])
+    type_noc = models.CharField(max_length=100, blank=True, null=True)
+    passport_name = models.CharField(max_length=100)
+    passport_no = models.CharField(max_length=50)
+    passport_copy = models.FileField(upload_to='passport_copies/', blank=True, null=True)
+    invitation_letter = models.FileField(upload_to='invitation_letters/', blank=True, null=True)
+    country_visit = models.CharField(max_length=100)
+    no_of_travelers = models.PositiveIntegerField(default=0)
+    approved = models.BooleanField(default=False)  
+
+    def __str__(self):
+        return f'{self.applicant_name} ({self.applicant_id})'
+
+class AdditionalTraveler(models.Model):
+    travel_recommendation = models.ForeignKey(NOC, on_delete=models.CASCADE, related_name='additional_travelers')
+    relationship_with_traveler = models.CharField(max_length=100)
+    additional_passport_name = models.CharField(max_length=100)
+    additional_passport_no = models.CharField(max_length=50)
+    additional_passport_copy = models.FileField(upload_to='additional_passport_copies/', blank=True, null=True)  # File upload field
+
+    def __str__(self):
+        return f'{self.relationship_with_traveler} - {self.additional_passport_name}'
+
