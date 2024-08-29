@@ -16,8 +16,6 @@ def unauthenticated_user(view_func):
 def rrf_employee_only(view_func):
     def wrapper(request, *args, **kwargs):
         employee_id = request.user.username  
-
-    
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT 1 

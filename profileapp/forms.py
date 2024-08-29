@@ -51,3 +51,16 @@ class ExpenseForm(forms.ModelForm):
     class Meta:
         model = Expense
         exclude = ['user']
+
+
+from .models import NOC, AdditionalTraveler
+
+class NOCForm(forms.ModelForm):
+    class Meta:
+        model = NOC
+        fields = '__all__'  # Or specify the fields explicitly if needed
+
+class AdditionalTravelerForm(forms.ModelForm):
+    class Meta:
+        model = AdditionalTraveler
+        fields = '__all__'

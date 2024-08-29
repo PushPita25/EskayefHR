@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-from .forms import ProfileForm, RecruitmentFormForm, VacancyDetailForm, EmployeeIDForm, OTPForm, SetPasswordForm,ExpenseForm
-from .models import RecruitmentForm, VacancyDetail, Department,Expense,User
+from .forms import ProfileForm, RecruitmentFormForm, VacancyDetailForm, EmployeeIDForm, OTPForm, SetPasswordForm,ExpenseForm,NOCForm
+from .models import RecruitmentForm, VacancyDetail, Department,Expense,User,AdditionalTraveler, NOC
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db import connection
@@ -15,8 +15,12 @@ import random
 from .decorators import unauthenticated_user, managers_only,rrf_employee_only
 import pandas as pd
 from datetime import date
+from django.utils import timezone
 from django.core.mail import EmailMessage
 import os
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 # Dashboard
 @login_required(login_url='login')
@@ -51,7 +55,6 @@ def index(request):
         'is_manager': is_manager
     }
     return render(request, 'profileapp/dashboard.html', context)
-
 def home(request):
     return render(request, 'profileapp/dashboard.html')
 
@@ -191,9 +194,10 @@ def logout_user(request):
     return redirect('login')
 
 
-# @login_required(login_url='login')
-# def success_view(request):
-#     return render(request, 'profileapp/success.html')
+#Success message
+@login_required(login_url='login')
+def success_view(request):
+    return render(request, 'profileapp/success.html')
 
 
 #Profile
@@ -210,9 +214,9 @@ def profile(request):
     context = {'form': form}
     return render(request, 'profileapp/profile.html', context)
 
-# @login_required(login_url='login')
-# def success_view(request):
-#     return render(request, 'profileapp/success.html')
+@login_required(login_url='login')
+def success_view(request):
+    return render(request, 'profileapp/success.html')
 
 
 def get_units(employee_id):
@@ -269,12 +273,12 @@ def recruitment_form_view(request):
                 subject,
                 email_body,
                 settings.DEFAULT_FROM_EMAIL,
-                [approved_by_email, 'ashraphy.tahmida@skf.transcombd.com', request.user.email],
-                
+                # [approved_by_email, 'ashraphy.tahmida@skf.transcombd.com', request.user.email],
+                [approved_by_email, 'zarin.pushpita@northsouth.edu', request.user.email],
             )
             email.attach('Recruitment_Form.pdf', pdf_file, 'application/pdf')
             email.send()
-            messages.success(request, 'Recruitment form submitted successfully! Check Email')
+            messages.success(request, 'Recruitment form submitted successfully!')
 
             # Redirect to dashboard if user is not an admin
             if not request.user.groups.filter(name="RRF Admin").exists():
@@ -418,7 +422,32 @@ def expense_list_view(request):
     else:
         messages.error(request, 'You do not have permission to view this page.')
         return redirect('home')
+    
+#Expense List Filters 
+@login_required(login_url='login')
+def search_managers(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        query = request.GET.get('term', '')
+        expenses = Expense.objects.filter(name__icontains=query)  # Search by name
+        results = [{'name': expense.name} for expense in expenses]
+        return JsonResponse(results, safe=False)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
+#view expense pdf
+@login_required(login_url='login')
+def view_expense_pdf(request, expense_id):
+    expense = get_object_or_404(Expense, id=expense_id)  # Fetch the specific expense by ID
+    
+    # Render the PDF template with the expense context
+    html_string = render_to_string('profileapp/expense_pdf_template.html', {'expense': expense})
+    pdf_file = HTML(string=html_string).write_pdf()
+
+    # Serve the PDF as an HTTP response
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="expense_{expense_id}.pdf"'
+
+    return response
 
 #ExportExpenseExcel
 @login_required(login_url='login')
@@ -449,8 +478,9 @@ def export_expenses_excel(request):
     # Write the DataFrame to Excel file
     with pd.ExcelWriter(response, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Expenses')
-    
     return response
+
+#RRF to excel
 @login_required(login_url='login')
 def export_rrf_data_to_excel(request):
     if not request.user.groups.filter(name="RRF Admin").exists():
@@ -490,8 +520,231 @@ def export_rrf_data_to_excel(request):
 
     return response
 
+#NOC Form
+# @login_required(login_url='login')
+# def noc_form_view(request):
+#     if request.method == 'POST':
+#         noc_form = NOCForm(request.POST, request.FILES)
+
+#         if noc_form.is_valid():
+#             noc_instance = noc_form.save()
+
+#             # Handle additional travelers dynamically
+#             no_of_travelers = request.POST.get('no_of_travelers', 0)
+
+#             for i in range(int(no_of_travelers)):
+#                 relationship = request.POST.get(f'relationship_{i + 1}')
+#                 additional_passport_name = request.POST.get(f'additional_passport_name_{i + 1}')
+#                 additional_passport_no = request.POST.get(f'additional_passport_no_{i + 1}')
+#                 additional_passport_copy = request.FILES.get(f'additional_passport_copy_{i + 1}')
+
+#                 if relationship and additional_passport_name and additional_passport_no:
+#                     AdditionalTraveler.objects.create(
+#                         travel_recommendation=noc_instance,
+#                         relationship_with_traveler=relationship,
+#                         additional_passport_name=additional_passport_name,
+#                         additional_passport_no=additional_passport_no,
+#                         additional_passport_copy=additional_passport_copy,
+#                     )
+
+#             return redirect('success_page')
+#         else:
+#             # Print errors for debugging
+#             print("Form is invalid. Errors:", noc_form.errors)
+
+#     else:
+#         # Autofill logic here
+#         employee_id = request.user.username
+
+#         # Fetch employee details from the Employees table
+#         with connection.cursor() as cursor:
+#             cursor.execute("""
+#                 SELECT Name, Designation, Department
+#                 FROM Employees
+#                 WHERE EmployeeID = %s
+#             """, [employee_id])
+#             row = cursor.fetchone()
+
+#         # Set initial data for the form
+#         initial_data = {
+#             'applicant_id': employee_id,
+#             'applicant_name': row[0] if row else '',
+#             'designation': row[1] if row else '',
+#             'department': row[2] if row else '',
+#             # # Example: 'joining_date': row[3] if row else '',  # Uncomment if you fetch joining_date
+#             # 'unit': row[3] if row else '',
+#             # 'location': row[4] if row else '',
+#         }
+
+#         # Initialize form with initial data
+#         noc_form = NOCForm(initial=initial_data)
+
+#     return render(request, 'profileapp/nocform.html', {'noc_form': noc_form})
+
+
+# #Generate NOC PDF
+# @login_required(login_url='login')
+# def generate_noc_pdf(request, noc_id):
+#     # Fetch the NOC instance from the database
+#     noc_instance = get_object_or_404(NOC, id=noc_id)
+
+#     # Prepare the context with data from the NOC instance
+#     context = {
+#         'date': timezone.now().strftime("%d %B %Y"),  # Current date
+#         'designation': noc_instance.designation,
+#         'applicant_name': noc_instance.applicant_name,
+#         'applicant_id': noc_instance.applicant_id,
+#         'passport_no': noc_instance.passport_no,
+#         'joining_date': noc_instance.joining_date.strftime("%d-%b-%Y"),
+#         'country_visit': noc_instance.country_visit,
+#         'travel_date_from': noc_instance.travel_date_from.strftime("%d %B %Y"),
+#         'travel_date_to': noc_instance.travel_date_to.strftime("%d %B %Y")
+#     }
+
+#     # Render the HTML template with context data
+#     html_string = render_to_string('profileapp/noc_pdf_template.html', context)
+
+#     # Generate PDF using WeasyPrint
+#     pdf_file = HTML(string=html_string).write_pdf()
+
+#     # Return the PDF as a response
+#     response = HttpResponse(pdf_file, content_type='application/pdf')
+#     response['Content-Disposition'] = f'attachment; filename="noc_{noc_instance.id}.pdf"'
+
+#     return response
 
 
 
 
+# NOC Form (ED Email)
+def get_ed_email(department):
+    # Custom SQL query to fetch email from `Executive_Directors` table based on department
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT EDEmail FROM Executive_Directors WHERE Department = %s", [department])
+        row = cursor.fetchone()
+    if row:
+        return row[0]
+    else:
+        return None
 
+# NOC Form
+@login_required(login_url='login')
+def noc_form_view(request):
+    if request.method == 'POST':
+        noc_form = NOCForm(request.POST, request.FILES)
+
+        if noc_form.is_valid():
+            noc_instance = noc_form.save(commit=False)
+            noc_instance.approved = False  # Initially set approved to False
+            noc_instance.save()
+
+            # Handle additional travelers dynamically
+            no_of_travelers = request.POST.get('no_of_travelers', 0)
+
+            for i in range(int(no_of_travelers)):
+                relationship = request.POST.get(f'relationship_{i + 1}')
+                additional_passport_name = request.POST.get(f'additional_passport_name_{i + 1}')
+                additional_passport_no = request.POST.get(f'additional_passport_no_{i + 1}')
+                additional_passport_copy = request.FILES.get(f'additional_passport_copy_{i + 1}')
+
+                if relationship and additional_passport_name and additional_passport_no:
+                    AdditionalTraveler.objects.create(
+                        travel_recommendation=noc_instance,
+                        relationship_with_traveler=relationship,
+                        additional_passport_name=additional_passport_name,
+                        additional_passport_no=additional_passport_no,
+                        additional_passport_copy=additional_passport_copy,
+                    )
+
+            # Send email notification to the corresponding Executive Director
+            employee_department = noc_instance.department
+            ed_email = get_ed_email(employee_department)
+
+            if ed_email:
+                # Generate the approval link for the email
+                approval_link = request.build_absolute_uri(
+                    reverse('approve_noc_form', args=[noc_instance.id])
+                )
+
+                email_body = (
+                    f"A new NOC form has been submitted and is waiting for your approval.\n\n"
+                    f"Click the link below to view the form details and approve:\n{approval_link}"
+                )
+
+                send_mail(
+                    'NOC Form Submission Notification',
+                    email_body,
+                    settings.DEFAULT_FROM_EMAIL,  # Use default from email
+                    [ed_email],
+                    fail_silently=False,
+                )
+
+            # messages.success(request, 'Your NOC form has been submitted successfully and is waiting for approval.')
+            return redirect('noc_form_list')  # Redirect to list page after submission
+        else:
+            print("Form is invalid. Errors:", noc_form.errors)
+
+    else:
+        # Autofill logic here
+        employee_id = request.user.username  # Assuming EmployeeID is stored in username field
+
+        # Fetch employee details from the Employees table
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT Name, Designation, Department, Email
+                FROM Employees
+                WHERE EmployeeID = %s
+            """, [employee_id])
+            row = cursor.fetchone()
+
+        # Set initial data for the form
+        initial_data = {
+            'applicant_id': employee_id,
+            'applicant_name': row[0] if row else '',
+            'designation': row[1] if row else '',
+            'department': row[2] if row else '',
+            'email': row[3] if row else '',
+        }
+
+
+        # Initialize form with initial data
+        noc_form = NOCForm(initial=initial_data)
+
+    return render(request, 'profileapp/nocform.html', {'noc_form': noc_form})
+
+
+# Approve NOC Form
+def approve_noc_form(request, form_id):
+    noc_instance = NOC.objects.get(id=form_id)
+    additional_travelers = AdditionalTraveler.objects.filter(travel_recommendation=noc_instance)
+
+    if request.method == 'POST':
+        noc_instance.approved = True
+        noc_instance.save()
+        # messages.success(request, 'The NOC form has been approved successfully.')
+        return redirect('noc_form_list')  # Redirect to the list view
+
+    return render(request, 'profileapp/approve_noc_form.html', {
+        'noc_instance': noc_instance,
+        'additional_travelers': additional_travelers,
+    })
+
+
+#NOC Form List
+@login_required(login_url='login')  # Ensure user is logged in to access the page
+def noc_form_list(request):
+    user = request.user  # Get the logged-in user
+    noc_forms = NOC.objects.filter(applicant_id=user.username)  # Assuming applicant_id stores EmployeeID (username)
+
+    return render(request, 'profileapp/noc_form_list.html', {'noc_forms': noc_forms})
+
+
+
+def view_noc_form(request, form_id):
+    noc_instance = NOC.objects.get(id=form_id)
+    additional_travelers = AdditionalTraveler.objects.filter(travel_recommendation=noc_instance)
+
+    return render(request, 'profileapp/noc_template.html', {
+        'noc_instance': noc_instance,
+        'additional_travelers': additional_travelers,
+    })

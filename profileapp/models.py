@@ -119,53 +119,81 @@ class Expense(models.Model):
     def __str__(self):
         return f"Expense {self.id} for {self.name} ({self.id_no})"
 
+class Employee(models.Model):
+    EmployeeID = models.AutoField(primary_key=True)
+    Name = models.CharField(max_length=100)
+    Unit = models.CharField(max_length=100, blank=True, null=True)
+    Department = models.CharField(max_length=50, blank=True, null=True)
+    Grade = models.CharField(max_length=50, blank=True, null=True)
+    Designation = models.CharField(max_length=100, blank=True, null=True)
+    Email = models.EmailField(max_length=100, unique=True)
+    ContactNo = models.CharField(max_length=15, blank=True, null=True)
+    Location = models.CharField(max_length=100, blank=True, null=True)
+    Head_of_Dept = models.CharField(max_length=100, blank=True, null=True)
+    BU_Head = models.CharField(max_length=100, blank=True, null=True)
 
+    class Meta:
+        db_table = 'Employees'
+        verbose_name = 'Employee'
+        verbose_name_plural = 'Employees'
 
-# class Employee(models.Model):
-#     EmployeeID = models.AutoField(primary_key=True)
-#     Name = models.CharField(max_length=100)
-#     Unit = models.CharField(max_length=100, blank=True, null=True)
-#     Department = models.CharField(max_length=50, blank=True, null=True)
-#     Grade = models.CharField(max_length=50, blank=True, null=True)
-#     Designation = models.CharField(max_length=100, blank=True, null=True)
-#     Email = models.EmailField(max_length=100, unique=True)
-#     ContactNo = models.CharField(max_length=15, blank=True, null=True)
-#     Location = models.CharField(max_length=100, blank=True, null=True)
-#     Head_of_Dept = models.CharField(max_length=100, blank=True, null=True)
-#     BU_Head = models.CharField(max_length=100, blank=True, null=True)
+class RRFEmployee(models.Model):
+    HODID = models.IntegerField()
+    Name = models.CharField(max_length=100)
+    Designation = models.CharField(max_length=100, blank=True, null=True)
+    Unit = models.CharField(max_length=100, blank=True, null=True)
+    Department = models.CharField(max_length=50, blank=True, null=True)
+    BU_Head = models.CharField(max_length=100, blank=True, null=True)
 
-#     class Meta:
-#         db_table = 'Employees'
-#         verbose_name = 'Employee'
-#         verbose_name_plural = 'Employees'
+    class Meta:
+        db_table = 'RRFEmployee'
+        verbose_name = 'RRF Employee'
+        verbose_name_plural = 'RRF Employees'
 
-# class RRFEmployee(models.Model):
-#     HODID = models.IntegerField()
-#     Name = models.CharField(max_length=100)
-#     Designation = models.CharField(max_length=100, blank=True, null=True)
-#     Unit = models.CharField(max_length=100, blank=True, null=True)
-#     Department = models.CharField(max_length=50, blank=True, null=True)
-#     BU_Head = models.CharField(max_length=100, blank=True, null=True)
+class ExecutiveDirectors(models.Model):
+    EDID = models.IntegerField(primary_key=True)
+    EDDesg = models.CharField(max_length=100, blank=True, null=True)
+    EDEmail = models.CharField(max_length=100, unique=True, blank=True, null=True)
 
-#     class Meta:
-#         db_table = 'RRFEmployee'
-#         verbose_name = 'RRF Employee'
-#         verbose_name_plural = 'RRF Employees'
-
-# class ExecutiveDirectors(models.Model):
-#     EDID = models.IntegerField(primary_key=True)
-#     EDDesg = models.CharField(max_length=100, blank=True, null=True)
-#     EDEmail = models.CharField(max_length=100, unique=True, blank=True, null=True)
-
-#     class Meta:
-#         db_table = 'Executive_Directors'
-#         verbose_name = 'Executive Director'
-#         verbose_name_plural = 'Executive Directors'
+    class Meta:
+        db_table = 'Executive_Directors'
+        verbose_name = 'Executive Director'
+        verbose_name_plural = 'Executive Directors'
 
 #     ### SMALL CONSIDERATION ###
 #     #Meta class consists of few fields
 #     ##db_table name defines the table name in the database
 #     ##verbose name and verbose name plural defines the human readable version of the database name
 
+class NOC(models.Model):
+    applicant_id = models.CharField(max_length=20)
+    applicant_name = models.CharField(max_length=100)
+    designation = models.CharField(max_length=100)
+    department = models.CharField(max_length=100)
+    joining_date = models.DateField()
+    travel_date_from = models.DateField()
+    travel_date_to = models.DateField()
+    type = models.CharField(max_length=20, choices=[('NOC', 'NOC'), ('Immigration', 'Immigration')])
+    type_noc = models.CharField(max_length=100, blank=True, null=True)
+    passport_name = models.CharField(max_length=100)
+    passport_no = models.CharField(max_length=50)
+    passport_copy = models.FileField(upload_to='passport_copies/', blank=True, null=True)
+    invitation_letter = models.FileField(upload_to='invitation_letters/', blank=True, null=True)
+    country_visit = models.CharField(max_length=100)
+    no_of_travelers = models.PositiveIntegerField(default=0)
+    approved = models.BooleanField(default=False)  
+
+    def __str__(self):
+        return f'{self.applicant_name} ({self.applicant_id})'
+
+class AdditionalTraveler(models.Model):
+    travel_recommendation = models.ForeignKey(NOC, on_delete=models.CASCADE, related_name='additional_travelers')
+    relationship_with_traveler = models.CharField(max_length=100)
+    additional_passport_name = models.CharField(max_length=100)
+    additional_passport_no = models.CharField(max_length=50)
+    additional_passport_copy = models.FileField(upload_to='additional_passport_copies/', blank=True, null=True)  # File upload field
+
+    def __str__(self):
+        return f'{self.relationship_with_traveler} - {self.additional_passport_name}'
 
 
