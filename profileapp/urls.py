@@ -26,5 +26,8 @@ urlpatterns = [
 
     path('noc-form/', views.noc_form_view, name='noc_form_view'),
     path('approve-noc-form/<int:form_id>/', views.approve_noc_form, name='approve_noc_form'),
+    path('noc-forms/', views.noc_form_list, name='noc_form_list'),  # Add this line
+    path('view-noc-form/<int:form_id>/', views.view_noc_form, name='view_noc_form'),
+
 
 ]

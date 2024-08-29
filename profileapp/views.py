@@ -679,8 +679,8 @@ def noc_form_view(request):
                     fail_silently=False,
                 )
 
-            messages.success(request, 'Your NOC form has been submitted successfully and is waiting for approval.')
-            return redirect('success_page')
+            # messages.success(request, 'Your NOC form has been submitted successfully and is waiting for approval.')
+            return redirect('noc_form_list')  # Redirect to list page after submission
         else:
             print("Form is invalid. Errors:", noc_form.errors)
 
@@ -706,6 +706,7 @@ def noc_form_view(request):
             'email': row[3] if row else '',
         }
 
+
         # Initialize form with initial data
         noc_form = NOCForm(initial=initial_data)
 
@@ -713,18 +714,37 @@ def noc_form_view(request):
 
 
 # Approve NOC Form
-@login_required(login_url='login')
 def approve_noc_form(request, form_id):
-    noc_instance = get_object_or_404(NOC, id=form_id)  # Fetch the NOC instance using form_id
-    additional_travelers = AdditionalTraveler.objects.filter(travel_recommendation=noc_instance)  # Fetch related additional travelers
+    noc_instance = NOC.objects.get(id=form_id)
+    additional_travelers = AdditionalTraveler.objects.filter(travel_recommendation=noc_instance)
 
     if request.method == 'POST':
-        noc_instance.approved = True  # Set the approved flag to True upon approval
+        noc_instance.approved = True
         noc_instance.save()
-        messages.success(request, 'The NOC form has been approved successfully.')
-        return redirect('dashboard')
+        # messages.success(request, 'The NOC form has been approved successfully.')
+        return redirect('noc_form_list')  # Redirect to the list view
 
     return render(request, 'profileapp/approve_noc_form.html', {
         'noc_instance': noc_instance,
-        'additional_travelers': additional_travelers,  # Pass additional travelers to the template
+        'additional_travelers': additional_travelers,
+    })
+
+
+#NOC Form List
+@login_required(login_url='login')  # Ensure user is logged in to access the page
+def noc_form_list(request):
+    user = request.user  # Get the logged-in user
+    noc_forms = NOC.objects.filter(applicant_id=user.username)  # Assuming applicant_id stores EmployeeID (username)
+
+    return render(request, 'profileapp/noc_form_list.html', {'noc_forms': noc_forms})
+
+
+
+def view_noc_form(request, form_id):
+    noc_instance = NOC.objects.get(id=form_id)
+    additional_travelers = AdditionalTraveler.objects.filter(travel_recommendation=noc_instance)
+
+    return render(request, 'profileapp/noc_template.html', {
+        'noc_instance': noc_instance,
+        'additional_travelers': additional_travelers,
     })

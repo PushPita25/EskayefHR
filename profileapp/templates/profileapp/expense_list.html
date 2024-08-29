@@ -38,13 +38,56 @@
             padding: 0 2px;
             border-radius: 2px;
         }
+
+        /* Flex container for title and button */
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .flex-container h2 {
+            margin: 0;
+            font-weight: bold;
+            color: rgb(9, 9, 126);
+        }
+
+        .button{
+            background-color: #132876;
+        }
+        .button:hover{
+            background-color: #2064d2;
+        }
+
+        .back{
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #132876;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .back:hover{
+            background-color: #2064d2;
+        }
+
     </style>
 </head>
 
 <body>
     <div class="container mt-4">
-        <h2 style="text-align: left; font-weight: bold; margin-top: 10px; margin-bottom: 20px; color: rgb(9, 9, 126);">
-            Manager Expense Report</h2>
+        <div class="flex-container">
+            <h2>Manager Expense Report</h2>
+            <a href="{% url 'export_expenses_excel' %}" class="btn btn-success button"
+                style="font-weight: bold; ">Export as Excel</a>
+        </div>
 
         <!-- Search input -->
         <input type="text" id="search-input" class="form-control mb-3" placeholder="Search...">
@@ -76,8 +119,11 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'export_expenses_excel' %}" class="btn btn-success"
-            style="margin-bottom: 50px; font-weight: bold;">Export as Excel</a>
+    </div>
+    <div>
+        <a href="{% url 'dashboard' %}" style="text-decoration: none;">
+            <button type="submit" style="width: 150px; margin-top: 15px; margin-left: 45%;" class="back">Back to Home</button>
+        </a>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

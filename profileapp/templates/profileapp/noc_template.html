@@ -6,14 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Travel Recommendation Form</title>
+    <title>NOC Form</title>
 
     <style>
-        /* styles.css */
+        /* Reuse the same styles as your NOC form */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #ffffff;
-            /* Light grey background for the page */
             margin: 0;
             padding: 20px;
             display: flex;
@@ -26,17 +25,13 @@
 
         .form-container {
             background-color: #ebedf0;
-            /* White background for the form */
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            /* Subtle shadow for a clean effect */
             width: 95%;
             max-width: 900px;
-            /* Reduced maximum width for a more compact look */
             margin-top: 20px;
             border: 1px solid #dcdcdc;
-            /* Light grey border for a subtle outline */
             box-sizing: border-box;
             border-radius: 5px;
         }
@@ -46,22 +41,17 @@
             text-align: center;
             margin-bottom: 20px;
             color: white;
-            /* Dark grey for a professional look */
             background-color: #1c2c58;
         }
 
         h2 {
             font-size: 40px;
-            /* Slightly increased font size for emphasis */
             font-weight: 800;
-            /* Semi-bold for a clean appearance */
         }
 
         h3 {
             font-size: 30px;
-            /* Slightly increased font size for emphasis */
             font-weight: 600;
-            /* Semi-bold for a clean appearance */
         }
 
         .form-section {
@@ -73,7 +63,6 @@
             justify-content: space-between;
             margin-bottom: 20px;
             gap: 20px;
-            /* Space between columns for a clean layout */
         }
 
         .form-group {
@@ -81,11 +70,9 @@
             align-items: center;
             width: 48%;
             background-color: #dee1e9;
-            /* Light grey for input backgrounds */
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #1f1f1f;
-            /* Subtle border around input groups */
         }
 
         label {
@@ -93,17 +80,13 @@
             display: flex;
             align-items: center;
             font-weight: 800;
-            /* Slightly bold for better readability */
             color: #000000;
             font-size: 15px;
-            /* Slightly smaller font size for labels */
         }
 
         label i {
             margin-right: 8px;
-            /* Space between icon and label text */
             color: #1c2c58;
-            /* Blue color for icons */
         }
 
         input[type="text"],
@@ -115,16 +98,11 @@
             padding: 8px;
             border-radius: 4px;
             border: 1px solid #161515;
-            /* Neutral border color */
             font-size: 14px;
-            /* Standard font size for clarity */
             color: #333333;
-            /* Dark grey text color */
             background-color: #ffffff;
-            /* White background for input fields */
             box-sizing: border-box;
             transition: border-color 0.3s ease;
-            /* Smooth transition for focus */
         }
 
         input[type="text"]:focus,
@@ -132,9 +110,7 @@
         input[type="number"]:focus,
         input[type="file"]:focus {
             border-color: #666666;
-            /* Darker grey border on focus */
             outline: none;
-            /* Remove default outline */
         }
 
         .date-vertical {
@@ -166,22 +142,12 @@
             transition: border-color 0.3s ease;
         }
 
-
-        .date-group {
-            display: flex;
-            align-items: center;
-            gap: 0px;
-            /* Space between label and input field */
-        }
-
         .additional-traveler-box {
             border: 1px solid #141414;
-            /* Light grey border for additional traveler boxes */
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 15px;
             background-color: #ebedf0;
-            /* Light grey background for additional traveler boxes */
         }
 
         .submit-section {
@@ -191,82 +157,71 @@
 
         button {
             background-color: #1c2c58;
-            /* Dark grey background for button */
             color: white;
             padding: 12px 24px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            /* Standard font size for button */
             font-weight: 600;
-            /* Semi-bold text for button */
             transition: background-color 0.3s ease, transform 0.3s ease;
-            /* Smooth transitions for hover effects */
         }
 
         button:hover {
             background-color: #1534be;
-            /* Slightly lighter grey on hover */
             transform: translateY(-2px);
-            /* Lift effect on hover */
         }
 
         button i {
             margin-right: 8px;
-            /* Space between icon and button text */
         }
     </style>
 </head>
 
 <body>
     <div class="form-container">
-        <h2>Travel Recommendation</h2>
-        <form id="travelForm" method="post" enctype="multipart/form-data">
+        <h2>Travel Recommendation Form</h2>
+        <form id="approvalForm" method="post">
             {% csrf_token %}
             <!-- Main Form -->
             <div class="form-section">
                 <div class="row">
                     <div class="form-group">
                         <label for="applicant_id"><i class="fas fa-id-card"></i> Applicant ID:</label>
-                        <input type="text" id="applicant_id" name="applicant_id"
-                            value="{{ noc_form.applicant_id.value }}">
+                        <input type="text" id="applicant_id" name="applicant_id" value="{{ noc_instance.applicant_id }}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="applicant_name"><i class="fas fa-user"></i> Applicant Name:</label>
-                        <input type="text" id="applicant_name" name="applicant_name"
-                            value="{{ noc_form.applicant_name.value }}">
+                        <input type="text" id="applicant_name" name="applicant_name" value="{{ noc_instance.applicant_name }}" readonly>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="form-group">
                         <label for="designation"><i class="fas fa-briefcase"></i> Designation:</label>
-                        <input type="text" id="designation" name="designation" autocomplete="off"
-                            value="{{ noc_form.designation.value }}">
+                        <input type="text" id="designation" name="designation" value="{{ noc_instance.designation }}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="department"><i class="fas fa-building"></i> Department:</label>
-                        <input type="text" id="department" name="department" autocomplete="off"
-                            value="{{ noc_form.department.value }}">
+                        <input type="text" id="department" name="department" value="{{ noc_instance.department }}" readonly>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="form-group">
                         <label for="joining_date"><i class="fas fa-calendar-alt"></i> Joining Date:</label>
-                        <input type="date" id="joining_date" name="joining_date">
+                        <input type="date" id="joining_date" name="joining_date" value="{{ noc_instance.joining_date|date:'Y-m-d' }}" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="travel_date"><i class="fas fa-calendar"></i> Tentative Travel Date:</label>
+                        <label for="travel_date_from"><i class="fas fa-calendar"></i> Tentative Travel Date:</label>
                         <div class="date-vertical">
                             <div class="date-group">
                                 <label for="travel_date_from">From:</label>
-                                <input type="date" id="travel_date_from" name="travel_date_from">
+                                <input type="date" id="travel_date_from" name="travel_date_from" value="{{ noc_instance.travel_date_from|date:'Y-m-d' }}" readonly>
                             </div>
                             <div class="date-group">
                                 <label for="travel_date_to">To:</label>
-                                <input type="date" id="travel_date_to" name="travel_date_to">
+                                <input type="date" id="travel_date_to" name="travel_date_to" value="{{ noc_instance.travel_date_to|date:'Y-m-d' }}" readonly>
                             </div>
                         </div>
                     </div>
@@ -275,56 +230,53 @@
                 <div class="row">
                     <div class="form-group">
                         <label for="type"><i class="fas fa-list"></i> Type:</label>
-                        <select id="type" name="type" autocomplete="off" required>
-                            <option value="" selected disabled></option>
-                            <option value="NOC">NOC</option>
-                            <option value="Immigration">Immigration</option>
-                        </select>
+                        <input type="text" id="type" name="type" value="{{ noc_instance.type }}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="type_noc"><i class="fas fa-file-alt"></i> Type (if NOC):</label>
-                        <select name="type_noc" id="type_noc">
-                            <option value="" selected disabled></option>
-                            <option value="Tourist">Tourist</option>
-                            <option value="Business Purpose">Business Purpose</option>
-                            <option value="Medical Purpose">Medical Purpose</option>
-                            <option value="Medical Attendent">Medical Attendent</option>
-                        </select>
+                        <input type="text" id="type_noc" name="type_noc" value="{{ noc_instance.type_noc }}" readonly>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="form-group">
                         <label for="passport_name"><i class="fas fa-passport"></i> Passport Name:</label>
-                        <input type="text" id="passport_name" name="passport_name">
+                        <input type="text" id="passport_name" name="passport_name" value="{{ noc_instance.passport_name }}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="passport_no"><i class="fas fa-id-card"></i> Passport No.:</label>
-                        <input type="text" id="passport_no" name="passport_no">
+                        <input type="text" id="passport_no" name="passport_no" value="{{ noc_instance.passport_no }}" readonly>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="form-group">
                         <label for="passport_copy"><i class="fas fa-file-upload"></i> Passport Copy (Scan):</label>
-                        <input type="file" id="passport_copy" name="passport_copy">
+                        {% if noc_instance.passport_copy %}
+                            <a href="{{ noc_instance.passport_copy.url }}">Passport Copy</a>
+                        {% else %}
+                            <p>No passport copy uploaded.</p>
+                        {% endif %}
                     </div>
                     <div class="form-group">
-                        <label for="invitation_letter"><i class="fas fa-envelope"></i> Invitation Letter (if
-                            applicable):</label>
-                        <input type="file" id="invitation_letter" name="invitation_letter">
+                        <label for="invitation_letter"><i class="fas fa-envelope"></i> Invitation Letter (if applicable):</label>
+                        {% if noc_instance.invitation_letter %}
+                            <a href="{{ noc_instance.invitation_letter.url }}">Invitation Letter</a>
+                        {% else %}
+                            <p>No invitation letter uploaded.</p>
+                        {% endif %}
                     </div>
                 </div>
+                
 
                 <div class="row">
                     <div class="form-group">
                         <label for="country_visit"><i class="fas fa-globe"></i> Country of Visit:</label>
-                        <input type="text" id="country_visit" name="country_visit">
+                        <input type="text" id="country_visit" name="country_visit" value="{{ noc_instance.country_visit }}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="no_of_travelers"><i class="fas fa-users"></i> No. of Additional Travelers:</label>
-                        <input type="number" id="no_of_travelers" name="no_of_travelers" min="0"
-                            oninput="addTravelerFields()">
+                        <input type="number" id="no_of_travelers" name="no_of_travelers" value="{{ noc_instance.no_of_travelers }}" readonly>
                     </div>
                 </div>
             </div>
@@ -332,56 +284,37 @@
             <!-- Additional Travelers Information -->
             <h3>Information of Additional Travelers</h3>
             <div id="additionalTravelersContainer" class="form-section">
-                <!-- Additional traveler information boxes will be dynamically added here -->
-            </div>
-
-            <div class="submit-section">
-                <button type="submit"><i class="fas fa-paper-plane"></i> Submit</button>
+                {% if additional_travelers.exists %}
+                    {% for traveler in additional_travelers %}
+                        <div class="additional-traveler-box">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="relationship_with_traveler"><i class="fas fa-user-friends"></i> Relationship with Traveler:</label>
+                                    <input type="text" id="relationship_with_traveler" name="relationship_with_traveler" value="{{ traveler.relationship_with_traveler }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="additional_passport_name"><i class="fas fa-passport"></i> Passport Name:</label>
+                                    <input type="text" id="additional_passport_name" name="additional_passport_name" value="{{ traveler.additional_passport_name }}" readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="additional_passport_no"><i class="fas fa-id-card"></i> Passport No:</label>
+                                    <input type="text" id="additional_passport_no" name="additional_passport_no" value="{{ traveler.additional_passport_no }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="additional_passport_copy"><i class="fas fa-file-upload"></i> Passport Copy (scan):</label>
+                                    <a href="{{ traveler.additional_passport_copy.url }}">Passport Copy</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No additional travelers information provided.</p>
+                {% endif %}
             </div>
         </form>
     </div>
-
-    
-   
-    <script>
-        // script.js
-        function addTravelerFields() {
-            const container = document.getElementById('additionalTravelersContainer');
-            container.innerHTML = ''; // Clear previous fields
-
-            const numberOfTravelers = document.getElementById('no_of_travelers').value;
-            for (let i = 1; i <= numberOfTravelers; i++) {
-                const travelerBox = document.createElement('div');
-                travelerBox.className = 'additional-traveler-box';
-
-                travelerBox.innerHTML = `
-            <div class="row">
-                <div class="form-group">
-                    <label for="relationship_${i}"><i class="fas fa-user-friends"></i>Relationship with Traveler:</label>
-                    <input type="text" id="relationship_${i}" name="relationship_${i}">
-                </div>
-                <div class="form-group">
-                    <label for="additional_passport_name_${i}"><i class="fas fa-passport"></i>Passport Name:</label>
-                    <input type="text" id="additional_passport_name_${i}" name="additional_passport_name_${i}">
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <label for="additional_passport_no_${i}"><i class="fas fa-id-card"></i>Passport No:</label>
-                    <input type="text" id="additional_passport_no_${i}" name="additional_passport_no_${i}">
-                </div>
-                <div class="form-group">
-                    <label for="additional_passport_copy_${i}"><i class="fas fa-file-upload"></i>Passport Copy (scan):</label>
-                    <input type="file" id="additional_passport_copy_${i}" name="additional_passport_copy_${i}">
-                </div>
-            </div>
-        `;
-
-                container.appendChild(travelerBox);
-            }
-        }
-
-    </script>
 </body>
 
 </html>
