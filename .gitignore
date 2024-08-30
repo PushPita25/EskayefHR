@@ -2,3 +2,5 @@ Profile/venv
 additional_passport_copies
 invitation_letters
 passport_copies
+Profile/__pycache__
+profileapp/migrations/__pycache__

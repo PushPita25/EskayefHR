@@ -90,21 +90,30 @@ WSGI_APPLICATION = 'Profile.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mssql',
+#         'NAME': 'skfhr',
+#         'USER': 'skfhr01',
+#         'PASSWORD': 'jOLeNATO#xa@9PI',
+#         'HOST': '10.168.2.196',  # e.g., 'localhost' or IP address
+#         # 'PORT': 'your_database_port',  # default is usually '1433'
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#             'Trusted_Connection': 'yes',
+#         },
+#     }
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'mssql',
-        'NAME': 'skfhr',
-        'USER': 'skfhr01',
-        'PASSWORD': 'jOLeNATO#xa@9PI',
-        'HOST': '10.168.2.196',  # e.g., 'localhost' or IP address
-        # 'PORT': 'your_database_port',  # default is usually '1433'
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-            'Trusted_Connection': 'yes',
-        },
+   'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ESHR',  # Your database name
+        'USER': 'minhaz',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',  # Can be 'localhost' or IP address
+        'PORT': '3306',  # MySQL default port
     }
 }
-
 
 
 # Password validation
