@@ -158,3 +158,11 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'skflc@skf.transcombd.com'
 DEFAULT_FROM_EMAIL = 'skflc@skf.transcombd.com'
 EMAIL_HOST_PASSWORD = 's646J72o7i'
+
+
+
+PUSHER_APP_ID = '1857539'
+PUSHER_KEY = '0cc1f0e0cf6638ebb54f'
+PUSHER_SECRET = '58b33235aa1ee1b8bb90'
+PUSHER_CLUSTER = 'ap2'
+PUSHER_SSL = True

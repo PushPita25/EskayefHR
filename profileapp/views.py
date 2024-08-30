@@ -679,7 +679,9 @@ def noc_form_view(request):
                     fail_silently=False,
                 )
 
-            # messages.success(request, 'Your NOC form has been submitted successfully and is waiting for approval.')
+                # Send Pusher notification for real-time update
+                send_approval_notification(ed_email, employee_department)
+
             return redirect('noc_form_list')  # Redirect to list page after submission
         else:
             print("Form is invalid. Errors:", noc_form.errors)
@@ -706,12 +708,10 @@ def noc_form_view(request):
             'email': row[3] if row else '',
         }
 
-
         # Initialize form with initial data
         noc_form = NOCForm(initial=initial_data)
 
     return render(request, 'profileapp/nocform.html', {'noc_form': noc_form})
-
 
 # Approve NOC Form
 def approve_noc_form(request, form_id):
@@ -748,3 +748,25 @@ def view_noc_form(request, form_id):
         'noc_instance': noc_instance,
         'additional_travelers': additional_travelers,
     })
+
+
+import pusher
+
+
+pusher_client = pusher.Pusher(
+  app_id='1857539',
+  key='0cc1f0e0cf6638ebb54f',
+  secret='58b33235aa1ee1b8bb90',
+  cluster='ap2',
+  ssl=True
+)
+
+def send_approval_notification(executive_email, department_name):
+    message = f"Department: {department_name} - Need your approval for NOC form."
+
+    # Create a unique channel name for the executive director
+    unique_channel_name = f"ed-channel-{executive_email.replace('@', '-').replace('.', '-')}"
+    
+    # Trigger a Pusher event on the unique channel
+    pusher_client.trigger(unique_channel_name, 'approval-event', {'message': message, 'email': executive_email})
+
