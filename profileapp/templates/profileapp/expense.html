@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -167,6 +168,7 @@
 
 
 
+
         @media (max-width: 600px) {
             .row {
                 display: block;
@@ -229,6 +231,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const monthNames = [
                 "January 2024", "February 2024", "March 2024", "April 2024", "May 2024", "June 2024",
+                "January 2024", "February 2024", "March 2024", "April 2024", "May 2024", "June 2024",
                 "July 2024", "August 2024", "September 2024", "October 2024", "November 2024", "December 2024"
             ];
             const currentDate = new Date();
@@ -283,15 +286,22 @@
                     console.error('Error:', error);
                 });
 
+                
+
                 // Here you might want to add actual form submission logic
                  // This will submit the form. Remove this line if using AJAX or another method to submit the form.
+                 // This will submit the form. Remove this line if using AJAX or another method to submit the form.
             });
+
+            
+
 
             
 
         });
     </script>
 </head>
+
 
 <body>
     <div class="container">
@@ -323,6 +333,7 @@
                             value="{{ form.location.value|default_if_none:'' }}" required autocomplete="off">
                     </div>
 
+
                 </div>
                 <div class="column">
                     <div class="form-group">
@@ -340,6 +351,7 @@
                         <input type="text" id="unit" name="unit" value="{{ form.unit.value|default_if_none:'' }}"
                             required autocomplete="off">
                     </div>
+
 
                 </div>
             </div>
@@ -367,6 +379,8 @@
                         <td><input type="text" name="driver_wages_remarks" class="remarks-input"
                                 value="{{ form.driver_wages_remarks.value|default_if_none:'' }}" autocomplete="off">
                         </td>
+                                value="{{ form.driver_wages_remarks.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                     </tr>
                     <tr>
                         <td>Service Staff Wages</td>
@@ -376,6 +390,8 @@
                         <td><input type="text" name="service_staff_wages_remarks" class="remarks-input"
                                 value="{{ form.service_staff_wages_remarks.value|default_if_none:'' }}"
                                 autocomplete="off">
+                                value="{{ form.service_staff_wages_remarks.value|default_if_none:'' }}"
+                                autocomplete="off">
                         </td>
                     </tr>
                     <tr>
@@ -383,7 +399,11 @@
                         <td><input type="text" name="security_staff_wages" class="expense-input"
                                 value="{{ form.security_staff_wages.value|default_if_none:'' }}" autocomplete="off">
                         </td>
+                                value="{{ form.security_staff_wages.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                         <td><input type="text" name="security_staff_wages_remarks" class="remarks-input"
+                                value="{{ form.security_staff_wages_remarks.value|default_if_none:'' }}"
+                                autocomplete="off"></td>
                                 value="{{ form.security_staff_wages_remarks.value|default_if_none:'' }}"
                                 autocomplete="off"></td>
                     </tr>
@@ -392,7 +412,11 @@
                         <td><input type="text" name="leave_fare_assistance" class="expense-input"
                                 value="{{ form.leave_fare_assistance.value|default_if_none:'' }}" autocomplete="off">
                         </td>
+                                value="{{ form.leave_fare_assistance.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                         <td><input type="text" name="leave_fare_assistance_remarks" class="remarks-input"
+                                value="{{ form.leave_fare_assistance_remarks.value|default_if_none:'' }}"
+                                autocomplete="off"></td>
                                 value="{{ form.leave_fare_assistance_remarks.value|default_if_none:'' }}"
                                 autocomplete="off"></td>
                     </tr>
@@ -423,6 +447,8 @@
                         <td><input type="text" name="repair_maintenance_remarks" class="remarks-input"
                                 value="{{ form.repair_maintenance_remarks.value|default_if_none:'' }}"
                                 autocomplete="off"></td>
+                                value="{{ form.repair_maintenance_remarks.value|default_if_none:'' }}"
+                                autocomplete="off"></td>
                     </tr>
                     <tr>
                         <td colspan="3" class="subheader">Car Maintenance Expenses</td>
@@ -446,7 +472,11 @@
                         <td><input type="text" name="car_denting_painting" class="expense-input"
                                 value="{{ form.car_denting_painting.value|default_if_none:'' }}" autocomplete="off">
                         </td>
+                                value="{{ form.car_denting_painting.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                         <td><input type="text" name="car_denting_painting_remarks" class="remarks-input"
+                                value="{{ form.car_denting_painting_remarks.value|default_if_none:'' }}"
+                                autocomplete="off"></td>
                                 value="{{ form.car_denting_painting_remarks.value|default_if_none:'' }}"
                                 autocomplete="off"></td>
                     </tr>
@@ -455,6 +485,8 @@
                         <td><input type="text" name="car_decorations" class="expense-input"
                                 value="{{ form.car_decorations.value|default_if_none:'' }}" autocomplete="off"></td>
                         <td><input type="text" name="car_decorations_remarks" class="remarks-input"
+                                value="{{ form.car_decorations_remarks.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                                 value="{{ form.car_decorations_remarks.value|default_if_none:'' }}" autocomplete="off">
                         </td>
                     </tr>
@@ -500,8 +532,12 @@
                         <td><input type="text" name="medical_expense_remarks" class="remarks-input"
                                 value="{{ form.medical_expense_remarks.value|default_if_none:'' }}" autocomplete="off">
                         </td>
+                                value="{{ form.medical_expense_remarks.value|default_if_none:'' }}" autocomplete="off">
+                        </td>
                     </tr>
                     <tr>
+                        <td>Medical Expense[Non-taxable, e.g., surgery cost related to heart, kidney, eye, liver and
+                            cancer]</td>
                         <td>Medical Expense[Non-taxable, e.g., surgery cost related to heart, kidney, eye, liver and
                             cancer]</td>
                         <td><input type="text" name="medical_expense_surgery" class="expense-input"
@@ -510,11 +546,14 @@
                         <td><input type="text" name="medical_expense_surgery_remarks" class="remarks-input"
                                 value="{{ form.medical_expense_surgery_remarks.value|default_if_none:'' }}"
                                 autocomplete="off">
+                                value="{{ form.medical_expense_surgery_remarks.value|default_if_none:'' }}"
+                                autocomplete="off">
                         </td>
                     </tr>
                     <tr>
                         <td>Total Taka</td>
                         <td><input type="text" id="total_taka" name="total_taka"
+                                value="{{ form.total_taka.value|default_if_none:'' }}" required autocomplete="off"></td>
                                 value="{{ form.total_taka.value|default_if_none:'' }}" required autocomplete="off"></td>
                     </tr>
                 </tbody>
@@ -522,9 +561,12 @@
             <h3 class="explanation-heading">Explanation</h3>
             <div class="explanation-section">
 
+
                 <div class="left">
                     <div class="row">
                         <label>I.O.U / Advance Drawn(Tk.):</label>
+                        <input type="text" name="advance" autocomplete="off" />
+
                         <input type="text" name="advance" autocomplete="off" />
 
                     </div>
@@ -532,9 +574,13 @@
                         <label>Expenses as Above(Tk.):</label>
                         <input type="text" name="expenses_as_above" autocomplete="off" />
 
+                        <input type="text" name="expenses_as_above" autocomplete="off" />
+
                     </div>
                     <div class="row">
                         <label>Amount due to Company / Employees(Tk.):</label>
+                        <input type="text" name="amount_due" autocomplete="off" />
+
                         <input type="text" name="amount_due" autocomplete="off" />
 
                     </div>
@@ -560,6 +606,8 @@
             <button type="submit" style="width: 150px; margin-top: 15px; margin-left: 45%;">Back to Home</button>
         </a>
     </div>
+
+
 
 
 </body>

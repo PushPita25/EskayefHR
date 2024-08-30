@@ -75,28 +75,13 @@ WSGI_APPLICATION = 'Profile.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'mssql',
-        'NAME': 'ESS',
-        'USER': 'sa',
-        'PASSWORD': 'SQL1234#',
-        'HOST': 'localhost',  # e.g., 'localhost' or IP address
-        # 'PORT': 'your_database_port',  # default is usually '1433'
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-            'Trusted_Connection': 'yes',
-        },
-    }
-}
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'mssql',
-#         'NAME': 'skfhr',
-#         'USER': 'skfhr01',
-#         'PASSWORD': 'jOLeNATO#xa@9PI',
-#         'HOST': '10.168.2.196',  # e.g., 'localhost' or IP address
+#         'NAME': 'ESS',
+#         'USER': 'sa',
+#         'PASSWORD': 'SQL1234#',
+#         'HOST': 'localhost',  # e.g., 'localhost' or IP address
 #         # 'PORT': 'your_database_port',  # default is usually '1433'
 #         'OPTIONS': {
 #             'driver': 'ODBC Driver 17 for SQL Server',
@@ -104,6 +89,21 @@ DATABASES = {
 #         },
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'mssql',
+        'NAME': 'skfhr',
+        'USER': 'skfhr01',
+        'PASSWORD': 'jOLeNATO#xa@9PI',
+        'HOST': '10.168.2.196',  # e.g., 'localhost' or IP address
+        # 'PORT': 'your_database_port',  # default is usually '1433'
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'Trusted_Connection': 'yes',
+        },
+    }
+}
 
 
 
