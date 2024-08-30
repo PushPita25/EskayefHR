@@ -26,9 +26,13 @@ from django.urls import reverse
 @login_required(login_url='login')
 @rrf_employee_only
 @managers_only
+@rrf_employee_only
+@managers_only
 def index(request):
     # Employee ID from logged-in user
     employee_id = request.user.username
+    is_rrf_employee = getattr(request, 'is_rrf_employee', False)
+    is_manager = getattr(request, 'is_manager', False)
     is_rrf_employee = getattr(request, 'is_rrf_employee', False)
     is_manager = getattr(request, 'is_manager', False)
     
@@ -52,7 +56,8 @@ def index(request):
         'user_designation': user_designation,  # Pass the designation to the template
         'user_department': user_department,  # Pass the department to the template
         'is_rrf_employee': is_rrf_employee,
-        'is_manager': is_manager
+        'is_manager': is_manager,
+       
     }
     return render(request, 'profileapp/dashboard.html', context)
 def home(request):
@@ -382,6 +387,7 @@ def expense(request):
 
             # Success message after form submission
             messages.success(request, 'Your Expense Report is submitted Successfully.')
+            messages.success(request, 'Your Expense Report is submitted Successfully.')
 
             # Clear the form
             form = ExpenseForm()
@@ -469,11 +475,32 @@ def export_expenses_excel(request):
     )
 
     # Convert the queryset to a DataFrame
+    # Fetch all form data excluding the 'id' field
+    data = Expense.objects.all().values(
+        'id_no', 'name', 'designation', 'department', 'month', 'unit', 'location',
+        'utility', 'utility_remarks', 'driver_wages', 'driver_wages_remarks',
+        'service_staff_wages', 'service_staff_wages_remarks', 'security_staff_wages',
+        'security_staff_wages_remarks', 'leave_fare_assistance', 'leave_fare_assistance_remarks',
+        'fuel_cost', 'fuel_cost_remarks', 'gas_cost', 'gas_cost_remarks',
+        'repair_maintenance', 'repair_maintenance_remarks', 'tyres', 'tyres_remarks',
+        'battery', 'battery_remarks', 'car_denting_painting', 'car_denting_painting_remarks',
+        'car_decorations', 'car_decorations_remarks', 'toll', 'toll_remarks',
+        'others', 'others_remarks', 'telephone', 'telephone_remarks',
+        'mobile_set', 'mobile_set_remarks', 'medical_expense', 'medical_expense_remarks',
+        'medical_expense_surgery', 'medical_expense_surgery_remarks',
+        'total_taka', 'advance', 'expenses_as_above', 'amount_due'
+    )
+
+    # Convert the queryset to a DataFrame
     df = pd.DataFrame(list(data))
+
+    # Define the HttpResponse with Excel content type
 
     # Define the HttpResponse with Excel content type
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="expenses.xlsx"'
+
+    # Write the DataFrame to Excel file
 
     # Write the DataFrame to Excel file
     with pd.ExcelWriter(response, engine='openpyxl') as writer:
@@ -679,7 +706,9 @@ def noc_form_view(request):
                     fail_silently=False,
                 )
 
-            # messages.success(request, 'Your NOC form has been submitted successfully and is waiting for approval.')
+                # Send Pusher notification for real-time update
+                send_approval_notification(ed_email, employee_department)
+
             return redirect('noc_form_list')  # Redirect to list page after submission
         else:
             print("Form is invalid. Errors:", noc_form.errors)
@@ -706,12 +735,10 @@ def noc_form_view(request):
             'email': row[3] if row else '',
         }
 
-
         # Initialize form with initial data
         noc_form = NOCForm(initial=initial_data)
 
     return render(request, 'profileapp/nocform.html', {'noc_form': noc_form})
-
 
 # Approve NOC Form
 def approve_noc_form(request, form_id):
@@ -748,3 +775,24 @@ def view_noc_form(request, form_id):
         'noc_instance': noc_instance,
         'additional_travelers': additional_travelers,
     })
+
+
+import pusher
+
+
+
+def send_approval_notification(executive_email, department_name):
+    pusher_client = pusher.Pusher(
+    app_id='1857539',
+    key='0cc1f0e0cf6638ebb54f',
+    secret='58b33235aa1ee1b8bb90',
+    cluster='ap2',
+    ssl=True
+    )
+    message = f"Department: {department_name} - Need your approval for NOC form."
+
+    # Create a unique channel name for the executive director
+    unique_channel_name = f"ed-channel-{executive_email.replace('@', '-').replace('.', '-')}"
+    
+    # Trigger a Pusher event on the unique channel
+    pusher_client.trigger(unique_channel_name, 'approval-event', {'message': message, 'email': executive_email})

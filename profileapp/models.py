@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db import connection
 
+#profile 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null=True, blank=True)
@@ -26,6 +27,7 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s profile"
 
+#RRF
 class RecruitmentForm(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     raised_by = models.CharField(max_length=255)
@@ -54,6 +56,7 @@ class VacancyDetail(models.Model):
     def __str__(self):
         return f"Vacancy Detail {self.id} for {self.recruitment_form}"
 
+#Department(not needed)
 class Department(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     department_name = models.CharField(max_length=100)
@@ -62,6 +65,7 @@ class Department(models.Model):
         return self.department_name
     
 
+#Manager Expense 
 class Expense(models.Model):
     id_no = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
@@ -118,6 +122,7 @@ class Expense(models.Model):
 
     def __str__(self):
         return f"Expense {self.id} for {self.name} ({self.id_no})"
+    
 
 class Employee(models.Model):
     EmployeeID = models.AutoField(primary_key=True)
@@ -195,5 +200,4 @@ class AdditionalTraveler(models.Model):
 
     def __str__(self):
         return f'{self.relationship_with_traveler} - {self.additional_passport_name}'
-
 

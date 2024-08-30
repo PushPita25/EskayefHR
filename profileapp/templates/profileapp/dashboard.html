@@ -9,6 +9,40 @@
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <script>
+        // Enable Pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('0cc1f0e0cf6638ebb54f', {
+          cluster: 'ap2'
+        });
+
+        // Replace 'user_email' with the actual email of the logged-in executive director
+        var user_email = "{{ request.user.email|default:'' }}";  // Use the logged-in user's email
+        var unique_channel_name = "ed-channel-" + user_email.replace('@', '-').replace('.', '-');
+        
+        console.log(user_email)
+        console.log(unique_channel_name)
+
+        var channel = pusher.subscribe(unique_channel_name);
+        channel.bind('approval-event', function(data) {
+            console.log(JSON.stringify(data))
+          // Display the notification on the dashboard
+          alert(data.message);
+          
+          // Optionally, update the UI with new information
+          var notificationsList = document.getElementById('notifications-list');
+          if (notificationsList) {
+            var newNotification = document.createElement('li');
+            newNotification.textContent = data.message;
+            notificationsList.appendChild(newNotification);
+          }
+        });
+    </script>
+
+    
+
     <style>
         .navbar {
             display: flex;

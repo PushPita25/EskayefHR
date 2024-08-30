@@ -7,6 +7,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Travel Recommendation Form</title>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <script>
+        // Enable Pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('0cc1f0e0cf6638ebb54f', {
+          cluster: 'ap2'
+        });
+
+        // Replace 'user_email' with the actual email of the logged-in executive director
+        var user_email = "{{ request.user.email|default:'' }}";  // Use the logged-in user's email
+        var unique_channel_name = "ed-channel-" + user_email.replace('@', '-').replace('.', '-');
+
+        var channel = pusher.subscribe(unique_channel_name);
+        channel.bind('approval-event', function(data) {
+          // Display the notification on the dashboard
+          alert(data.message);
+          
+          // Optionally, update the UI with new information
+          var notificationsList = document.getElementById('notifications-list');
+          if (notificationsList) {
+            var newNotification = document.createElement('li');
+            newNotification.textContent = data.message;
+            notificationsList.appendChild(newNotification);
+          }
+        });
+    </script>
+
+    
 
     <style>
         /* styles.css */

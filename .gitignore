@@ -4,3 +4,6 @@ invitation_letters
 passport_copies
 Profile/__pycache__
 profileapp/migrations/__pycache__
+profileapp/management/__pycache__
+profileapp/management/commands/__pycache__
+
