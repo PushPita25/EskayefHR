@@ -769,4 +769,3 @@ def send_approval_notification(executive_email, department_name):
     
     # Trigger a Pusher event on the unique channel
     pusher_client.trigger(unique_channel_name, 'approval-event', {'message': message, 'email': executive_email})
-
