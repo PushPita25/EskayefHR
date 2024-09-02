@@ -86,10 +86,16 @@
                             {% if noc.approved %}Approved{% else %}Waiting for Approval{% endif %}
                         </span>
                     </td>
-                    <td><a href="{% url 'view_noc_form' noc.id %}">View</a></td>
+                    <td>
+                        <a href="{% url 'view_noc_form' noc.id %}">View</a>
+                        {% if noc.approved %}
+                            | <a href="{% url 'generate_noc_pdf' noc.id %}" class="btn btn-primary">Download</a>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
+            
         </table>
     </div>
 </body>

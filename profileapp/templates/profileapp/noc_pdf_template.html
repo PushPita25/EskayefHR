@@ -1,4 +1,3 @@
-<!-- templates/profileapp/noc_pdf_template.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,28 +61,41 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <p><strong>Our Ref: F & A-HR-VISA-2023/309/17576</strong></p>
-        <p>Date: {{ date }}</p>
-    </div>
-    <div class="content">
-        <p>To:</p>
-        <p>Visa Officer<br>
-            High Commission of India<br>
-            Dhaka<br>
-            Bangladesh.</p>
 
-        <h1>NO OBJECTION CERTIFICATE</h1>
+    <div class="content">
+        <p><strong>Our Ref: {{ reference_number }}</strong></p>
+        <p>Date: {{ date }}</p>
+        <p>To: {{to_desg}}<br>
+               <span style="margin-left: 20px;">{{to_ofc}}</span><br>
+               <span style="margin-left: 20px;">Dhaka, Bangladesh.</span></p>
+
+        <p>Subject: <span style="font-weight: bold; text-decoration: underline;">NO Objection Certificate</span></p>
 
         <p>Dear Sir/Madam,</p>
 
-        <p class="company-name">Eskayef Pharmaceuticals Limited</p>
-        <p>Eskayef Pharmaceuticals Limited is one of the leading pharmaceutical companies of Bangladesh...</p>
+        <p>Eskayef Pharmaceuticals Limited is one of the leading pharmaceutical companies of Bangladesh (annual turnover of Taka 23 billion equivalent to approximately 270 million US dollars) having more than 8500 employees. The company was incorporated in 1979 as a subsidiary of SmithKline & French, USA and it was acquired by the leading conglomerate of Bangladesh, Transcom Ltd. in 1990 in the wake of the merger between SmithKline & French, USA and Beecham, UK. The state-of-the-art pharmaceutical manufacturing facility of Eskayef has achieved approval from US FDA (United States Food and Drug Administration), UK MHRA (United Kingdom Medicines and Healthcare products Regulatory Agency), TGA Australia (Therapeutic Goods Administration) and Brazil ANVISA (Brazilian Health Regulatory Agency). The company has also established a hi-tech insulin manufacturing plant for contract manufacturing for the world’s largest insulin maker, Novo Nordisk of Denmark. Eskayef is growing more global and exporting its finished products and bulk pellets to 67 countries across 6 continents. Presently, Eskayef is also marketing eye care products of Allergan Inc. USA, the global leader in this specialty area.</p>
 
         <p>The purpose of this letter is to introduce our company's <strong>{{ designation }}</strong>, <strong>{{ applicant_name }}</strong>, 
         ID: <strong>{{ applicant_id }}</strong> bearing Passport No. <strong>{{ passport_no }}</strong>, 
         who is working with us since <strong>{{ joining_date }}</strong>. He intends to visit <strong>{{ country_visit }}</strong> 
-        as a part of Excursion holidays with expected travel date on <strong>{{ travel_date_from }}</strong> to 
+        as a part of 
+        {% if visa_type == 'tourist' %}
+            excursion holiday
+        {% elif visa_type == 'business purpose' %}
+            business purpose
+        {% elif visa_type == 'medical purpose' %}
+            medical purpose
+        {% elif visa_type == 'medical attendant' %}
+            medical attendant
+        {% else %}
+            [specify purpose]
+        {% endif %}
+
+        {% if family_members_text %}
+            With his family members: {{ family_members_text }}
+        {% endif %}
+
+         with expected travel date on <strong>{{ travel_date_from }}</strong> to,  
         <strong>{{ travel_date_to }}</strong>. Please note that the entire trip cost will be borne by him. After the visit, 
         he will return to Bangladesh and <strong>{{ applicant_name }}</strong> will resume his duties in the company.</p>
 
@@ -93,15 +105,21 @@
         <p>Sincerely yours,<br>
         <strong>For Eskayef Pharmaceuticals Limited</strong></p>
 
-        <div class="footer">
+       <!-- Conditional Footer based on Grade -->
+       <div class="footer">
+        {% if grade in "D-1 D-2 D-3 D-4 D-5 D-6" %}
+            <p>(<strong>Mohammad Mostafa Hassan</strong>)<br>
+            Executive Director - Commercial & HR<br>
+            Phone: 880 01711543455 (Cell)<br>
+            E-mail: mmn@skf.transcombd.com</p>
+        {% else %}
             <p>(<strong>K.M. Shirazul Haque</strong>)<br>
-                Head of Human Resource Operations<br>
-                Phone: 880 01713065410 (Cell)<br>
-                E-mail: shiraz@skf.transcombd.com</p>
-        </div>
+            Head of Human Resource Operations<br>
+            Phone: 880 01713065410 (Cell)<br>
+            E-mail: shiraz@skf.transcombd.com</p>
+        {% endif %}
     </div>
-    <div style="text-align: center; margin-top: 20px;">
-        <a href="?download=true" class="button">Download PDF</a>
     </div>
+   
 </body>
 </html>
