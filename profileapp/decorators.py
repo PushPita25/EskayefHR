@@ -1,6 +1,9 @@
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.db import connection
+from django.urls import reverse
+from functools import wraps
+
 
 
 def unauthenticated_user(view_func):
@@ -54,4 +57,30 @@ def managers_only(view_func):
 
         return view_func(request, *args, **kwargs)
 
+    return wrapper
+
+
+def exec_dir_only(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        # Get the employee ID from the username (assuming username is EmployeeID)
+        employee_id = request.user.username  
+
+        # Check if the user is in the Executive_Directors table
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT 1 
+                FROM Executive_Directors 
+                WHERE EDID = %s
+            """, [employee_id])
+            row = cursor.fetchone()
+
+        if row:  
+            # If the user is an Executive Director, proceed with the view
+            return view_func(request, *args, **kwargs)
+        else:
+            # If the user is not an Executive Director, show a notification
+            messages.error(request, "You do not have permission to view this page.")
+            return redirect(reverse('dashboard'))  # Redirect to a relevant page (e.g., NOC form list or home)
+        
     return wrapper

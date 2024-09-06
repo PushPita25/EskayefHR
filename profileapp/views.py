@@ -12,7 +12,7 @@ from django.db import connection
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import random
-from .decorators import unauthenticated_user, managers_only,rrf_employee_only
+from .decorators import unauthenticated_user, managers_only,rrf_employee_only,exec_dir_only
 import pandas as pd
 from datetime import date
 from django.utils import timezone
@@ -21,18 +21,16 @@ import os
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+import pusher
+
 
 # Dashboard
 @login_required(login_url='login')
 @rrf_employee_only
 @managers_only
-@rrf_employee_only
-@managers_only
 def index(request):
     # Employee ID from logged-in user
     employee_id = request.user.username
-    is_rrf_employee = getattr(request, 'is_rrf_employee', False)
-    is_manager = getattr(request, 'is_manager', False)
     is_rrf_employee = getattr(request, 'is_rrf_employee', False)
     is_manager = getattr(request, 'is_manager', False)
     
@@ -173,6 +171,7 @@ def send_otp(email):
         fail_silently=False,
     )
     return otp
+
 
 #CreateUser
 def create_user_with_password(employee_id, password):
@@ -547,101 +546,6 @@ def export_rrf_data_to_excel(request):
 
     return response
 
-#NOC Form
-# @login_required(login_url='login')
-# def noc_form_view(request):
-#     if request.method == 'POST':
-#         noc_form = NOCForm(request.POST, request.FILES)
-
-#         if noc_form.is_valid():
-#             noc_instance = noc_form.save()
-
-#             # Handle additional travelers dynamically
-#             no_of_travelers = request.POST.get('no_of_travelers', 0)
-
-#             for i in range(int(no_of_travelers)):
-#                 relationship = request.POST.get(f'relationship_{i + 1}')
-#                 additional_passport_name = request.POST.get(f'additional_passport_name_{i + 1}')
-#                 additional_passport_no = request.POST.get(f'additional_passport_no_{i + 1}')
-#                 additional_passport_copy = request.FILES.get(f'additional_passport_copy_{i + 1}')
-
-#                 if relationship and additional_passport_name and additional_passport_no:
-#                     AdditionalTraveler.objects.create(
-#                         travel_recommendation=noc_instance,
-#                         relationship_with_traveler=relationship,
-#                         additional_passport_name=additional_passport_name,
-#                         additional_passport_no=additional_passport_no,
-#                         additional_passport_copy=additional_passport_copy,
-#                     )
-
-#             return redirect('success_page')
-#         else:
-#             # Print errors for debugging
-#             print("Form is invalid. Errors:", noc_form.errors)
-
-#     else:
-#         # Autofill logic here
-#         employee_id = request.user.username
-
-#         # Fetch employee details from the Employees table
-#         with connection.cursor() as cursor:
-#             cursor.execute("""
-#                 SELECT Name, Designation, Department
-#                 FROM Employees
-#                 WHERE EmployeeID = %s
-#             """, [employee_id])
-#             row = cursor.fetchone()
-
-#         # Set initial data for the form
-#         initial_data = {
-#             'applicant_id': employee_id,
-#             'applicant_name': row[0] if row else '',
-#             'designation': row[1] if row else '',
-#             'department': row[2] if row else '',
-#             # # Example: 'joining_date': row[3] if row else '',  # Uncomment if you fetch joining_date
-#             # 'unit': row[3] if row else '',
-#             # 'location': row[4] if row else '',
-#         }
-
-#         # Initialize form with initial data
-#         noc_form = NOCForm(initial=initial_data)
-
-#     return render(request, 'profileapp/nocform.html', {'noc_form': noc_form})
-
-
-# #Generate NOC PDF
-# @login_required(login_url='login')
-# def generate_noc_pdf(request, noc_id):
-#     # Fetch the NOC instance from the database
-#     noc_instance = get_object_or_404(NOC, id=noc_id)
-
-#     # Prepare the context with data from the NOC instance
-#     context = {
-#         'date': timezone.now().strftime("%d %B %Y"),  # Current date
-#         'designation': noc_instance.designation,
-#         'applicant_name': noc_instance.applicant_name,
-#         'applicant_id': noc_instance.applicant_id,
-#         'passport_no': noc_instance.passport_no,
-#         'joining_date': noc_instance.joining_date.strftime("%d-%b-%Y"),
-#         'country_visit': noc_instance.country_visit,
-#         'travel_date_from': noc_instance.travel_date_from.strftime("%d %B %Y"),
-#         'travel_date_to': noc_instance.travel_date_to.strftime("%d %B %Y")
-#     }
-
-#     # Render the HTML template with context data
-#     html_string = render_to_string('profileapp/noc_pdf_template.html', context)
-
-#     # Generate PDF using WeasyPrint
-#     pdf_file = HTML(string=html_string).write_pdf()
-
-#     # Return the PDF as a response
-#     response = HttpResponse(pdf_file, content_type='application/pdf')
-#     response['Content-Disposition'] = f'attachment; filename="noc_{noc_instance.id}.pdf"'
-
-#     return response
-
-
-
 
 # NOC Form (ED Email)
 def get_ed_email(department):
@@ -720,7 +624,7 @@ def noc_form_view(request):
         # Fetch employee details from the Employees table
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT Name, Designation, Department, Email
+                SELECT Name, Designation, Department, Email, Grade
                 FROM Employees
                 WHERE EmployeeID = %s
             """, [employee_id])
@@ -733,14 +637,18 @@ def noc_form_view(request):
             'designation': row[1] if row else '',
             'department': row[2] if row else '',
             'email': row[3] if row else '',
+            'grade':row[4] if row else '',
         }
 
         # Initialize form with initial data
         noc_form = NOCForm(initial=initial_data)
 
     return render(request, 'profileapp/nocform.html', {'noc_form': noc_form})
+    
 
 # Approve NOC Form
+@login_required(login_url='login')
+@exec_dir_only
 def approve_noc_form(request, form_id):
     noc_instance = NOC.objects.get(id=form_id)
     additional_travelers = AdditionalTraveler.objects.filter(travel_recommendation=noc_instance)
@@ -748,14 +656,15 @@ def approve_noc_form(request, form_id):
     if request.method == 'POST':
         noc_instance.approved = True
         noc_instance.save()
-        # messages.success(request, 'The NOC form has been approved successfully.')
+        
+        # Success message
+        messages.success(request, 'The NOC form has been approved successfully. You can now download the PDF.')
         return redirect('noc_form_list')  # Redirect to the list view
 
     return render(request, 'profileapp/approve_noc_form.html', {
         'noc_instance': noc_instance,
         'additional_travelers': additional_travelers,
     })
-
 
 #NOC Form List
 @login_required(login_url='login')  # Ensure user is logged in to access the page
@@ -776,23 +685,125 @@ def view_noc_form(request, form_id):
         'additional_travelers': additional_travelers,
     })
 
-
-import pusher
-
-
-
 def send_approval_notification(executive_email, department_name):
     pusher_client = pusher.Pusher(
     app_id='1857539',
     key='0cc1f0e0cf6638ebb54f',
     secret='58b33235aa1ee1b8bb90',
     cluster='ap2',
-    ssl=True
-    )
-    message = f"Department: {department_name} - Need your approval for NOC form."
+    # ssl=True
+)
+
+
+    message = f"Need your approval for NOC form."
 
     # Create a unique channel name for the executive director
-    unique_channel_name = f"ed-channel-{executive_email.replace('@', '-').replace('.', '-')}"
+    # unique_channel_name = f"ed-channel-{executive_email.replace('@', '-').replace('.', '-')}"
+    unique_channel_name = f"ed-channel-{executive_email}"
     
     # Trigger a Pusher event on the unique channel
     pusher_client.trigger(unique_channel_name, 'approval-event', {'message': message, 'email': executive_email})
+
+@login_required(login_url='login')
+def download_noc_pdf(request, noc_id):
+    noc_instance = NOC.objects.get(id=noc_id)
+
+    if not noc_instance.approved:
+        messages.error(request, "The NOC form is not approved yet and cannot be downloaded.")
+        return redirect('noc_form_list')
+
+    # Logic to generate or fetch the PDF
+    pdf_path = generate_or_get_pdf_path(noc_instance)  # Replace with your logic to get PDF path
+
+    with open(pdf_path, 'rb') as pdf_file:
+        response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="NOC_{noc_instance.id}.pdf"'
+        return response
+    
+
+def generate_or_get_pdf_path(noc_instance):
+    # This function should contain the logic to generate or retrieve the PDF path
+    # For now, let's assume we generate a dummy path
+    pdf_directory = 'path/to/generated/pdfs/'
+    if not os.path.exists(pdf_directory):
+        os.makedirs(pdf_directory)
+    pdf_path = os.path.join(pdf_directory, f"NOC_{noc_instance.id}.pdf")
+    
+    # Here you would generate the PDF and save it to pdf_path
+    # For now, let's assume the PDF is already generated
+    return pdf_path
+
+
+# Generate NOC PDF
+@login_required(login_url='login')
+def generate_noc_pdf(request, noc_id):
+    # Fetch the NOC instance from the database
+    noc_instance = get_object_or_404(NOC, id=noc_id)
+    grade = noc_instance.grade.strip() if noc_instance.grade else ""
+
+    # Fetch employee ID and visa type from NOC instance (assuming they are fields in your model)
+    employee_id = noc_instance.applicant_id  # Adjust this if employee ID is stored differently
+    visa_type = noc_instance.type_noc.lower()  # Adjust this if visa type is stored differently
+
+    additional_travelers = noc_instance.additional_travelers.all()
+
+    # Prepare the family members text if there are additional travelers
+    if noc_instance.no_of_travelers > 0:
+        travelers_list = [f"{traveler.relationship_with_traveler} named {traveler.additional_passport_name} bearing Passport No. {traveler.additional_passport_no}" for traveler in additional_travelers]
+        family_members_text = ", ".join(travelers_list)
+    else:
+        family_members_text = ""
+
+
+    # Visa type ID dictionary
+    visa_type_ids = {
+        'tourist': '294',
+        'business purpose': '345',
+        'medical purpose': '556',
+        'medical attendant': '789'
+    }
+
+    # Get specific visa type identifier from the dictionary
+    visa_type_id = visa_type_ids.get(visa_type.lower(), '000')  # Default to '000' if visa type not found
+
+    # Last four digits of Employee ID
+    employee_last_digits = employee_id[-4:]
+
+    # Current year
+    current_year = timezone.now().year
+
+    # Reference format
+    reference_number = f"F & A-HR-VISA-{current_year}/{visa_type_id}/{employee_last_digits}"
+
+    # Prepare the context with data from the NOC instance
+    context = {
+        'date': timezone.now().strftime("%d %B %Y"),  # Current date
+        'designation': noc_instance.designation,
+        'applicant_name': noc_instance.applicant_name,
+        'applicant_id': employee_id,
+        'passport_no': noc_instance.passport_no,
+        'joining_date': noc_instance.joining_date.strftime("%d-%b-%Y"),
+        'country_visit': noc_instance.country_visit,
+        'travel_date_from': noc_instance.travel_date_from.strftime("%d %B %Y"),
+        'travel_date_to': noc_instance.travel_date_to.strftime("%d %B %Y"),
+        'grade': grade,  # Add grade to the context
+        'reference_number': reference_number,  # Add reference number to the context
+        'visa_type': visa_type,  # Add visa type to the context
+        'to_desg': noc_instance.to_desg,  # Fetch the 'to_desg' field data
+        'to_ofc': noc_instance.to_ofc,  # Fetch the 'to_ofc' field data
+        # 'additional_travelers': additional_travelers
+        'family_members_text': family_members_text,  # Add family members text to context
+
+    }
+
+    # Render the HTML template with context data
+    html_string = render_to_string('profileapp/noc_pdf_template.html', context)
+
+    # Generate PDF using WeasyPrint
+    pdf_file = HTML(string=html_string).write_pdf()
+
+    # Return the PDF as a response
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="noc_{noc_instance.id}.pdf"'
+
+    return response

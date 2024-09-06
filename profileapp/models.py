@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db import connection
+import jsonfield
 
 #profile 
 class Profile(models.Model):
@@ -174,6 +175,7 @@ class NOC(models.Model):
     applicant_id = models.CharField(max_length=20)
     applicant_name = models.CharField(max_length=100)
     designation = models.CharField(max_length=100)
+    grade = models.CharField(max_length=100, default='D-3')
     department = models.CharField(max_length=100)
     joining_date = models.DateField()
     travel_date_from = models.DateField()
@@ -186,7 +188,11 @@ class NOC(models.Model):
     invitation_letter = models.FileField(upload_to='invitation_letters/', blank=True, null=True)
     country_visit = models.CharField(max_length=100)
     no_of_travelers = models.PositiveIntegerField(default=0)
-    approved = models.BooleanField(default=False)  
+    approved = models.BooleanField(default=False) 
+    to_desg = models.CharField(max_length= 200, default='None')
+    to_ofc = models.CharField(max_length=200, default='None')
+
+
 
     def __str__(self):
         return f'{self.applicant_name} ({self.applicant_id})'
@@ -201,3 +207,16 @@ class AdditionalTraveler(models.Model):
     def __str__(self):
         return f'{self.relationship_with_traveler} - {self.additional_passport_name}'
 
+
+class PusherNotification(models.Model):
+    channel_name = models.CharField(max_length=255)
+    event_name = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pusher_notifications')
+    message = jsonfield.JSONField()  # JSON field to store message as a JSON string
+    has_viewed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Notification {self.event_name} for {self.user.username}"
+
+    class Meta:
+        ordering = ['-id']  # Order by most recent by default

@@ -20,14 +20,17 @@
 
         // Replace 'user_email' with the actual email of the logged-in executive director
         var user_email = "{{ request.user.email|default:'' }}";  // Use the logged-in user's email
-        var unique_channel_name = "ed-channel-" + user_email.replace('@', '-').replace('.', '-');
+        // var unique_channel_name = "ed-channel-" + user_email.replace('@', '-').replace('.', '-');
+        var unique_channel_name = `ed-channel-${user_email}`;
+        console.log('channel_name', unique_channel_name)
         
         console.log(user_email)
         console.log(unique_channel_name)
 
         var channel = pusher.subscribe(unique_channel_name);
+        console.log(channel)
         channel.bind('approval-event', function(data) {
-            console.log(JSON.stringify(data))
+            console.log('pusher_response',data)
           // Display the notification on the dashboard
           alert(data.message);
           
@@ -39,6 +42,7 @@
             notificationsList.appendChild(newNotification);
           }
         });
+        console.log("Pusher event completed");
     </script>
 
     

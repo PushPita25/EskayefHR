@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Travel Recommendation Form</title>
+    <!-- Pusher Notification -->
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script>
         // Enable Pusher logging - don't include this in production
@@ -35,14 +36,10 @@
         });
     </script>
 
-    
-
     <style>
-        /* styles.css */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #ffffff;
-            /* Light grey background for the page */
             margin: 0;
             padding: 20px;
             display: flex;
@@ -55,17 +52,13 @@
 
         .form-container {
             background-color: #ebedf0;
-            /* White background for the form */
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            /* Subtle shadow for a clean effect */
             width: 95%;
             max-width: 900px;
-            /* Reduced maximum width for a more compact look */
             margin-top: 20px;
             border: 1px solid #dcdcdc;
-            /* Light grey border for a subtle outline */
             box-sizing: border-box;
             border-radius: 5px;
         }
@@ -75,22 +68,17 @@
             text-align: center;
             margin-bottom: 20px;
             color: white;
-            /* Dark grey for a professional look */
             background-color: #1c2c58;
         }
 
         h2 {
             font-size: 40px;
-            /* Slightly increased font size for emphasis */
             font-weight: 800;
-            /* Semi-bold for a clean appearance */
         }
 
         h3 {
             font-size: 30px;
-            /* Slightly increased font size for emphasis */
             font-weight: 600;
-            /* Semi-bold for a clean appearance */
         }
 
         .form-section {
@@ -102,7 +90,6 @@
             justify-content: space-between;
             margin-bottom: 20px;
             gap: 20px;
-            /* Space between columns for a clean layout */
         }
 
         .form-group {
@@ -110,11 +97,9 @@
             align-items: center;
             width: 48%;
             background-color: #dee1e9;
-            /* Light grey for input backgrounds */
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #1f1f1f;
-            /* Subtle border around input groups */
         }
 
         label {
@@ -122,17 +107,13 @@
             display: flex;
             align-items: center;
             font-weight: 800;
-            /* Slightly bold for better readability */
             color: #000000;
             font-size: 15px;
-            /* Slightly smaller font size for labels */
         }
 
         label i {
             margin-right: 8px;
-            /* Space between icon and label text */
             color: #1c2c58;
-            /* Blue color for icons */
         }
 
         input[type="text"],
@@ -144,16 +125,11 @@
             padding: 8px;
             border-radius: 4px;
             border: 1px solid #161515;
-            /* Neutral border color */
             font-size: 14px;
-            /* Standard font size for clarity */
             color: #333333;
-            /* Dark grey text color */
             background-color: #ffffff;
-            /* White background for input fields */
             box-sizing: border-box;
             transition: border-color 0.3s ease;
-            /* Smooth transition for focus */
         }
 
         input[type="text"]:focus,
@@ -161,9 +137,7 @@
         input[type="number"]:focus,
         input[type="file"]:focus {
             border-color: #666666;
-            /* Darker grey border on focus */
             outline: none;
-            /* Remove default outline */
         }
 
         .date-vertical {
@@ -200,17 +174,14 @@
             display: flex;
             align-items: center;
             gap: 0px;
-            /* Space between label and input field */
         }
 
         .additional-traveler-box {
             border: 1px solid #141414;
-            /* Light grey border for additional traveler boxes */
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 15px;
             background-color: #ebedf0;
-            /* Light grey background for additional traveler boxes */
         }
 
         .submit-section {
@@ -220,30 +191,23 @@
 
         button {
             background-color: #1c2c58;
-            /* Dark grey background for button */
             color: white;
             padding: 12px 24px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            /* Standard font size for button */
             font-weight: 600;
-            /* Semi-bold text for button */
             transition: background-color 0.3s ease, transform 0.3s ease;
-            /* Smooth transitions for hover effects */
         }
 
         button:hover {
             background-color: #1534be;
-            /* Slightly lighter grey on hover */
             transform: translateY(-2px);
-            /* Lift effect on hover */
         }
 
         button i {
             margin-right: 8px;
-            /* Space between icon and button text */
         }
     </style>
 </head>
@@ -274,10 +238,29 @@
                         <input type="text" id="designation" name="designation" autocomplete="off"
                             value="{{ noc_form.designation.value }}">
                     </div>
+                
                     <div class="form-group">
                         <label for="department"><i class="fas fa-building"></i> Department:</label>
                         <input type="text" id="department" name="department" autocomplete="off"
                             value="{{ noc_form.department.value }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="grade"><i class="fas fa-shield-alt"></i> Grade:</label>
+                        <input type="text" id="grade" name="grade" autocomplete="off"
+                            value="{{ noc_form.grade.value }}">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label for="to_desg"><i class="fas fa-user-tie"></i> Recipient Designation:</label>
+                        <input type="text" id="to_desg" name="to_desg" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="to_ofc"><i class="fas fa-th"></i>Recipient Organization:</label>
+                        <input type="text" id="to_ofc" name="to_ofc" autocomplete="off">
                     </div>
                 </div>
 
@@ -317,7 +300,7 @@
                             <option value="Tourist">Tourist</option>
                             <option value="Business Purpose">Business Purpose</option>
                             <option value="Medical Purpose">Medical Purpose</option>
-                            <option value="Medical Attendent">Medical Attendent</option>
+                            <option value="Medical Attendant">Medical Attendant</option>
                         </select>
                     </div>
                 </div>
