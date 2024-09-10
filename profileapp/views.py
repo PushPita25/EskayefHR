@@ -5,7 +5,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from .forms import ProfileForm, RecruitmentFormForm, VacancyDetailForm, EmployeeIDForm, OTPForm, SetPasswordForm,ExpenseForm,NOCForm
-from .models import RecruitmentForm, VacancyDetail, Department,Expense,User,AdditionalTraveler, NOC
+from .models import RecruitmentForm, VacancyDetail,Expense,User,AdditionalTraveler, NOC, NOCCountry
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db import connection
@@ -19,7 +19,6 @@ from django.utils import timezone
 from django.core.mail import EmailMessage
 import os
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 import pusher
 
@@ -46,10 +45,12 @@ def index(request):
     
     is_expense_admin = request.user.groups.filter(name="Expense Admin").exists()
     is_rrf_admin = request.user.groups.filter(name="RRF Admin").exists()
+    is_noc_admin = request.user.groups.filter(name="NOC Admin").exists()
     
     context = {
         'is_expense_admin': is_expense_admin,
         'is_rrf_admin': is_rrf_admin,
+        'is_noc_admin':is_noc_admin,
         'user_name': user_name,  # Pass the name to the template
         'user_designation': user_designation,  # Pass the designation to the template
         'user_department': user_department,  # Pass the department to the template
@@ -103,6 +104,7 @@ def enter_employee_id(request):
             name = get_name_by_employee_id(employee_id)  # Fetch the employee name
             if email:
                 otp = send_otp(email)
+                print(otp)
                 request.session['otp'] = otp
                 request.session['employee_id'] = employee_id
                 request.session['employee_name'] = name  # Store name in session
@@ -277,8 +279,8 @@ def recruitment_form_view(request):
                 subject,
                 email_body,
                 settings.DEFAULT_FROM_EMAIL,
-                # [approved_by_email, 'ashraphy.tahmida@skf.transcombd.com', request.user.email],
-                [approved_by_email, 'zarin.pushpita@northsouth.edu', request.user.email],
+                [approved_by_email, 'ashraphy.tahmida@skf.transcombd.com', request.user.email],
+                # [approved_by_email, 'zarin.pushpita@northsouth.edu', request.user.email],
             )
             email.attach('Recruitment_Form.pdf', pdf_file, 'application/pdf')
             email.send()
@@ -386,8 +388,6 @@ def expense(request):
 
             # Success message after form submission
             messages.success(request, 'Your Expense Report is submitted Successfully.')
-            messages.success(request, 'Your Expense Report is submitted Successfully.')
-
             # Clear the form
             form = ExpenseForm()
 
@@ -457,22 +457,7 @@ def view_expense_pdf(request, expense_id):
 #ExportExpenseExcel
 @login_required(login_url='login')
 def export_expenses_excel(request):
-    # Fetch all form data excluding the 'id' field
-    data = Expense.objects.all().values(
-        'id_no', 'name', 'designation', 'department', 'month', 'unit', 'location',
-        'utility', 'utility_remarks', 'driver_wages', 'driver_wages_remarks',
-        'service_staff_wages', 'service_staff_wages_remarks', 'security_staff_wages',
-        'security_staff_wages_remarks', 'leave_fare_assistance', 'leave_fare_assistance_remarks',
-        'fuel_cost', 'fuel_cost_remarks', 'gas_cost', 'gas_cost_remarks',
-        'repair_maintenance', 'repair_maintenance_remarks', 'tyres', 'tyres_remarks',
-        'battery', 'battery_remarks', 'car_denting_painting', 'car_denting_painting_remarks',
-        'car_decorations', 'car_decorations_remarks', 'toll', 'toll_remarks',
-        'others', 'others_remarks', 'telephone', 'telephone_remarks',
-        'mobile_set', 'mobile_set_remarks', 'medical_expense', 'medical_expense_remarks',
-        'medical_expense_surgery', 'medical_expense_surgery_remarks',
-        'total_taka', 'advance', 'expenses_as_above', 'amount_due'
-    )
-
+ 
     # Convert the queryset to a DataFrame
     # Fetch all form data excluding the 'id' field
     data = Expense.objects.all().values(
@@ -548,7 +533,7 @@ def export_rrf_data_to_excel(request):
     return response
 
 
-# NOC Form (ED Email)
+# # NOC Form (ED Email)
 def get_ed_email(department):
     # Custom SQL query to fetch email from `Executive_Directors` table based on department
     with connection.cursor() as cursor:
@@ -592,6 +577,8 @@ def noc_form_view(request):
             employee_department = noc_instance.department
             ed_email = get_ed_email(employee_department)
 
+            print (f'ed_email {ed_email}')
+
             if ed_email:
                 # Generate the approval link for the email
                 approval_link = request.build_absolute_uri(
@@ -610,6 +597,8 @@ def noc_form_view(request):
                     [ed_email],
                     fail_silently=False,
                 )
+
+                print('mail sent')
 
                 # Send Pusher notification for real-time update
                 send_approval_notification(ed_email, employee_department)
@@ -651,15 +640,16 @@ def noc_form_view(request):
 @login_required(login_url='login')
 @exec_dir_only
 def approve_noc_form(request, form_id):
-    noc_instance = NOC.objects.get(id=form_id)
+    noc_instance = get_object_or_404(NOC, id=form_id)
     additional_travelers = AdditionalTraveler.objects.filter(travel_recommendation=noc_instance)
 
     if request.method == 'POST':
         noc_instance.approved = True
-        noc_instance.save()
         
+        noc_instance.save()
+
         # Success message
-        messages.success(request, 'The NOC form has been approved successfully. You can now download the PDF.')
+        messages.success(request, 'The NOC form has been approved successfully.')
         return redirect('noc_form_list')  # Redirect to the list view
 
     return render(request, 'profileapp/approve_noc_form.html', {
@@ -667,15 +657,46 @@ def approve_noc_form(request, form_id):
         'additional_travelers': additional_travelers,
     })
 
+
 #NOC Form List
 @login_required(login_url='login')  # Ensure user is logged in to access the page
 def noc_form_list(request):
     user = request.user  # Get the logged-in user
-    noc_forms = NOC.objects.filter(applicant_id=user.username)  # Assuming applicant_id stores EmployeeID (username)
+    username = user.username  # Assuming the username is the EmployeeID
 
-    return render(request, 'profileapp/noc_form_list.html', {'noc_forms': noc_forms})
+    # Check if the logged-in user is part of the 'noc admin' group
+    if user.groups.filter(name='noc admin').exists():
+        # If the user is part of the 'noc admin' group, show all NOC forms
+        noc_forms = NOC.objects.all()
+        is_noc_admin = True  # Mark the user as noc admin
+    else:
+        # Query to get the department of the logged-in user from the Employees table
+        user_department = None
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT Department FROM Employees WHERE EmployeeID= %s", [username])
+            row = cursor.fetchone()
+            if row:
+                user_department = row[0]  # Assume department is stored in the first column
 
+        # Check if the logged-in user is the ED for their department
+        is_ed = False
+        if user_department:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT COUNT(*) FROM Executive_Directors WHERE Department = %s AND EDID = %s", [user_department, username])
+                is_ed = cursor.fetchone()[0] > 0
 
+        # Fetch NOC forms based on ED status
+        if is_ed:
+            # If the user is ED, fetch all NOC forms for their department
+            noc_forms = NOC.objects.filter(department=user_department)
+        else:
+            # If the user is not ED, fetch only their own NOC forms
+            noc_forms = NOC.objects.filter(applicant_id=username)
+
+        is_noc_admin = False  # Mark the user as not noc admin
+
+    # Pass 'is_noc_admin' to the template
+    return render(request, 'profileapp/noc_form_list.html', {'noc_forms': noc_forms, 'is_noc_admin': is_noc_admin})
 
 def view_noc_form(request, form_id):
     noc_instance = NOC.objects.get(id=form_id)
@@ -725,7 +746,7 @@ def download_noc_pdf(request, noc_id):
 def generate_or_get_pdf_path(noc_instance):
     # This function should contain the logic to generate or retrieve the PDF path
     # For now, let's assume we generate a dummy path
-    pdf_directory = 'path/to/generated/pdfs/'
+    pdf_directory = 'pdfs/'
     if not os.path.exists(pdf_directory):
         os.makedirs(pdf_directory)
     pdf_path = os.path.join(pdf_directory, f"NOC_{noc_instance.id}.pdf")
@@ -755,7 +776,6 @@ def generate_noc_pdf(request, noc_id):
     else:
         family_members_text = ""
 
-
     # Visa type ID dictionary
     visa_type_ids = {
         'tourist': '294',
@@ -776,6 +796,18 @@ def generate_noc_pdf(request, noc_id):
     # Reference format
     reference_number = f"F & A-HR-VISA-{current_year}/{visa_type_id}/{employee_last_digits}"
 
+    # Fetch the concern field for the selected country
+    selected_country = noc_instance.country_visit
+    try:
+        noc_country = NOCCountry.objects.get(country=selected_country)
+        concern = noc_country.concern  # Fetch the concern from NOCCountry model
+        embassy = noc_country.embassy
+        office_address = noc_country.office_address
+    except NOCCountry.DoesNotExist:
+        concern = "Concern not available"  # Default if no country is found
+        embassy = "Embassy not available"
+        office_address = "Address not available"
+
     # Prepare the context with data from the NOC instance
     context = {
         'date': timezone.now().strftime("%d %B %Y"),  # Current date
@@ -790,11 +822,10 @@ def generate_noc_pdf(request, noc_id):
         'grade': grade,  # Add grade to the context
         'reference_number': reference_number,  # Add reference number to the context
         'visa_type': visa_type,  # Add visa type to the context
-        'to_desg': noc_instance.to_desg,  # Fetch the 'to_desg' field data
-        'to_ofc': noc_instance.to_ofc,  # Fetch the 'to_ofc' field data
-        # 'additional_travelers': additional_travelers
+        'concern': concern,  # Add the fetched concern to the context
+        'embassy':embassy,
+        'office_address': office_address,
         'family_members_text': family_members_text,  # Add family members text to context
-
     }
 
     # Render the HTML template with context data
@@ -806,5 +837,70 @@ def generate_noc_pdf(request, noc_id):
     # Return the PDF as a response
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="noc_{noc_instance.id}.pdf"'
+
+    return response
+
+
+@login_required(login_url='login')
+def export_noc_to_excel(request):
+    # Query the NOC data
+    noc_data = NOC.objects.all().values(
+        'id',  # Include 'id' for fetching related AdditionalTraveler records
+        'applicant_id', 'applicant_name', 'designation', 'grade', 'department', 
+        'joining_date', 'travel_date_from', 'travel_date_to', 'type', 'type_noc',
+        'passport_name', 'passport_no', 'country_visit', 'no_of_travelers', 'approved', 
+        'to_desg', 'to_ofc'
+    )
+
+    # Prepare data for export
+    export_data = []
+
+    for noc in noc_data:
+        # Fetch additional travelers for this NOC
+        additional_travelers = AdditionalTraveler.objects.filter(travel_recommendation_id=noc['id'])
+
+        # Concatenate additional traveler information into single fields
+        traveler_details = []
+        for traveler in additional_travelers:
+            traveler_info = f"{traveler.relationship_with_traveler} (Name: {traveler.additional_passport_name}, Passport No: {traveler.additional_passport_no})"
+            traveler_details.append(traveler_info)
+        
+        # Join all traveler details into a single string
+        traveler_details_str = "; ".join(traveler_details) if traveler_details else "None"
+
+        # Prepare the row for the current NOC record including concatenated traveler details
+        row = {
+            'Applicant ID': noc['applicant_id'],
+            'Applicant Name': noc['applicant_name'],
+            'Designation': noc['designation'],
+            'Grade': noc['grade'],
+            'Department': noc['department'],
+            'Joining Date': noc['joining_date'],
+            'Travel Date From': noc['travel_date_from'],
+            'Travel Date To': noc['travel_date_to'],
+            'Type': noc['type'],
+            'Visa Type': noc['type_noc'],
+            'Passport Name': noc['passport_name'],
+            'Passport No': noc['passport_no'],
+            'Country to Visit': noc['country_visit'],
+            'Number of Travelers': noc['no_of_travelers'],
+            'Approved': noc['approved'],
+            'To Designation': noc['to_desg'],
+            'To Office': noc['to_ofc'],
+            'Additional Travelers': traveler_details_str,  # Add concatenated traveler details
+        }
+
+        # Add the row to export data
+        export_data.append(row)
+
+    # Create a Pandas DataFrame from the export data
+    df = pd.DataFrame(export_data)
+
+    # Create an Excel file in memory
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="NOC_data.xlsx"'
+
+    # Use Pandas to write the data to an Excel file
+    df.to_excel(response, index=False, engine='openpyxl')
 
     return response

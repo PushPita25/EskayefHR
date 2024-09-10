@@ -16,15 +16,26 @@
             color: #fff;
             margin: 0;
             padding: 0;
-            overflow: hidden;
-        }
-
-        .login-container {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            position: relative;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .branding {
+            font-size: 60px;
+            font-weight: bolder;
+            color: #fff;
+            margin-bottom: 20px;
+            white-space: nowrap;
         }
 
         .login-box {
@@ -32,33 +43,19 @@
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
-            width: 300px;
-            position: relative;
-            margin-top: 20px;
+            width: 300px; /* Fixed width for login box */
             z-index: 1;
-        }
-
-        .branding {
-            position: absolute;
-            left: 100px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 60px;
-            font-weight: bolder;
-            color: #fff;
-            z-index: 1000;
         }
 
         .notification-container {
             position: relative;
-            top: 0;
-            left: 0;
             width: 100%;
             background-color: rgba(19, 164, 222, 0.8);
             padding: 10px;
             border-radius: 5px;
             text-align: center;
             z-index: 9999;
+            margin-bottom: 20px;
         }
 
         .login-box h1 {
@@ -115,11 +112,12 @@
             margin: 0;
             font-size: 14px;
         }
+
     </style>
 </head>
 
 <body>
-    <div class="login-container">
+    <div class="container">
         <div class="branding">
             You &amp; SK+F
         </div>
@@ -138,12 +136,12 @@
             <form action="{% url 'login' %}" method="post" autocomplete="on">
                 {% csrf_token %}
                 <div class="input-group">
-                    <label for="employee_id">Employee ID</label>
+                    <label for="employee_id" style="text-align: left;">Employee ID</label>
                     <input type="text" id="employee_id" name="employee_id" placeholder="110XXXXX" required
                         autocomplete="username">
                 </div>
                 <div class="input-group">
-                    <label for="password">Password</label>
+                    <label for="password" style="text-align: left;">Password</label>
                     <input type="password" id="password" name="password" placeholder="Enter Password" required
                         autocomplete="current-password">
                 </div>

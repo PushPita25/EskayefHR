@@ -1,41 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+{%load static%}
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}">
     <title>Travel Recommendation Form</title>
-    <!-- Pusher Notification -->
-    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
-    <script>
-        // Enable Pusher logging - don't include this in production
-        Pusher.logToConsole = true;
-
-        var pusher = new Pusher('0cc1f0e0cf6638ebb54f', {
-          cluster: 'ap2'
-        });
-
-        // Replace 'user_email' with the actual email of the logged-in executive director
-        var user_email = "{{ request.user.email|default:'' }}";  // Use the logged-in user's email
-        var unique_channel_name = "ed-channel-" + user_email.replace('@', '-').replace('.', '-');
-
-        var channel = pusher.subscribe(unique_channel_name);
-        channel.bind('approval-event', function(data) {
-          // Display the notification on the dashboard
-          alert(data.message);
-          
-          // Optionally, update the UI with new information
-          var notificationsList = document.getElementById('notifications-list');
-          if (notificationsList) {
-            var newNotification = document.createElement('li');
-            newNotification.textContent = data.message;
-            notificationsList.appendChild(newNotification);
-          }
-        });
-    </script>
-
+    
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -55,8 +29,8 @@
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            width: 95%;
-            max-width: 900px;
+            width: 80%;
+            max-width: 1200px;
             margin-top: 20px;
             border: 1px solid #dcdcdc;
             box-sizing: border-box;
@@ -99,7 +73,7 @@
             background-color: #dee1e9;
             padding: 10px;
             border-radius: 5px;
-            border: 1px solid #1f1f1f;
+            /* border: 1px solid #1f1f1f; */
         }
 
         label {
@@ -108,7 +82,7 @@
             align-items: center;
             font-weight: 800;
             color: #000000;
-            font-size: 15px;
+            font-size: 18px;
         }
 
         label i {
@@ -121,12 +95,12 @@
         input[type="number"],
         input[type="file"],
         select {
-            width: 55%;
+            width: 80%;
             padding: 8px;
             border-radius: 4px;
-            border: 1px solid #161515;
-            font-size: 14px;
-            color: #333333;
+            border: 1px solid #262424;
+            font-size: 16px;
+            color: #050505;
             background-color: #ffffff;
             box-sizing: border-box;
             transition: border-color 0.3s ease;
@@ -217,18 +191,36 @@
         <h2>Travel Recommendation</h2>
         <form id="travelForm" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <!-- Main Form -->
+            <div class="form-group">
+                <label><i class="fas fa-list"></i> Type:</label>
+                <div>
+                    <input type="radio" id="noc" name="type" value="NOC" for="NOC" required>
+                    NOC
+                </div>
+                <div>
+                    <input type="radio" id="immigration" name="type" value="Immigration" for="immigration" style="margin-left: 20px;">
+                    Immigration
+                </div>
+            </div>
+            
+            <div id="loading"></div>
+
+            <h3>Applicant's Basic Informtation</h3>
             <div class="form-section">
                 <div class="row">
                     <div class="form-group">
-                        <label for="applicant_id"><i class="fas fa-id-card"></i> Applicant ID:</label>
-                        <input type="text" id="applicant_id" name="applicant_id"
+                        <label for="applicant_id"><i class="fas fa-id-card"></i>ID:</label>
+                        <input type="text" id="applicant_id" name="applicant_id" style="margin-right: 20px;"
                             value="{{ noc_form.applicant_id.value }}">
                     </div>
                     <div class="form-group">
-                        <label for="applicant_name"><i class="fas fa-user"></i> Applicant Name:</label>
+                        <label for="applicant_name"><i class="fas fa-user"></i>Name:</label>
                         <input type="text" id="applicant_name" name="applicant_name"
                             value="{{ noc_form.applicant_name.value }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="joining_date"><i class="fas fa-calendar-alt"></i> Joining Date:</label>
+                        <input type="date" id="joining_date" name="joining_date">
                     </div>
                 </div>
 
@@ -238,14 +230,12 @@
                         <input type="text" id="designation" name="designation" autocomplete="off"
                             value="{{ noc_form.designation.value }}">
                     </div>
-                
+
                     <div class="form-group">
                         <label for="department"><i class="fas fa-building"></i> Department:</label>
                         <input type="text" id="department" name="department" autocomplete="off"
                             value="{{ noc_form.department.value }}">
                     </div>
-                </div>
-                <div class="row">
                     <div class="form-group">
                         <label for="grade"><i class="fas fa-shield-alt"></i> Grade:</label>
                         <input type="text" id="grade" name="grade" autocomplete="off"
@@ -253,22 +243,9 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="form-group">
-                        <label for="to_desg"><i class="fas fa-user-tie"></i> Recipient Designation:</label>
-                        <input type="text" id="to_desg" name="to_desg" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="to_ofc"><i class="fas fa-th"></i>Recipient Organization:</label>
-                        <input type="text" id="to_ofc" name="to_ofc" autocomplete="off">
-                    </div>
-                </div>
+                <h3>Travelling Information</h3>
 
                 <div class="row">
-                    <div class="form-group">
-                        <label for="joining_date"><i class="fas fa-calendar-alt"></i> Joining Date:</label>
-                        <input type="date" id="joining_date" name="joining_date">
-                    </div>
                     <div class="form-group">
                         <label for="travel_date"><i class="fas fa-calendar"></i> Tentative Travel Date:</label>
                         <div class="date-vertical">
@@ -282,9 +259,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="type_noc"><i class="fas fa-file-alt"></i> Visa Type (if NOC):</label>
+                        {{ noc_form.type_noc }}
+                    </div>
+                    <div class="form-group">
+                        <label for="country_visit">Country to Visit:</label>
+                        {{ noc_form.country_visit }}
+                    </div>
                 </div>
 
-                <div class="row">
+                <!-- <div class="row">
                     <div class="form-group">
                         <label for="type"><i class="fas fa-list"></i> Type:</label>
                         <select id="type" name="type" autocomplete="off" required>
@@ -294,7 +279,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="type_noc"><i class="fas fa-file-alt"></i> Type (if NOC):</label>
+                        <label for="type_noc"><i class="fas fa-file-alt"></i> Visa Type (if NOC):</label>
                         <select name="type_noc" id="type_noc">
                             <option value="" selected disabled></option>
                             <option value="Tourist">Tourist</option>
@@ -303,8 +288,9 @@
                             <option value="Medical Attendant">Medical Attendant</option>
                         </select>
                     </div>
-                </div>
+                </div> -->
 
+                <h3>Passport Information</h3>
                 <div class="row">
                     <div class="form-group">
                         <label for="passport_name"><i class="fas fa-passport"></i> Passport Name:</label>
@@ -315,6 +301,7 @@
                         <input type="text" id="passport_no" name="passport_no">
                     </div>
                 </div>
+
 
                 <div class="row">
                     <div class="form-group">
@@ -329,10 +316,6 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group">
-                        <label for="country_visit"><i class="fas fa-globe"></i> Country of Visit:</label>
-                        <input type="text" id="country_visit" name="country_visit">
-                    </div>
                     <div class="form-group">
                         <label for="no_of_travelers"><i class="fas fa-users"></i> No. of Additional Travelers:</label>
                         <input type="number" id="no_of_travelers" name="no_of_travelers" min="0"
@@ -353,8 +336,7 @@
         </form>
     </div>
 
-    
-   
+
     <script>
         // script.js
         function addTravelerFields() {
@@ -393,6 +375,20 @@
             }
         }
 
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the form from submitting immediately
+                document.getElementById('loading').style.display = 'flex'; // Show the loader
+        
+                // Optional: simulate a delay or handle form validation
+                setTimeout(function() {
+                    form.submit(); // Submit the form programmatically after a delay
+                }, 1000); // Adjust the delay as needed or remove if handling asynchronously
+            });
+        });
     </script>
 </body>
 

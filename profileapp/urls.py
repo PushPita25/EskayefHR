@@ -30,6 +30,7 @@ urlpatterns = [
     path('view-noc-form/<int:form_id>/', views.view_noc_form, name='view_noc_form'),
     path('download-noc-pdf/<int:noc_id>/', views.download_noc_pdf, name='download_noc_pdf'),  # New download path
     path('generate-noc-pdf/<int:noc_id>/', views.generate_noc_pdf, name='generate_noc_pdf'),  # New URL for PDF generation
+    path('export-noc-excel/', views.export_noc_to_excel, name='export_noc_excel'),
 ]
 
 

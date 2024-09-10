@@ -11,7 +11,7 @@ class Command(BaseCommand):
                 'EmployeeID': 101,
                 'Name': 'Zarin Tasnim',
                 'Unit': 'Talent Management',
-                'Department': 'Commercial $ HR',
+                'Department': 'Commercial & HR',
                 'Grade': 'M-1',
                 'Designation': 'Intern',
                 'Email': 'pushpita.zarin@gmail.com',
@@ -24,7 +24,7 @@ class Command(BaseCommand):
                 'EmployeeID': 102,
                 'Name': 'Arash Khan',
                 'Unit': 'Talent Management',
-                'Department': 'Commercial $ HR',
+                'Department': 'Commercial & HR',
                 'Grade': 'O-6',
                 'Designation': 'Intern',
                 'Email': 'arash25.khan@gmail.com',
@@ -37,7 +37,7 @@ class Command(BaseCommand):
                 'EmployeeID': 103,
                 'Name': 'Rania Noor',
                 'Unit': 'Talent Management',
-                'Department': 'Commercial $ HR',
+                'Department': 'Commercial & HR',
                 'Grade': 'O-6',
                 'Designation': 'Intern',
                 'Email': 'zarin.pushpita@northsouth.edu',
@@ -56,7 +56,7 @@ class Command(BaseCommand):
                 'Name': 'Arash Khan',
                 'Designation': 'Intern',
                 'Unit': 'Talent Management',
-                'Department': 'Commercial $ HR',
+                'Department': 'Commercial & HR',
                 'BU_Head': 'Mohammad Mostafa Hassan'
             },
             {
@@ -64,7 +64,7 @@ class Command(BaseCommand):
                 'Name': 'Arash Khan',
                 'Designation': 'Intern',
                 'Unit': 'HR Operations',
-                'Department': 'Commercial $ HR',
+                'Department': 'Commercial & HR',
                 'BU_Head': 'Mohammad Mostafa Hassan'
             }
         ]

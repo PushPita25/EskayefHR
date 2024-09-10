@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile, RecruitmentForm, VacancyDetail,Expense
+from .models import Profile, RecruitmentForm, VacancyDetail,Expense,NOC, AdditionalTraveler, NOCCountry, VisaType
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -52,9 +52,6 @@ class ExpenseForm(forms.ModelForm):
         model = Expense
         exclude = ['user']
 
-
-from .models import NOC, AdditionalTraveler
-
 class NOCForm(forms.ModelForm):
     class Meta:
         model = NOC
@@ -63,4 +60,23 @@ class NOCForm(forms.ModelForm):
 class AdditionalTravelerForm(forms.ModelForm):
     class Meta:
         model = AdditionalTraveler
+        fields = '__all__'
+
+class NOCForm(forms.ModelForm):
+    country_visit = forms.ModelChoiceField(
+        queryset=NOCCountry.objects.all(),
+        label="Country to Visit",
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        empty_label="Select a Country"
+    )
+    type_noc = forms.ModelChoiceField(
+        queryset = VisaType.objects.all(),
+        label= "Visa Type (if NOC)",
+        widget = forms.Select(attrs={'class': 'form-control'}),
+        empty_label="Select a Visa Type"
+
+    )
+
+    class Meta:
+        model = NOC
         fields = '__all__'

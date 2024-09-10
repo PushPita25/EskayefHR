@@ -27,6 +27,8 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s profile"
+    
+
 
 #RRF
 class RecruitmentForm(models.Model):
@@ -57,13 +59,7 @@ class VacancyDetail(models.Model):
     def __str__(self):
         return f"Vacancy Detail {self.id} for {self.recruitment_form}"
 
-#Department(not needed)
-class Department(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    department_name = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.department_name
     
 
 #Manager Expense 
@@ -124,6 +120,57 @@ class Expense(models.Model):
     def __str__(self):
         return f"Expense {self.id} for {self.name} ({self.id_no})"
     
+class Employees(models.Model):
+    EmployeeID = models.CharField(max_length=8,primary_key=True)
+    Name = models.CharField(max_length=100)
+    UnitID = models.CharField(max_length=100, blank=True, null=True)
+    Unit = models.CharField(max_length=100, blank=True, null=True)
+    Department = models.CharField(max_length=50, blank=True, null=True)
+    Grade = models.CharField(max_length=50, blank=True, null=True)
+    Designation = models.CharField(max_length=100, blank=True, null=True)
+    Email = models.EmailField(max_length=100, unique=True)
+    ContactNo = models.CharField(max_length=15, blank=True, null=True)
+    Location = models.CharField(max_length=100, blank=True, null=True)
+    Head_of_Dept = models.CharField(max_length=100, blank=True, null=True)
+    HODID= models.CharField(max_length=8, blank=True, null=True)
+    BU_Head = models.CharField(max_length=100, blank=True, null=True)
+    BU_HeadID = models.CharField(max_length=8, blank=True, null=True)
+    Gender = models.CharField(max_length=100, blank=True, null=True)
+    Joining_Date = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Employees'
+        verbose_name = 'Employee'
+        verbose_name_plural = 'Employees'
+
+class RRFEmployee(models.Model):
+    HODID = models.CharField(max_length=8)
+    Name = models.CharField(max_length=100)
+    Designation = models.CharField(max_length=100, blank=True, null=True)
+    Unit = models.CharField(max_length=100, blank=True, null=True)
+    Department = models.CharField(max_length=50, blank=True, null=True)
+    BU_Head = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = 'RRFEmployee'
+        verbose_name = 'RRF Employee'
+        verbose_name_plural = 'RRF Employees'
+
+class ExecutiveDirectors(models.Model):
+    EDID = models.IntegerField(primary_key=True)
+    EDDesg = models.CharField(max_length=100, blank=True, null=True)
+    EDEmail = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    Department = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        db_table = 'Executive_Directors'
+        verbose_name = 'Executive Director'
+        verbose_name_plural = 'Executive Directors'
+
+#     ### SMALL CONSIDERATION ###
+#     #Meta class consists of few fields
+#     ##db_table name defines the table name in the database
+#     ##verbose name and verbose name plural defines the human readable version of the database name
 
 
 #NOC
@@ -145,10 +192,8 @@ class NOC(models.Model):
     country_visit = models.CharField(max_length=100)
     no_of_travelers = models.PositiveIntegerField(default=0)
     approved = models.BooleanField(default=False) 
-    to_desg = models.CharField(max_length= 200, default='None')
-    to_ofc = models.CharField(max_length=200, default='None')
-
-
+    
+    
 
     def __str__(self):
         return f'{self.applicant_name} ({self.applicant_id})'
@@ -164,6 +209,7 @@ class AdditionalTraveler(models.Model):
         return f'{self.relationship_with_traveler} - {self.additional_passport_name}'
 
 
+#Notification
 class PusherNotification(models.Model):
     channel_name = models.CharField(max_length=255)
     event_name = models.CharField(max_length=255)
@@ -176,3 +222,26 @@ class PusherNotification(models.Model):
 
     class Meta:
         ordering = ['-id']  # Order by most recent by default
+
+
+
+class NOCCountry (models.Model):
+    country= models.CharField(max_length= 200)
+    concern=models.CharField(max_length=500)
+    embassy=models.CharField(max_length=500)
+    office_address = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.country
+    
+
+class VisaType(models.Model):
+    visa = models.CharField(max_length= 200)
+    ref_code = models.CharField(max_length=8)
+    subject = models.TextField()
+    cost_provider = models.CharField(max_length=200)
+    intention = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.visa
+    
