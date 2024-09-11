@@ -5,7 +5,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from .forms import ProfileForm, RecruitmentFormForm, VacancyDetailForm, EmployeeIDForm, OTPForm, SetPasswordForm,ExpenseForm,NOCForm
-from .models import RecruitmentForm, VacancyDetail,Expense,User,AdditionalTraveler, NOC, NOCCountry
+from .models import RecruitmentForm, VacancyDetail,Expense,User,AdditionalTraveler, NOC, NOCCountry, Employees, VisaType
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db import connection
@@ -540,8 +540,10 @@ def get_ed_email(department):
         cursor.execute("SELECT EDEmail FROM Executive_Directors WHERE Department = %s", [department])
         row = cursor.fetchone()
     if row:
+        print(f"Email found: {row[0]}")
         return row[0]
     else:
+        print(f"No email found for department: {department}")
         return None
 
 # NOC Form
@@ -573,7 +575,7 @@ def noc_form_view(request):
                         additional_passport_copy=additional_passport_copy,
                     )
 
-            # Send email notification to the corresponding Executive Director
+# Send email notification to the corresponding Executive Director
             employee_department = noc_instance.department
             ed_email = get_ed_email(employee_department)
 
@@ -603,7 +605,7 @@ def noc_form_view(request):
                 # Send Pusher notification for real-time update
                 send_approval_notification(ed_email, employee_department)
 
-            return redirect('noc_form_list')  # Redirect to list page after submission
+            return redirect('noc_form_list')  # Redirect after submission
         else:
             print("Form is invalid. Errors:", noc_form.errors)
 
@@ -614,27 +616,27 @@ def noc_form_view(request):
         # Fetch employee details from the Employees table
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT Name, Designation, Department, Email, Grade
+                SELECT Name, Designation, Department, Email, Grade, Joining_Date
                 FROM Employees
                 WHERE EmployeeID = %s
             """, [employee_id])
             row = cursor.fetchone()
 
-        # Set initial data for the form
+        # Set initial data for the form, including the joining_date
         initial_data = {
             'applicant_id': employee_id,
             'applicant_name': row[0] if row else '',
             'designation': row[1] if row else '',
             'department': row[2] if row else '',
             'email': row[3] if row else '',
-            'grade':row[4] if row else '',
+            'grade': row[4] if row else '',
+            'joining_date': row[5] if row else '',  # Format joining_date for the form
         }
 
         # Initialize form with initial data
         noc_form = NOCForm(initial=initial_data)
 
     return render(request, 'profileapp/nocform.html', {'noc_form': noc_form})
-    
 
 # Approve NOC Form
 @login_required(login_url='login')
@@ -683,7 +685,10 @@ def noc_form_list(request):
         if user_department:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT COUNT(*) FROM Executive_Directors WHERE Department = %s AND EDID = %s", [user_department, username])
-                is_ed = cursor.fetchone()[0] > 0
+                result = cursor.fetchone()
+
+                if result and result[0] > 0:
+                    is_ed = True
 
         # Fetch NOC forms based on ED status
         if is_ed:
@@ -776,6 +781,24 @@ def generate_noc_pdf(request, noc_id):
     else:
         family_members_text = ""
 
+    # Fetch employee data based on applicant_id (EmployeeID)
+    employee = Employees.objects.get(EmployeeID=noc_instance.applicant_id)
+
+    # Determine pronouns based on gender
+    if employee.Gender.lower() == 'male':
+        pronoun_subject = 'he'
+        pronoun_object = 'him'
+        pronoun_possessive = 'his'
+    elif employee.Gender.lower() == 'female':
+        pronoun_subject = 'she'
+        pronoun_object = 'her'
+        pronoun_possessive = 'her'
+    else:
+        # Default to 'they/them' if gender is not specified or non-binary
+        pronoun_subject = 'they'
+        pronoun_object = 'them'
+        pronoun_possessive = 'their'
+
     # Visa type ID dictionary
     visa_type_ids = {
         'tourist': '294',
@@ -808,6 +831,15 @@ def generate_noc_pdf(request, noc_id):
         embassy = "Embassy not available"
         office_address = "Address not available"
 
+    selected_visatype = noc_instance.type_noc
+
+    try:
+        noc_visatype = VisaType.objects.get(visa = selected_visatype)
+        subject = noc_visatype.subject
+
+    except VisaType.DoesNotExist:
+        subject = 'Not Available'
+
     # Prepare the context with data from the NOC instance
     context = {
         'date': timezone.now().strftime("%d %B %Y"),  # Current date
@@ -824,8 +856,12 @@ def generate_noc_pdf(request, noc_id):
         'visa_type': visa_type,  # Add visa type to the context
         'concern': concern,  # Add the fetched concern to the context
         'embassy':embassy,
+        'subject': subject,
         'office_address': office_address,
         'family_members_text': family_members_text,  # Add family members text to context
+        'pronoun_subject': pronoun_subject,  
+        'pronoun_object': pronoun_object,   
+        'pronoun_possessive': pronoun_possessive, 
     }
 
     # Render the HTML template with context data
@@ -849,7 +885,6 @@ def export_noc_to_excel(request):
         'applicant_id', 'applicant_name', 'designation', 'grade', 'department', 
         'joining_date', 'travel_date_from', 'travel_date_to', 'type', 'type_noc',
         'passport_name', 'passport_no', 'country_visit', 'no_of_travelers', 'approved', 
-        'to_desg', 'to_ofc'
     )
 
     # Prepare data for export
@@ -885,8 +920,6 @@ def export_noc_to_excel(request):
             'Country to Visit': noc['country_visit'],
             'Number of Travelers': noc['no_of_travelers'],
             'Approved': noc['approved'],
-            'To Designation': noc['to_desg'],
-            'To Office': noc['to_ofc'],
             'Additional Travelers': traveler_details_str,  # Add concatenated traveler details
         }
 

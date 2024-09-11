@@ -220,8 +220,9 @@
                     </div>
                     <div class="form-group">
                         <label for="joining_date"><i class="fas fa-calendar-alt"></i> Joining Date:</label>
-                        <input type="date" id="joining_date" name="joining_date">
+                        <input type="text" id="joining_date" name="joining_date" value="{{ noc_form.joining_date.value }}">
                     </div>
+                    
                 </div>
 
                 <div class="row">
@@ -269,27 +270,6 @@
                     </div>
                 </div>
 
-                <!-- <div class="row">
-                    <div class="form-group">
-                        <label for="type"><i class="fas fa-list"></i> Type:</label>
-                        <select id="type" name="type" autocomplete="off" required>
-                            <option value="" selected disabled></option>
-                            <option value="NOC">NOC</option>
-                            <option value="Immigration">Immigration</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="type_noc"><i class="fas fa-file-alt"></i> Visa Type (if NOC):</label>
-                        <select name="type_noc" id="type_noc">
-                            <option value="" selected disabled></option>
-                            <option value="Tourist">Tourist</option>
-                            <option value="Business Purpose">Business Purpose</option>
-                            <option value="Medical Purpose">Medical Purpose</option>
-                            <option value="Medical Attendant">Medical Attendant</option>
-                        </select>
-                    </div>
-                </div> -->
-
                 <h3>Passport Information</h3>
                 <div class="row">
                     <div class="form-group">
@@ -309,8 +289,7 @@
                         <input type="file" id="passport_copy" name="passport_copy">
                     </div>
                     <div class="form-group">
-                        <label for="invitation_letter"><i class="fas fa-envelope"></i> Invitation Letter (if
-                            applicable):</label>
+                        <label for="invitation_letter"><i class="fas fa-envelope"></i> Invitation Letter (if applicable):</label>
                         <input type="file" id="invitation_letter" name="invitation_letter">
                     </div>
                 </div>
