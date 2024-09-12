@@ -682,17 +682,22 @@ def noc_form_list(request):
 
         # Check if the logged-in user is the ED for their department
         is_ed = False
+        print(user_department)
         if user_department:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT COUNT(*) FROM Executive_Directors WHERE Department = %s AND EDID = %s", [user_department, username])
                 result = cursor.fetchone()
 
+                print(result)
+
                 if result and result[0] > 0:
                     is_ed = True
+                print(is_ed)
 
         # Fetch NOC forms based on ED status
         if is_ed:
             # If the user is ED, fetch all NOC forms for their department
+            print('ED')
             noc_forms = NOC.objects.filter(department=user_department)
         else:
             # If the user is not ED, fetch only their own NOC forms
@@ -701,7 +706,7 @@ def noc_form_list(request):
         is_noc_admin = False  # Mark the user as not noc admin
 
     # Pass 'is_noc_admin' to the template
-    return render(request, 'profileapp/noc_form_list.html', {'noc_forms': noc_forms, 'is_noc_admin': is_noc_admin})
+    return render(request, 'profileapp/noc_form_list.html', {'noc_forms': noc_forms, 'is_noc_admin': is_noc_admin, 'is_ed': is_ed})
 
 def view_noc_form(request, form_id):
     noc_instance = NOC.objects.get(id=form_id)

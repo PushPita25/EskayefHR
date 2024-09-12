@@ -129,62 +129,68 @@
 
 <body>
     <div class="container">
-        <!-- Header with Title and Export Button -->
-        <div class="header">
-            {% if is_noc_admin %}
-            <h2>All NOC Submissions (Admin View)</h2>
-            {% else %}
-            <h2>Your NOC Submissions</h2>
-            {% endif %}
-            {% if is_noc_admin %}
-            <a href="{% url 'export_noc_excel' %}" class="export-button">Export to Excel</a>
-            {% endif %}
-        </div>
+        <div class="card">
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Country</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                    {% if is_ed %}
-                    <th>Approve</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for noc in noc_forms %}
-                <tr>
-                    <td>{{ noc.applicant_id }}</td>
-                    <td>{{ noc.applicant_name }}</td>
-                    <td>{{ noc.country_visit }}</td>
-                    <td>
-                        <span class="status {% if noc.approved %}approved{% else %}waiting{% endif %}">
-                            {% if noc.approved %}Approved{% else %}Waiting for Approval{% endif %}
-                        </span>
-                    </td>
-                    <td>
-                        <a href="{% url 'view_noc_form' noc.id %}">View</a>
-                        {% if noc.approved %}
-                        | <a href="{% url 'generate_noc_pdf' noc.id %}" class="btn btn-primary">Download</a>
-                        {% endif %}
-                    </td>
-                    {% if is_ed and not noc.approved %}
-                    <td>
-                        <form method="post" action="{% url 'approve_noc_form' noc.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="approve-button">Approve</button>
-                        </form>
-                    </td>
-                    {% elif is_ed %}
-                    <td>Already Approved</td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            <div class="card-header">
+                {% if is_noc_admin %}
+                <h2>All NOC Submissions (Admin View)</h2>
+                {% else %}
+                <h2>Your NOC Submissions</h2>
+                {% endif %}
+                {% if is_noc_admin %}
+                <a href="{% url 'export_noc_excel' %}" class="export-button">Export to Excel</a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="col">ID</th>
+                            <th class="col">Name</th>
+                            <th class="col">Country</th>
+                            <th class="col">Status</th>
+                            <th class="col">Action</th>
+                            {% if is_ed %}
+                            <th class="col">Approve</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for noc in noc_forms %}
+                        <tr>
+                            <td>{{ noc.applicant_id }}</td>
+                            <td>{{ noc.applicant_name }}</td>
+                            <td>{{ noc.country_visit }}</td>
+                            <td>
+                                <span class="status {% if noc.approved %}approved{% else %}waiting{% endif %}">
+                                    {% if noc.approved %}Approved{% else %}Waiting for Approval{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'view_noc_form' noc.id %}">View</a>
+                                {% if noc.approved %}
+                                | <a href="{% url 'generate_noc_pdf' noc.id %}" class="btn btn-primary">Download</a>
+                                {% endif %}
+                            </td>
+                            {% if is_ed and not noc.approved %}
+                            <td>
+                                <form method="post" action="{% url 'approve_noc_form' noc.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="approve-button">Approve</button>
+                                </form>
+                            </td>
+                            {% elif is_ed %}
+                            <td>Already Approved</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+    
+        </div>
+        <!-- Header with Title and Export Button -->
     </div>
 </body>
 
