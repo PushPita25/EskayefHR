@@ -681,7 +681,6 @@ def noc_form_list(request):
         if is_ed:
             # If the user is ED, fetch all NOC forms for their department
             print('ED')
-            print('ED')
             noc_forms = NOC.objects.filter(department=user_department)
         else:
             # If the user is not ED, fetch only their own NOC forms
@@ -690,7 +689,7 @@ def noc_form_list(request):
         is_noc_admin = False  # Mark the user as not noc admin
 
     # Pass 'is_noc_admin' to the template
-    return render(request, 'profileapp/noc_form_list.html', {'noc_forms': noc_forms, 'is_noc_admin': is_noc_admin, 'is_ed': is_ed})
+    return render(request, 'profileapp/noc_form_list.html', {'noc_forms': noc_forms, 'is_noc_admin': is_noc_admin})
 
 def view_noc_form(request, form_id):
     noc_instance = NOC.objects.get(id=form_id)

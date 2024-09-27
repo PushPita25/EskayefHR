@@ -101,23 +101,30 @@ p {
 
 .card {
     flex: 1 1 calc(33.33% - 20px); /* Adjust card size for responsiveness */
-    height: 150px;
+    align-items: center;
+    width: 185px;
+    height: 128px;
     background: #1e3c72;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #2a5298, #1e3c72);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #2a5298, #1e3c72); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    color: rgb(255, 255, 255);
+    color: rgb(151, 145, 145);
     border-radius: 10px;
     padding: 20px;
     box-sizing: border-box;
+    text-wrap: wrap;
+    word-wrap: break-word; /* Ensure long words wrap */
+    overflow: hidden;
     cursor: pointer;
     transition: transform 0.5s;
 }
 
 .card h5 {
-    margin-top: 15px;
     text-align: center;
-    font-size: 1.5em;
-    font-weight: 600;
+    font-size: 1.5em; 
+    /* 
+    font-weight: 500;
+    margin-top: 15px;
+         */
 }
 
 .card:hover {

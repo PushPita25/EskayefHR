@@ -239,16 +239,16 @@
                 </div></a>
 
                 <a href="{% url 'expense' %}" style="text-decoration: none; color: white;"><div class="card {% if not is_manager %}disabled-card{% endif %}">
-                        <h5 style="margin-top: 40px;">Monthly Manager Expense</h5>
+                        <h5 >Monthly Manager Expense</h5>
                 </div></a>
 
 
-                <a href="{% url 'noc_form_view' %}" style="text-decoration: none; color: white;"><div class="card">
-                        <h5 style="margin-top: 40px;">Travel Recommendation </h5>
-                </div></a>
                 <div class="card disabled-card">
                     <h5>Visiting Card</h5>
                 </div>
+                <a href="{% url 'noc_form_view' %}" style="text-decoration: none; color: white;"><div class="card" style="text-wrap-mode:wrap;">
+                        <h5 >Travel Permits</h5>
+                </div></a>
                 <div class="card disabled-card">
                     <h5>ID Card</h5>
                 </div>
