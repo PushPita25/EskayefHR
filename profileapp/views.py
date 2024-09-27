@@ -661,6 +661,7 @@ def noc_form_list(request):
                 user_department = row[0]  # Assume department is stored in the first column
 
         # Check if the logged-in user is the ED for their department
+        is_ed = False
         print(user_department)
         if user_department:
             with connection.cursor() as cursor:
@@ -669,13 +670,17 @@ def noc_form_list(request):
 
                 print(result)
 
+                print(result)
+
                 if result and result[0] > 0:
                     is_ed = True
+                print(is_ed)
                 print(is_ed)
 
         # Fetch NOC forms based on ED status
         if is_ed:
             # If the user is ED, fetch all NOC forms for their department
+            print('ED')
             print('ED')
             noc_forms = NOC.objects.filter(department=user_department)
         else:
@@ -684,7 +689,7 @@ def noc_form_list(request):
 
         is_noc_admin = False  # Mark the user as not noc admin
 
-    # Pass 'is_noc_admin' and 'is_ed' to the template
+    # Pass 'is_noc_admin' to the template
     return render(request, 'profileapp/noc_form_list.html', {'noc_forms': noc_forms, 'is_noc_admin': is_noc_admin, 'is_ed': is_ed})
 
 def view_noc_form(request, form_id):

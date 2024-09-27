@@ -147,6 +147,7 @@
     <div class="container">
         <div class="card">
 
+<<<<<<< HEAD
             <!-- Header with Title and Buttons on the Right -->
             <div class="header">
                 <h2>
@@ -161,13 +162,30 @@
             </div>
 
             <div class="card-body">
+=======
+            <div class="card-header">
+                {% if is_noc_admin %}
+                <h2>All NOC Submissions (Admin View)</h2>
+                {% else %}
+                <h2>Your NOC Submissions</h2>
+                {% endif %}
+                {% if is_noc_admin %}
+                <a href="{% url 'export_noc_excel' %}" class="export-button">Export to Excel</a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+
+>>>>>>> b50d34d9e1cdb444235bdd51a7c8a3229c251f04
                 <table class="table">
                     <thead>
                         <tr>
                             <th class="col">ID</th>
                             <th class="col">Name</th>
                             <th class="col">Country</th>
+<<<<<<< HEAD
                             <th class="col">Type</th>
+=======
+>>>>>>> b50d34d9e1cdb444235bdd51a7c8a3229c251f04
                             <th class="col">Status</th>
                             <th class="col">Action</th>
                             {% if is_ed %}
@@ -181,7 +199,10 @@
                             <td>{{ noc.applicant_id }}</td>
                             <td>{{ noc.applicant_name }}</td>
                             <td>{{ noc.country_visit }}</td>
+<<<<<<< HEAD
                             <td>{{noc.type}}</td>
+=======
+>>>>>>> b50d34d9e1cdb444235bdd51a7c8a3229c251f04
                             <td>
                                 <span class="status {% if noc.approved %}approved{% else %}waiting{% endif %}">
                                     {% if noc.approved %}Approved{% else %}Waiting for Approval{% endif %}
@@ -190,11 +211,15 @@
                             <td>
                                 <a href="{% url 'view_noc_form' noc.id %}">View</a>
                                 {% if noc.approved %}
+<<<<<<< HEAD
                                   {% if noc.type == 'NOC'%}
                                 | <a href="{% url 'generate_noc_pdf' noc.id %}" class="btn btn-primary">Download</a>
                                   {% else %}
                                   | <a href="{% url 'generate_immigration_pdf' noc.id %}" class="btn btn-primary">Download</a>
                                   {% endif %}
+=======
+                                | <a href="{% url 'generate_noc_pdf' noc.id %}" class="btn btn-primary">Download</a>
+>>>>>>> b50d34d9e1cdb444235bdd51a7c8a3229c251f04
                                 {% endif %}
                             </td>
                             {% if is_ed and not noc.approved %}
@@ -212,8 +237,14 @@
                     </tbody>
                 </table>
             </div>
+<<<<<<< HEAD
 
         </div>
+=======
+    
+        </div>
+        <!-- Header with Title and Export Button -->
+>>>>>>> b50d34d9e1cdb444235bdd51a7c8a3229c251f04
     </div>
 </body>
 
