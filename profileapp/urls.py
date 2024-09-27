@@ -10,7 +10,7 @@ urlpatterns = [
     path('recruitment_form/', views.recruitment_form_view, name='recruitment_form'),
     path('recruitment_list/', views.recruitment_list_view, name='recruitment_list'),
     path('recruitment_detail/<int:pk>/', views.recruitment_detail_view, name='recruitment_detail'),
-    path('success_page/', views.success_view, name='success_page'),
+    
 
     # New paths for the login mechanism
     path('id/', views.enter_employee_id, name='enter_employee_id'),
@@ -31,6 +31,7 @@ urlpatterns = [
     path('download-noc-pdf/<int:noc_id>/', views.download_noc_pdf, name='download_noc_pdf'),  # New download path
     path('generate-noc-pdf/<int:noc_id>/', views.generate_noc_pdf, name='generate_noc_pdf'),  # New URL for PDF generation
     path('export-noc-excel/', views.export_noc_to_excel, name='export_noc_excel'),
+    path('generate_immigration_pdf/<int:noc_id>/', views.generate_immigration_pdf, name='generate_immigration_pdf'),
 ]
 
 

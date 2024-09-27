@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Immigration PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #000;
+        }
+
+        .header, .footer {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .header p, .footer p {
+            margin: 0;
+            padding: 0;
+        }
+
+        .content {
+            margin: 20px;
+        }
+
+        .content h1 {
+            font-size: 16px;
+            text-align: center;
+            text-decoration: underline;
+            margin-bottom: 20px;
+        }
+
+        .content p {
+            margin-bottom: 10px;
+        }
+
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .info-table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .info-table .label {
+            font-weight: bold;
+            width: 150px;
+        }
+
+        .company-name {
+            font-weight: bold;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #d9d9d9; /* Light gray background for header */
+            font-weight: bold;
+        }
+
+        td {
+            background-color: #f4f4f4; /* Light gray background for cells */
+        }
+
+        /* Centering text */
+        th, td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <p>Date: {{ date }}</p>
+        {% if port == "airport" %}
+        <p>Immigration officer<br>
+           Immigration Section,<br>
+           Hazrat Shahjalal International Airport <br>
+           Dhaka, Bangladesh</p>
+        {% else %}
+        <p>The Officer in charge<br>
+            Immigration Section,<br>
+            Benapol Port, <br>
+            Bangladesh</p>
+        {% endif %}
+
+        <p>Subject: <span style="font-weight: bold; text-decoration: underline;">NO OBJECTION TO TRAVEL</span></p>
+
+        <p>Dear Sir/Madam,</p>
+
+        <p>Kindly be informed that, <strong>{{passport_name}}</strong>, {{designation}}, ID {{ applicant_id }}, is a permanent employee of Eskayef Pharmaceuticals Limited. {{pronoun_subjectC}} would like to visit {{country_visit}}, as a part of {{intention}} from <strong>{{travel_date_from}}</strong> to <strong>{{travel_date_to}}.</strong>After visiting {{country_visit}}, {{applicant_name}} will resume {{pronoun_object}} duties in the country.</p>
+
+        <p>Name and passport details are tabulated below:</p>
+
+        <table>
+            <tr>
+                <th>SL.</th>
+                <th>Name of Applicants</th>
+                <th>Passport No.</th>
+            </tr>
+                <!-- Loop through all travelers (including the main applicant and additional travelers) -->
+                {% for traveler in all_travelers %}
+                <tr>
+                    <td>{{ forloop.counter }}</td> <!-- Serial number starts from 1 -->
+                    <td>{{ traveler.name }}{% if traveler.relationship != "Self" %} ({{ traveler.relationship }}){% endif %}</td>
+                    <td>{{ traveler.passport_no }}</td>
+                </tr>
+                {% empty %}
+                <!-- If no travelers are found (though there should always be at least one, the main applicant) -->
+                <tr>
+                    <td colspan="3">No travelers found.</td>
+                </tr>
+                {% endfor %}
+            
+        </table>
+
+        <p>The Company has no objection to this trip. Entire cost related to the tour to {{country_visit}} including air tickets, accomodation, meals and other expenses of {{applicant_name}} will be brone by {{cost_provider}}.
+       
+
+        <p>Please do not hesitate to contact us if you have any queiries.</p>
+
+        <p>Thank you for your continued co-operation.</p>
+
+        <p>Yours faithfully</p>
+
+       <!-- Conditional Footer based on Grade -->
+       <div class="footer">
+        {% if grade == 'ED' %}
+            <p>(<strong>Mohammad Mostafa Hassan</strong>)<br>
+            Executive Director - Commercial & HR<br>
+            Phone: 880 01711543455 (Cell)<br>
+            E-mail: mmn@skf.transcombd.com</p>
+        {% else %}
+            <p>(<strong>K.M. Shirazul Haque</strong>)<br>
+            Head of Human Resource Operations<br>
+            Phone: 880 01713065410 (Cell)<br>
+            E-mail: shiraz@skf.transcombd.com</p>
+        {% endif %}
+    </div>
+    </div>
+   
+</body>
+</html>

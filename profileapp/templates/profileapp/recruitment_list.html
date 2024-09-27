@@ -4,11 +4,57 @@
 <head>
     <title>Recruitment List</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-row h2 {
+            margin: 0;
+            color: rgb(9, 9, 126);
+        }
+
+        .header-row .button-group {
+            display: flex;
+            gap: 10px; /* Adds spacing between the buttons */
+        }
+
+        .header-row .btn {
+            background-color: rgb(9, 9, 126);
+        }
+
+        .back {
+            padding: 10px;
+            background-color: #132876;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container mt-4">
-        <h2 class="text-center">Recruitment List</h2>
+        <div class="header-row">
+            <!-- Left-aligned heading -->
+            <h2>Recruitment List</h2>
+
+            <!-- Right-aligned buttons -->
+            <div class="button-group">
+                {% if is_rrf_admin %}
+                <a href="{% url 'export_rrf_data_to_excel' %}" class="btn btn-info btn-sm">Download Recruitment Data</a>
+                {% endif %}
+                <a href="{% url 'dashboard' %}" class="back">Back</a>
+            </div>
+        </div>
+
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -34,7 +80,7 @@
                     <td>{{ form.designation }}</td>
                     <td>{{ form.recruitment_type }}</td>
                     <td>{{ form.vacant_position }}</td>
-                    <td><a href="{% url 'recruitment_detail' form.id %}" class="btn btn-info btn-sm">View</a></td>
+                    <td><a href="{% url 'recruitment_detail' form.id %}" class="btn btn-info btn-sm" style="background-color:rgb(9, 9, 126);">View</a></td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -44,11 +90,6 @@
             </tbody>
         </table>
     </div>
-
-    {% if is_rrf_admin %}
-    <a href="{% url 'export_rrf_data_to_excel' %}" class="btn btn-info btn-sm" style="margin-left: 45%; margin-bottom: 20px;">Download Recruitment Data</a>  
-    {% endif %}
-
 </body>
 
 </html>

@@ -63,7 +63,7 @@
 <body>
 
     <div class="content">
-        <p><strong>Our Ref: {{ reference_number }}</strong></p>
+        <p style="margin-top: 154px;"><strong>Our Ref: {{ reference_number }}</strong></p>
         <p>Date: {{ date }}</p>
         <p>To: {{concern}}<br>
                <span style="margin-left: 20px;">{{embassy}}</span><br>
@@ -73,40 +73,26 @@
 
         <p>Dear Sir/Madam,</p>
 
-        <p>Eskayef Pharmaceuticals Limited is one of the leading pharmaceutical companies of Bangladesh (annual turnover of Taka 23 billion equivalent to approximately 270 million US dollars) having more than 8500 employees. The company was incorporated in 1979 as a subsidiary of SmithKline & French, USA and it was acquired by the leading conglomerate of Bangladesh, Transcom Ltd. in 1990 in the wake of the merger between SmithKline & French, USA and Beecham, UK. The state-of-the-art pharmaceutical manufacturing facility of Eskayef has achieved approval from US FDA (United States Food and Drug Administration), UK MHRA (United Kingdom Medicines and Healthcare products Regulatory Agency), TGA Australia (Therapeutic Goods Administration) and Brazil ANVISA (Brazilian Health Regulatory Agency). The company has also established a hi-tech insulin manufacturing plant for contract manufacturing for the world’s largest insulin maker, Novo Nordisk of Denmark. Eskayef is growing more global and exporting its finished products and bulk pellets to 67 countries across 6 continents. Presently, Eskayef is also marketing eye care products of Allergan Inc. USA, the global leader in this specialty area.</p>
+        <p style="text-align: justify;">Eskayef Pharmaceuticals Limited is one of the leading pharmaceutical companies of Bangladesh (annual turnover of Taka 23 billion equivalent to approximately 270 million US dollars) having more than 8500 employees. The company was incorporated in 1979 as a subsidiary of SmithKline & French, USA and it was acquired by the leading conglomerate of Bangladesh, Transcom Ltd. in 1990 in the wake of the merger between SmithKline & French, USA and Beecham, UK. The state-of-the-art pharmaceutical manufacturing facility of Eskayef has achieved approval from US FDA (United States Food and Drug Administration), UK MHRA (United Kingdom Medicines and Healthcare products Regulatory Agency), TGA Australia (Therapeutic Goods Administration) and Brazil ANVISA (Brazilian Health Regulatory Agency). The company has also established a hi-tech insulin manufacturing plant for contract manufacturing for the world’s largest insulin maker, Novo Nordisk of Denmark. Eskayef is growing more global and exporting its finished products and bulk pellets to 67 countries across 6 continents. Presently, Eskayef is also marketing eye care products of Allergan Inc. USA, the global leader in this specialty area.</p>
 
-        <p>The purpose of this letter is to introduce our company's <strong>{{ designation }}</strong>, <strong>{{ applicant_name }}</strong>, 
+        <p style="text-align: justify;">The purpose of this letter is to introduce our company's <strong>{{ designation }}</strong>, <strong>{{ passport_name }}</strong>, 
         ID: <strong>{{ applicant_id }}</strong> bearing Passport No. <strong>{{ passport_no }}</strong>, 
-        who is working with us since <strong>{{ joining_date }}</strong>. {{pronoun_subject}} intends to visit <strong>{{ country_visit }}</strong> 
-        as a part of 
-        {% if visa_type == 'tourist' %}
-            excursion holiday
-        {% elif visa_type == 'business purpose' %}
-            business purpose
-        {% elif visa_type == 'medical purpose' %}
-            medical purpose
-        {% elif visa_type == 'medical attendant' %}
-            medical attendant
-        {% else %}
-            [specify purpose]
+        who is working with us since <strong>{{ joining_date }}</strong>. {{pronoun_subjectC}} intends to visit <strong>{{ country_visit }}</strong> 
+        as a part of {{intention}} {% if family_members_text %}with {{pronoun_object}} family members: {{family_members_text }}
         {% endif %}
 
-        {% if family_members_text %}
-            With {{pronoun_object}} family members: {{ family_members_text }}
-        {% endif %}
+         with expected travel date on <strong>{{ travel_date_from }}</strong> to  
+        <strong>{{ travel_date_to }}</strong>. Please note that the entire trip cost will be borne by {{cost_provider}}. After the visit, 
+        {{pronoun_subjectS}} will return to Bangladesh and <strong>{{ passport_name }}</strong> will resume {{pronoun_object}} duties in the company.</p>
 
-         with expected travel date on <strong>{{ travel_date_from }}</strong> to,  
-        <strong>{{ travel_date_to }}</strong>. Please note that the entire trip cost will be borne by {{pronoun_object}}. After the visit, 
-        {{pronoun_subject}} will return to Bangladesh and <strong>{{ applicant_name }}</strong> will resume {{pronoun_object}} duties in the company.</p>
-
-        <p>In view of the above, your kind assistance in granting <strong>{{ applicant_name }}</strong>'s entry visa would be highly appreciated.</p>
+        <p>In view of the above, your kind assistance in granting <strong>{{ passport_name }}</strong>'s entry visa would be highly appreciated.</p>
 
         <p>With best regards,</p>
         <p>Sincerely yours,<br>
         <strong>For Eskayef Pharmaceuticals Limited</strong></p>
 
        <!-- Conditional Footer based on Grade -->
-       <div class="footer">
+       <div class="footer" style="margin-top: 77px;">
         {% if grade == 'ED' %}
             <p>(<strong>Mohammad Mostafa Hassan</strong>)<br>
             Executive Director - Commercial & HR<br>

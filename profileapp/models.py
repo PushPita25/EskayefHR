@@ -11,20 +11,6 @@ class Profile(models.Model):
     designation = models.CharField(max_length=200, null=True, blank=True)
     profile_img = models.ImageField(default='media/profile.webp', upload_to='media', null=True, blank=True)
 
-    # def save(self, *args, **kwargs):
-    #     # Fetch the corresponding employee details from the Employee table
-    #     employee_id = self.user.username  # Assuming employee_id is the same as the username
-    #     with connection.cursor() as cursor:
-    #         cursor.execute("SELECT name, department, designation FROM Employees WHERE employee_id = %s", [employee_id])
-    #         row = cursor.fetchone()
-
-    #     if row:
-    #         self.name = row[0]
-    #         self.department = row[1]
-    #         self.designation = row[2]
-
-    #     super(Profile, self).save(*args, **kwargs)
-
     def __str__(self):
         return f"{self.user.username}'s profile"
     
@@ -167,11 +153,6 @@ class ExecutiveDirectors(models.Model):
         verbose_name = 'Executive Director'
         verbose_name_plural = 'Executive Directors'
 
-#     ### SMALL CONSIDERATION ###
-#     #Meta class consists of few fields
-#     ##db_table name defines the table name in the database
-#     ##verbose name and verbose name plural defines the human readable version of the database name
-
 
 #NOC
 class NOC(models.Model):
@@ -184,13 +165,14 @@ class NOC(models.Model):
     travel_date_from = models.DateField()
     travel_date_to = models.DateField()
     type = models.CharField(max_length=20, choices=[('NOC', 'NOC'), ('Immigration', 'Immigration')])
+    port = models.CharField(max_length=20, blank=True, null=True)
     type_noc = models.CharField(max_length=100, blank=True, null=True)
     passport_name = models.CharField(max_length=100)
     passport_no = models.CharField(max_length=50)
-    passport_copy = models.FileField(upload_to='passport_copies/', blank=True, null=True)
+    passport_copy = models.FileField(null=False, default='default/path/to/file.jpg', upload_to='passport_copies/')
     invitation_letter = models.FileField(upload_to='invitation_letters/', blank=True, null=True)
     country_visit = models.CharField(max_length=100)
-    no_of_travelers = models.PositiveIntegerField(default=0)
+    no_of_travelers = models.PositiveIntegerField(default=0, blank=True, null=True)
     approved = models.BooleanField(default=False) 
     
     

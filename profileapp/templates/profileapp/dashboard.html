@@ -8,14 +8,14 @@
     <title>Home</title>
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Carlito&display=swap" rel="stylesheet">
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script>
         // Enable Pusher logging - don't include this in production
         Pusher.logToConsole = true;
 
         var pusher = new Pusher('0cc1f0e0cf6638ebb54f', {
-          cluster: 'ap2'
+            cluster: 'ap2'
         });
 
         // Replace 'user_email' with the actual email of the logged-in executive director
@@ -23,31 +23,35 @@
         // var unique_channel_name = "ed-channel-" + user_email.replace('@', '-').replace('.', '-');
         var unique_channel_name = `ed-channel-${user_email}`;
         console.log('channel_name', unique_channel_name)
-        
+
         console.log(user_email)
         console.log(unique_channel_name)
 
         var channel = pusher.subscribe(unique_channel_name);
         console.log(channel)
-        channel.bind('approval-event', function(data) {
-            console.log('pusher_response',data)
-          // Display the notification on the dashboard
-          alert(data.message);
-          
-          // Optionally, update the UI with new information
-          var notificationsList = document.getElementById('notifications-list');
-          if (notificationsList) {
-            var newNotification = document.createElement('li');
-            newNotification.textContent = data.message;
-            notificationsList.appendChild(newNotification);
-          }
+        channel.bind('approval-event', function (data) {
+            console.log('pusher_response', data)
+            // Display the notification on the dashboard
+            alert(data.message);
+
+            // Optionally, update the UI with new information
+            var notificationsList = document.getElementById('notifications-list');
+            if (notificationsList) {
+                var newNotification = document.createElement('li');
+                newNotification.textContent = data.message;
+                notificationsList.appendChild(newNotification);
+            }
         });
         console.log("Pusher event completed");
     </script>
 
-    
+
 
     <style>
+        body {
+            font-family: 'Calibri', 'Carlito', Arial, sans-serif;
+        }
+
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -130,6 +134,13 @@
             cursor: not-allowed;
         }
 
+        h1 {
+            color: rgb(8, 56, 91);
+            font-size: 2em;
+            font-weight: 800;
+        }
+
+
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: row;
@@ -166,15 +177,15 @@
                     <img src="{% static 'images/profile.webp' %}" alt="User Image">
                     <span class="header-username">{{ user_name }}</span>
                 </a>
-                <i class="fa fa-caret-down dropdown-icon"></i> 
+                <i class="fa fa-caret-down dropdown-icon"></i>
 
-               
+
                 <div class="dropdown-menu">
-                    
+
                     <div class="profile-item">
                         <span>{{ user_name }}</span>
                         <span><small>{{ user_designation}}</small></span>
-                        <small>{{ user_department }}</small> 
+                        <small>{{ user_department }}</small>
                     </div>
 
                     {% if is_rrf_admin %}
@@ -183,6 +194,7 @@
                     {% if is_expense_admin %}
                     <a href="{% url 'expense_list' %}" class="dropdown-item">Expense List</a>
                     {% endif %}
+                    <a href="{% url 'noc_form_list'%}" class="dropdown-item">Travel History</a>
                     <a href="{% url 'logout' %}" class="dropdown-item">Logout</a>
                 </div>
             </div>
@@ -217,28 +229,23 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h2 style="margin-bottom: 10px; margin-left: 60px;">Employee Self - Service</h2>
+                <h1 style="margin-bottom: 10px; margin-left: 60px;">Employee Self - Service</h1>
                 <img src="{% static 'images/HRvector.jpg' %}" alt="" class="HRvector">
 
             </div>
             <div class="col card-container">
-                <div class="card {% if not is_rrf_employee %}disabled-card{% endif %}">
-                    <a href="{% url 'recruitment_form' %}" style="text-decoration: none; color: white;">
-                        <h5>Recruitment Requisition Form (RRF)</h5>
-                    </a>
-                </div>
+                <a href="{% url 'recruitment_form' %}" style="text-decoration: none; color: white;"><div class="card {% if not is_rrf_employee %}disabled-card{% endif %}">
+                        <h5>Recruitment <br> Requisition Form (RRF)</h5>
+                </div></a>
 
-                <div class="card {% if not is_manager %}disabled-card{% endif %}">
-                    <a href="{% url 'expense' %}" style="text-decoration: none; color: white;">
-                        <h5>Monthly Manager Expense</h5>
-                    </a>
-                </div>
+                <a href="{% url 'expense' %}" style="text-decoration: none; color: white;"><div class="card {% if not is_manager %}disabled-card{% endif %}">
+                        <h5 style="margin-top: 40px;">Monthly Manager Expense</h5>
+                </div></a>
 
-                <div class="card">
-                    <a href="{% url 'noc_form_view' %}" style="text-decoration: none; color: white;">
-                        <h5>NOC</h5>
-                    </a>
-                </div>
+
+                <a href="{% url 'noc_form_view' %}" style="text-decoration: none; color: white;"><div class="card">
+                        <h5 style="margin-top: 40px;">Travel Recommendation </h5>
+                </div></a>
                 <div class="card disabled-card">
                     <h5>Visiting Card</h5>
                 </div>
@@ -269,169 +276,7 @@
 
 </body>
 
-</html> 
+</html>
 
 
 
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Self-Service</title>
-
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background-color: #f0f8ff;
-        }
-
-        .header {
-            width: 100%;
-            background-color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo img {
-            height: 50px;
-        }
-
-        .user-info {
-            font-size: 18px;
-            color: #333;
-        }
-
-        .main-content {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .main-content h1 {
-            font-size: 24px;
-            color: #00529b;
-            margin-bottom: 20px;
-        }
-
-        .content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .image-container {
-            margin-right: 20px;
-        }
-
-        .image-container img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .service-button {
-            background-color: #00529b;
-            color: #fff;
-            border: none;
-            padding: 15px 30px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .service-button:hover {
-            background-color: #003e7e;
-        }
-
-        .footer {
-            width: 100%;
-            text-align: center;
-            padding: 10px;
-            background-color: #00529b;
-            color: #fff;
-            position: absolute;
-            bottom: 0;
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                flex-direction: column;
-            }
-
-            .image-container {
-                margin-bottom: 20px;
-            }
-
-            .button-container {
-                gap: 10px;
-            }
-
-            .service-button {
-                width: 100%;
-                max-width: 300px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <header class="header">
-        <div class="logo">
-            <img src="{% static 'images/logo2.png' %}" alt="Company Logo">
-        </div>
-        <div class="user-info">
-            <span class="user-name">Zarin Tasnim</span>
-        </div>
-    </header>
-
-    <main class="main-content">
-        <h1>Employee Self - Service</h1>
-        <div class="content">
-            <div class="image-container">
-                <img src="{% static 'images/HRvector.jpg' %}" alt="Employee Network">
-            </div>
-            <div class="button-container">
-                <button class="service-button">Recruitment Requisition Form (RRF)</button>
-                <button class="service-button">Monthly Manager Expense</button>
-                <button class="service-button">NOC</button>
-                <button class="service-button">Visiting Card</button>
-                <button class="service-button">ID Card</button>
-                <button class="service-button">Personal Data Update</button>
-            </div>
-        </div>
-    </main>
-
-    <footer class="footer">
-        <p>© 2024 Eskayef Pharmaceuticals Limited</p>
-    </footer>
-
-</body>
-
-</html> -->
