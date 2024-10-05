@@ -36,8 +36,8 @@
                 }
             }
 
-            // // Set timeout to hide the notification after 4 seconds (4000 milliseconds)
-            setTimeout(hideNotification, 10000);
+            // Set timeout to hide the notification after 4 seconds (4000 milliseconds)
+            // setTimeout(hideNotification, 4000);
 
             // Select the cross element to manually close the notification
             var cross = document.getElementById('cross');
@@ -53,7 +53,7 @@
             <div class="logo">
                 <img src="{% static 'images/logo.jpeg' %}" alt="Logo">
             </div>
-            <h1>Verify OTP</h1>
+            <h1>Verify OTP [Check your Email]</h1>
 
             <form action="{% url 'verify_otp' %}" method="post">
                 {% csrf_token %}

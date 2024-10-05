@@ -93,7 +93,7 @@
 <body>
 
     <div class="content">
-        <p>Date: {{ date }}</p>
+        <p style="margin-top: 154px;">Date: {{ date }}</p>
         {% if port == "airport" %}
         <p>Immigration officer<br>
            Immigration Section,<br>
@@ -110,43 +110,53 @@
 
         <p>Dear Sir/Madam,</p>
 
-        <p>Kindly be informed that, <strong>{{passport_name}}</strong>, {{designation}}, ID {{ applicant_id }}, is a permanent employee of Eskayef Pharmaceuticals Limited. {{pronoun_subjectC}} would like to visit {{country_visit}}, as a part of {{intention}} from <strong>{{travel_date_from}}</strong> to <strong>{{travel_date_to}}.</strong>After visiting {{country_visit}}, {{applicant_name}} will resume {{pronoun_object}} duties in the country.</p>
+        <p style="text-align: justify;">Kindly be informed that, <strong>{{passport_name}}</strong>, {{designation}}, ID {{ applicant_id }}, is a permanent employee of Eskayef Pharmaceuticals Limited. {{pronoun_subjectC}} would like to visit {{country_visit}}, as a part of {{intention}} from <strong>{{travel_date_from}}</strong> to <strong>{{travel_date_to}}.</strong> After visiting {{country_visit}}, {{applicant_name}} will resume {{pronoun_object}} duties in the country.</p>
 
-        <p>Name and passport details are tabulated below:</p>
+        <p style="text-align: justify;">Name and passport details are tabulated below:</p>
 
         <table>
             <tr>
                 <th>SL.</th>
                 <th>Name of Applicants</th>
                 <th>Passport No.</th>
+                {% if all_travelers|length > 1 %}
+                    <th>Relationship</th>
+                {% endif %}
             </tr>
                 <!-- Loop through all travelers (including the main applicant and additional travelers) -->
                 {% for traveler in all_travelers %}
                 <tr>
                     <td>{{ forloop.counter }}</td> <!-- Serial number starts from 1 -->
-                    <td>{{ traveler.name }}{% if traveler.relationship != "Self" %} ({{ traveler.relationship }}){% endif %}</td>
+                    <td>{{ traveler.name }}</td>
                     <td>{{ traveler.passport_no }}</td>
+                    {% if all_travelers|length > 1 %}
+                        <td>{% if traveler.relationship != "Self" %}{{ traveler.relationship }}{% else %}-{% endif %}</td>
+                    {% endif %}
                 </tr>
                 {% empty %}
                 <!-- If no travelers are found (though there should always be at least one, the main applicant) -->
                 <tr>
-                    <td colspan="3">No travelers found.</td>
+                    <td colspan="4">No travelers found.</td>
                 </tr>
                 {% endfor %}
             
         </table>
 
-        <p>The Company has no objection to this trip. Entire cost related to the tour to {{country_visit}} including air tickets, accomodation, meals and other expenses of {{applicant_name}} will be brone by {{cost_provider}}.
+        <p style="text-align: justify;">The Company has no objection to this trip. Entire cost related to the tour to {{country_visit}} including air tickets, accomodation, meals and other expenses of {{applicant_name}} will be borne by {% if cost_provider == 'him'%}
+            {{pronoun_object}}.
+         {% else %}
+            company.
+         {% endif %}
        
 
-        <p>Please do not hesitate to contact us if you have any queiries.</p>
+        <p style="text-align: justify;">Please do not hesitate to contact us if you have any queries.</p>
 
         <p>Thank you for your continued co-operation.</p>
 
         <p>Yours faithfully</p>
 
        <!-- Conditional Footer based on Grade -->
-       <div class="footer">
+       <div class="footer" style="margin-top: 77px;">
         {% if grade == 'ED' %}
             <p>(<strong>Mohammad Mostafa Hassan</strong>)<br>
             Executive Director - Commercial & HR<br>

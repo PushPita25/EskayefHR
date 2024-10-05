@@ -48,8 +48,9 @@
             gap: 10px;
         }
 
-        .export-button, .back {
-            background-color:#132876;
+        .export-button,
+        .back {
+            background-color: #132876;
             color: white;
             padding: 10px 20px;
             text-align: center;
@@ -160,6 +161,7 @@
                 </div>
             </div>
 
+
             <div class="card-body">
                 <table class="table">
                     <thead>
@@ -189,12 +191,13 @@
                             </td>
                             <td>
                                 <a href="{% url 'view_noc_form' noc.id %}">View</a>
-                                {% if noc.approved %}
-                                  {% if noc.type == 'NOC'%}
+                                {% if noc.approved and is_noc_admin %}
+                                {% if noc.type == 'NOC'%}
                                 | <a href="{% url 'generate_noc_pdf' noc.id %}" class="btn btn-primary">Download</a>
-                                  {% else %}
-                                  | <a href="{% url 'generate_immigration_pdf' noc.id %}" class="btn btn-primary">Download</a>
-                                  {% endif %}
+                                {% else %}
+                                | <a href="{% url 'generate_immigration_pdf' noc.id %}"
+                                    class="btn btn-primary">Download</a>
+                                {% endif %}
                                 {% endif %}
                             </td>
                             {% if is_ed and not noc.approved %}
@@ -207,6 +210,7 @@
                             {% elif is_ed %}
                             <td>Already Approved</td>
                             {% endif %}
+
                         </tr>
                         {% endfor %}
                     </tbody>

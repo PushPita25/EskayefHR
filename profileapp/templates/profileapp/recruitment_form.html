@@ -21,6 +21,11 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
 
+        .mt-4 {
+            margin-top: 100px !important;
+            /* Change to your desired margin */
+        }
+
         h2 {
             margin-bottom: 20px;
             color: #343a40;
@@ -44,21 +49,25 @@
             border-color: #07284c;
         }
 
-        .back {
-            padding: 10px 20px;
-            background-color: #132876;
+        .back-button {
+            position: absolute;
+            top: -60px;
+            /* Adjusts space from the top to create more room */
+            right: 155px;
+            /* Moves the button more towards the right, but not too far */
+            background-color: #1c2c58;
             color: white;
+            padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            position: absolute;
-            top: 10px;
-            left: 10px;
+            font-weight: 600;
             transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
         }
 
-        .back:hover {
+        .back-button:hover {
             background-color: #1534be;
             transform: translateY(-2px);
         }
@@ -122,6 +131,15 @@
             width: 100%;
         }
 
+        /* Adjusted CSS for a stronger blur effect */
+        .blurred {
+            filter: blur(2px);
+            /* Increased blur to 5px */
+            pointer-events: none;
+            /* Prevent interaction */
+        }
+
+
         .loader {
             border: 16px solid #f3f3f3;
             /* Light grey */
@@ -132,6 +150,7 @@
             height: 120px;
             animation: spin 2s linear infinite;
         }
+
 
         @keyframes spin {
             0% {
@@ -156,8 +175,8 @@
 
                 newRow.innerHTML = `
                     <td>${i}</td>
-                    <td>
-                        <select id="vacancy-type-${i}" name="vacancy_type_${i}" class="form-control" onchange="handleVacancyTypeChange(this, ${i})" autocomplete="off" required>
+                    <td class="col-md-2 col-sm-2 col-xs-3 col-lg-2">
+                        <select id="vacancy-type-${i}" name="vacancy_type_${i}" class="form-control" onchange="handleVacancyTypeChange(this, ${i})" autocomplete="off" required >
                             <option value="" selected disabled></option>
                             <option value="Replacement">Replacement</option>
                             <option value="AOP New">AOP New</option>
@@ -182,12 +201,12 @@
             const lastDateField = document.getElementById(`last-date-${rowNumber}`);
 
             if (selectElement.value === "AOP New") {
-                // Set values to '----'
+                // Set values to '----' for text fields, but leave date fields empty
                 nameField.value = "----";
                 employeeIdField.value = "----";
                 designationField.value = "----";
-                resignationDateField.value = "----";
-                lastDateField.value = "----";
+                resignationDateField.value = "";  // Leave date field empty
+                lastDateField.value = "";  // Leave date field empty
 
                 // Disable the fields
                 nameField.disabled = true;
@@ -195,6 +214,13 @@
                 designationField.disabled = true;
                 resignationDateField.disabled = true;
                 lastDateField.disabled = true;
+
+                // Add blur class for visual effect
+                nameField.classList.add('blurred');
+                employeeIdField.classList.add('blurred');
+                designationField.classList.add('blurred');
+                resignationDateField.classList.add('blurred');
+                lastDateField.classList.add('blurred');
             } else {
                 // Enable the fields and clear values
                 nameField.value = "";
@@ -208,6 +234,13 @@
                 designationField.disabled = false;
                 resignationDateField.disabled = false;
                 lastDateField.disabled = false;
+
+                // Remove blur class
+                nameField.classList.remove('blurred');
+                employeeIdField.classList.remove('blurred');
+                designationField.classList.remove('blurred');
+                resignationDateField.classList.remove('blurred');
+                lastDateField.classList.remove('blurred');
             }
         }
 
@@ -219,10 +252,9 @@
 </head>
 
 <body>
-    <!-- Back Button Outside the Form -->
-    <a href="{% url 'dashboard' %}" class="back">Back</a>
 
     <div class="container mt-4">
+        <a href="{% url 'dashboard' %}" class="back-button"><i class="fas fa-arrow-left"></i> Back</a>
         <h2 class="text-center">Recruitment Requisition Form (RRF)</h2>
         <form method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="disableSubmitButton()">
             {% csrf_token %}
@@ -231,7 +263,8 @@
             <div class="form-row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="raised-by"><i class="fas fa-user"></i> Requisition Raised By</label>
+                        <label for="raised-by" style="margin-top: 20px;"><i class="fas fa-user"></i> Requisition Raised
+                            By</label>
                         <input type="text" id="raised-by" name="raised_by" class="form-control"
                             value="{{ form.raised_by.value|default_if_none:'' }}" readonly autocomplete="off"
                             required />
@@ -250,23 +283,61 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="approved-by"><i class="fas fa-check"></i> Requisition Approved By:</label>
+                        <label for="approved-by" style="margin-top: 20px;"><i class="fas fa-check"></i> Requisition
+                            Approved By:</label>
                         <select id="approved-by" name="approved_by" class="form-control" autocomplete="off" required>
                             <option value="" selected disabled></option>
-                            <option value="Executive Director-Commercial & HR">Executive Director-Commercial & HR
+                            <option value="Executive Director-Commercial & HR">Executive Director - Commercial & HR
                             </option>
-                            <option value="Executive Director-Finance">Executive Director-Finance</option>
-                            <option value="Executive Director-Marketing & Sales">Executive Director-Marketing & Sales
+                            <option value="Executive Director-Finance">Executive Director - Finance</option>
+                            <option value="Executive Director-Marketing & Sales">Executive Director - Marketing & Sales
                             </option>
-                            <option value="Executive Director-Plant(Rupgonj & Mirpur)">Executive Director-Plant(Rupgonj & Mirpur)</option>
-                            <option value="Executive Director-Plant(Tongi & Salna)">Executive Director-Plant(Tongi & Salna)</option>
-                            <option value="Executive Director-Technical">Executive Director-Technical</option>
-                            <option value="Executive Director-Quality Assurance">Executive Director-Quality Assurance
+                            <option value="Executive Director-Plant(Rupgonj & Mirpur)">Executive Director - Plant
+                                (Rupgonj
+                                & Mirpur)</option>
+                            <option value="Executive Director-Plant(Tongi & Salna)">Executive Director - Plant (Tongi &
+                                Salna)</option>
+                            <option value="Executive Director-Technical">Executive Director - Technical</option>
+                            <option value="Executive Director-Quality Assurance">Executive Director - Quality Assurance
                             </option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="unit-name"><i class="fas fa-sitemap"></i> Unit Name:</label>
+                        <input type="text" id="unit_name" name="unit_name" class="form-control"
+                            value="{{ form.unit_name.value|default_if_none:'' }}" readonly autocomplete="off"
+                            required />
+                    </div>
+                </div>
+            </div>
+
+            <div id="loading"></div>
+
+            <div class="section-title">Vacancy Information</div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="designation" style="margin-top: 20px;"><i class="fas fa-briefcase"></i> Designation
+                            / Job Title:</label>
+                        <input type="text" id="designation" name="designation" class="form-control" autocomplete="off"
+                            required />
+                    </div>
+                </div>
+
+                <!-- Number of Vacant Positions and Unit Name side by side -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="vacant-position" style="margin-top: 20px;"><i class="fas fa-user-plus"></i> Number
+                            of Vacant Positions:</label>
+                        <input type="number" id="vacant-position" name="vacant_position" class="form-control" min="0"
+                            oninput="handleVacantPositionsChange()" autocomplete="off" required />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="unit-name" style="margin-top: 20px;"><i class="fas fa-sitemap"></i> Unit
+                            Name:</label>
                         <select name="unit_name" id="unit-name" class="form-control" autocomplete="off" required>
                             {% for unit in units %}
                             <option value="{{ unit }}">{{ unit }}</option>
@@ -274,19 +345,9 @@
                         </select>
                     </div>
                 </div>
-            </div>
 
-            <div id="loading"></div>
-
-
-            <div class="section-title">Vacancy Information</div>
-            <div class="form-row">
+                <!-- Recruitment Type and Location side by side -->
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="designation"><i class="fas fa-briefcase"></i> Designation/Job Title:</label>
-                        <input type="text" id="designation" name="designation" class="form-control" autocomplete="off"
-                            required />
-                    </div>
                     <div class="form-group">
                         <label for="recruitment-type"><i class="fas fa-user-tie"></i> Recruitment Type:</label>
                         <select id="recruitment-type" name="recruitment_type" class="form-control" autocomplete="off"
@@ -297,13 +358,8 @@
                         </select>
                     </div>
                 </div>
+
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="vacant-position"><i class="fas fa-user-plus"></i> Number of Vacant
-                            Positions:</label>
-                        <input type="number" id="vacant-position" name="vacant_position" class="form-control"
-                            oninput="handleVacantPositionsChange()" autocomplete="off" required />
-                    </div>
                     <div class="form-group">
                         <label for="location"><i class="fas fa-map-marker-alt"></i> Location:</label>
                         <select id="location" name="location" class="form-control" autocomplete="off" required>
@@ -316,26 +372,29 @@
                         </select>
                     </div>
                 </div>
+
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label for="job-role"><i class="fas fa-briefcase"></i> Job Role (if new hiring):</label>
+                        <label for="job-role"><i class="fas fa-briefcase"></i> Job Role: </label>
                         <textarea id="job-role" name="job_role" class="form-control" rows="4" autocomplete="off"
                             required></textarea>
                     </div>
                 </div>
             </div>
 
-            <div class="section-title" >Headcount Budget/Replacement Details</div>
+
+
+            <div class="section-title">Headcount Budget / Replacement Details</div>
             <table class="table table-bordered mt-3">
                 <thead>
                     <tr>
                         <th>Sl No.</th>
                         <th>Vacancy Type</th>
-                        <th>Name of the resigned employee</th>
+                        <th>Name of the Resigned Employee</th>
                         <th>Employee ID</th>
                         <th>Designation</th>
                         <th>Date of Resignation</th>
-                        <th>Last date at office</th>
+                        <th>Last Date at Office</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -350,18 +409,18 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.querySelector('form');
-            form.addEventListener('submit', function(event) {
+            form.addEventListener('submit', function (event) {
                 event.preventDefault(); // Prevent the form from submitting immediately
                 document.getElementById('loading').style.display = 'flex'; // Show the loader
-        
+
                 // Optional: simulate a delay or handle form validation
-                setTimeout(function() {
+                setTimeout(function () {
                     form.submit(); // Submit the form programmatically after a delay
                 }, 1000); // Adjust the delay as needed or remove if handling asynchronously
             });
         });
     </script>
-        
+
 </body>
 
 </html>

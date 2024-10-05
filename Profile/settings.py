@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -75,7 +74,22 @@ WSGI_APPLICATION = 'Profile.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
+DATABASE_ROUTERS = ['profileapp.database_routers.DatabaseRouter']
+
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'mssql',
+    #     'NAME': 'skfhr',
+    #     'USER': 'skfhr01',
+    #     'PASSWORD': 'jOLeNATO#xa@9PI',
+    #     'HOST': '10.168.2.196',  # e.g., 'localhost' or IP address
+    #     # 'PORT': 'your_database_port',  # default is usually '1433'
+    #     'OPTIONS': {
+    #         'driver': 'ODBC Driver 17 for SQL Server',
+    #         'Trusted_Connection': 'yes',
+    #     },
+    # },
     'default': {
         'ENGINE': 'mssql',
         'NAME': 'ESS',
@@ -89,21 +103,6 @@ DATABASES = {
         },
     }
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mssql',
-#         'NAME': 'skfhr',
-#         'USER': 'skfhr01',
-#         'PASSWORD': 'jOLeNATO#xa@9PI',
-#         'HOST': '10.168.2.196',  # e.g., 'localhost' or IP address
-#         # 'PORT': 'your_database_port',  # default is usually '1433'
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#             'Trusted_Connection': 'yes',
-#         },
-#     }
-# }
 
 
 
@@ -151,21 +150,13 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.office365.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'skflc@skf.transcombd.com'
-# DEFAULT_FROM_EMAIL = 'skflc@skf.transcombd.com'
-# EMAIL_HOST_PASSWORD = 's646J72o7i'
-
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.office365.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'eskayef.hr@skf.transcombd.com'
-# DEFAULT_FROM_EMAIL = 'eskayef.hr@skf.transcombd.com'
-# EMAIL_HOST_PASSWORD = 'Skf@hr#312'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.office365.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'eskayef.hr@skf.transcombd.com'
+DEFAULT_FROM_EMAIL = 'eskayef.hr@skf.transcombd.com'
+EMAIL_HOST_PASSWORD = 'Skf@hr#312'
 
 PUSHER_APP_ID = '1857539'
 PUSHER_KEY = '0cc1f0e0cf6638ebb54f'
@@ -173,10 +164,10 @@ PUSHER_SECRET = '58b33235aa1ee1b8bb90'
 PUSHER_CLUSTER = 'ap2'
 PUSHER_SSL = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'pushpita.zarin@gmail.com'
-DEFAULT_FROM_EMAIL = 'pushpita.zarin@gmail.com'
-EMAIL_HOST_PASSWORD = 'bnwc dpqs lhnc awcw'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'pushpita.zarin@gmail.com'
+# DEFAULT_FROM_EMAIL = 'pushpita.zarin@gmail.com'
+# EMAIL_HOST_PASSWORD = 'bnwc dpqs lhnc awcw'

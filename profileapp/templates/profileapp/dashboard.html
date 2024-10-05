@@ -171,13 +171,13 @@
 
     <header>
         <nav class="navbar">
-            <img src="{% static 'images/logo2.png' %}" alt="" class="logo">
+            <img src="{% static 'images/skf_logo2.png' %}" alt="" class="logo">
             <div class="profile-container">
                 <a class="profile-icon-link-container">
                     <img src="{% static 'images/profile.webp' %}" alt="User Image">
                     <span class="header-username">{{ user_name }}</span>
                 </a>
-                <i class="fa fa-caret-down dropdown-icon"></i>
+                <i class="fa-solid fa-bars dropdown-icon"></i>
 
 
                 <div class="dropdown-menu">
@@ -205,19 +205,19 @@
     <div class="notification-container">
         <div class="notification">
             {% for message in messages %}
-            <p {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
+            <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="color: white; font-size: 14px;">{{ message }}</p>
             {% endfor %}
             <img id="cross" src="{% static 'images/close.png' %}" width="15px" height="15px" alt="Close">
         </div>
     </div>
     <script>
-        // Function to hide the notification after 4 seconds
+        //Function to hide the notification after 4 seconds
         function hideNotification() {
             document.getElementsByClassName('notification-container')[0].style.display = 'none';
         }
 
         // Hide the notification after 4 seconds (4000 milliseconds)
-        setTimeout(hideNotification, 8000);
+        setTimeout(hideNotification, 10000);
 
         // Manual close functionality
         document.getElementById('cross').addEventListener('click', function () {
@@ -241,14 +241,12 @@
                 <a href="{% url 'expense' %}" style="text-decoration: none; color: white;"><div class="card {% if not is_manager %}disabled-card{% endif %}">
                         <h5 >Monthly Manager Expense</h5>
                 </div></a>
-
-
+                <a href="{% url 'noc_form_view' %}" style="text-decoration: none; color: white;"><div class="card" style="text-wrap-mode:wrap;">
+                    <h5 >Travel<br>Permits</h5>
+                </div></a>
                 <div class="card disabled-card">
                     <h5>Visiting Card</h5>
                 </div>
-                <a href="{% url 'noc_form_view' %}" style="text-decoration: none; color: white;"><div class="card" style="text-wrap-mode:wrap;">
-                        <h5 >Travel Permits</h5>
-                </div></a>
                 <div class="card disabled-card">
                     <h5>ID Card</h5>
                 </div>

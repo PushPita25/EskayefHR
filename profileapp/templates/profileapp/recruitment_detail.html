@@ -29,6 +29,7 @@
         .table th,
         .table td {
             vertical-align: middle;
+            border: solid 1px black;
         }
 
         .btn-primary,
@@ -45,11 +46,12 @@
         }
 
         .section-title {
-            background-color: #e9ecef;
+            background-color: #2d8594;
             padding: 10px;
             margin-top: 20px;
             border-radius: 5px;
             font-weight: bold;
+            color: white;
         }
     </style>
 </head>
@@ -57,11 +59,11 @@
 <div class="container mt-4">
     <h2 class="text-center">Recruitment Requisition Form (RRF)</h2>
     
-    <div class="section-title">Requisition Details</div>
+    <div class="section-title">Recruitment Requisition Details</div>
     <div class="form-row">
         <div class="col-md-6">
             <div class="form-group">
-                <p><strong>Requisition Raised By:</strong> {{ recruitment_form.raised_by }}</p>
+                <p style="margin-top: 20px;"><strong>Requisition Raised By:</strong> {{ recruitment_form.raised_by }}</p>
             </div>
             <div class="form-group">
                 <p><strong>Department:</strong> {{ recruitment_form.department }}</p>
@@ -72,7 +74,7 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <p><strong>Requisition Approved By:</strong> {{ recruitment_form.approved_by }}</p>
+                <p style="margin-top: 20px;"><strong>Requisition Approved By:</strong> {{ recruitment_form.approved_by }}</p>
             </div>
             <div class="form-group">
                 <p><strong>Unit Name:</strong> {{ recruitment_form.unit_name }}</p>
@@ -84,7 +86,7 @@
     <div class="form-row">
         <div class="col-md-6">
             <div class="form-group">
-                <p><strong>Designation:</strong> {{ recruitment_form.designation }}</p>
+                <p style="margin-top: 20px;"><strong>Designation / Job Title:</strong> {{ recruitment_form.designation }}</p>
             </div>
             <div class="form-group">
                 <p><strong>Recruitment Type:</strong> {{ recruitment_form.recruitment_type }}</p>
@@ -92,20 +94,20 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <p><strong>Number of Vacant Position:</strong> {{ recruitment_form.vacant_position }}</p>
+                <p style="margin-top: 20px;"><strong>Number of Vacant Position:</strong> {{ recruitment_form.vacant_position }}</p>
             </div>
             <div class="form-group">
-                <p><strong>Job Role:</strong>{{recruitment_form.job_role}}</p>
+                <p><strong>Job Role: </strong>{{recruitment_form.job_role}}</p>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <p><strong>Location:</strong>{{recruitment_form.location}}</p>
+                <p><strong>Location: </strong>{{recruitment_form.location}}</p>
             </div>
         </div>
     </div>
 
-    <div class="section-title">Headcount Budget/Replacement Details</div>
+    <div class="section-title">Headcount Budget / Replacement Details</div>
     <table class="table table-bordered mt-3">
         <thead>
             <tr>
@@ -123,11 +125,31 @@
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ vacancy.vacancy_type }}</td>
+                    {% if vacancy.resigned_name %}
                     <td>{{ vacancy.resigned_name }}</td>
+                    {% else %}
+                    <td>N\A</td>
+                    {% endif %}
+                    {% if vacancy.employee_id %}
                     <td>{{ vacancy.employee_id }}</td>
+                    {% else %}
+                    <td>N\A</td>
+                    {% endif %}
+                    {% if vacancy.designation%}
                     <td>{{ vacancy.designation }}</td>
+                    {% else %}
+                    <td>N\A</td>
+                    {% endif %}
+                    {% if vacancy.resignation_date %}
                     <td>{{ vacancy.resignation_date }}</td>
+                    {% else %}
+                    <td>N\A</td>
+                    {% endif %}
+                    {% if vacancy.last_date %}
                     <td>{{ vacancy.last_date }}</td>
+                    {% else %}
+                    <td>N\A</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>

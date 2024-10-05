@@ -45,7 +45,7 @@ def managers_only(view_func):
             cursor.execute("""
                 SELECT 1 
                 FROM Employees 
-                WHERE EmployeeID = %s AND (Grade IN ('M-1', 'M-2', 'M-3', 'M-4', 'M-5', 'M-6') OR Grade = 'Manager')
+                WHERE EmployeeID = %s AND (Grade IN ('M-1', 'M-2', 'M-3', 'M-4', 'M-5', 'M-6', 'ED') OR Grade = 'Manager')
             """, [employee_id])
             row = cursor.fetchone()
 

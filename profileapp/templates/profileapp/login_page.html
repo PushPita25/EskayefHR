@@ -71,7 +71,8 @@
         .input-group label {
             display: block;
             margin-bottom: 5px;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: bold;
         }
 
         .input-group input {
@@ -113,6 +114,31 @@
             font-size: 14px;
         }
 
+        /* Added for buttons below login */
+        .extra-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .extra-buttons a {
+            display: inline-block;
+            padding: 5px;
+            background-color: #1686d1;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            width: 45%; /* To ensure they are side by side */
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .extra-buttons a:hover {
+            background-color: #082247;
+        }
+
     </style>
 </head>
 
@@ -146,16 +172,20 @@
                         autocomplete="current-password">
                 </div>
                 <button type="submit">Log In</button>
-                <a href="{% url 'enter_employee_id' %}">
-                    <p style="margin-left: 20px; color: #fff; text-decoration: underline;">New User?/ Forgot Password?</p>
-                </a>
+
+                <!-- Extra buttons for New User and Forgot Password side by side -->
+                <div class="extra-buttons">
+                    <a href="{% url 'enter_employee_id' %}">New User?</a>
+                    <a href="{% url 'enter_employee_id' %}">Forgot Password?</a>
+                </div>
             </form>
         </div>
     </div>
+
     <script>
         // Select the notification container element
         var notificationContainer = document.getElementsByClassName('notification-container')[0];
-        
+
         // Function to hide the notification
         function hideNotification() {
             if (notificationContainer) {
@@ -168,7 +198,7 @@
 
         // Select the cross element to manually close the notification
         var cross = document.getElementById('cross');
-        
+
         // Add event listener to the cross element to hide the notification on click
         cross.addEventListener('click', () => {
             notificationContainer.style.display = 'none';

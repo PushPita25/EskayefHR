@@ -33,10 +33,11 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             width: 80%;
             max-width: 1200px;
-            margin-top: 20px;
+            margin-top: 80px;
             border: 1px solid #dcdcdc;
             box-sizing: border-box;
             border-radius: 5px;
+            position: relative;
         }
 
         h2,
@@ -77,14 +78,9 @@
             border-radius: 5px;
         }
 
-        /* .col{
-            display: flex;
-            flex-direction: column;
-        } */
-
         label {
             width: 50%;
-            display: flex;
+            /* display: flex; */
             align-items: center;
             font-weight: 800;
             color: #000000;
@@ -199,8 +195,10 @@
 
         .back-button {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: -50px;
+            /* Adjusts space from the top */
+            right: 10px;
+            /* Moves the button further to the right */
             background-color: #1c2c58;
             color: white;
             padding: 10px 20px;
@@ -217,6 +215,33 @@
             background-color: #1534be;
             transform: translateY(-2px);
         }
+
+        .wide-column .wide-input {
+            width: 90%;
+            /* Set the width to fill the available space */
+            flex-grow: 1;
+            /* Ensure it takes up available space */
+        }
+
+        .wide-column label {
+            width: 40%;
+            /* Adjust label width to ensure proper alignment */
+        }
+
+        .wide-column select,
+        .wide-column input {
+            width: 90%;
+            /* Adjust the input width to make it larger */
+            padding: 4px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #262424;
+        }
+
+        #id_type_noc, #id_country_visit{
+            height: 39px;
+        }
+
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -292,11 +317,9 @@
 </head>
 
 <body>
-    
+
     <div class="form-container">
-        <div>
-            <a href="{% url 'dashboard' %}" class="back-button">Back</a>
-        </div>
+        <a href="{% url 'dashboard' %}" class="back-button"><i class="fas fa-arrow-left"></i> Back</a>
         <h2>Travel Recommendation</h2>
         <form id="travelForm" method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -322,6 +345,11 @@
                     <option value="benapol">Benapol Port</option>
                     <option value="airport">Hazrat Shahjalal International Airport</option>
                 </select>
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+                <label for="travel_purpose">Travel Purpose</label>
+                <input type="text" id="travel_purpose" name="travel_purpose" required>
             </div>
 
 
@@ -351,7 +379,7 @@
                     <div class="form-group">
                         <label for="designation">Designation:</label>
                         <input type="text" id="designation" name="designation" autocomplete="off"
-                            value="{{ noc_form.designation.value }}" required> 
+                            value="{{ noc_form.designation.value }}" required>
                     </div>
 
                     <div class="form-group">
@@ -361,8 +389,8 @@
                     </div>
                     <div class="form-group">
                         <label for="grade">Grade:</label>
-                        <input type="text" id="grade" name="grade" autocomplete="off"
-                            value="{{ noc_form.grade.value }}" required>
+                        <input type="text" id="grade" name="grade" autocomplete="off" value="{{ noc_form.grade.value }}"
+                            required>
                     </div>
                 </div>
 
@@ -385,29 +413,15 @@
                         </div>
                     </div>
 
-                    <!-- <div class="col">
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label for="type_noc" style="text-align: left; margin-right: 30px;">Visa Type (if
-                                NOC):</label>
-                            {{ noc_form.type_noc }}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="country_visit" style="text-align: left; margin-right: 30px;">Country to
-                                Visit:</label>
-                            {{ noc_form.country_visit }}
-                        </div>
-                    </div> -->
-
                     <!-- Visa Type and Country to Visit taking the other half of the width, vertically aligned -->
-                    <div class="form-groups"
+                    <div class="form-groups wide-column"
                         style="width: 50%; display: flex; flex-direction: column; justify-content: flex-start;">
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label for="type_noc" style="text-align: left; margin-right: 30px;">Visa Type <span style="font-size: smaller;">(if
-                                NOC)</span>:</label>
+                        <div class="form-group wide-input" style="margin-bottom: 15px;">
+                            <label for="type_noc" style="text-align: left; margin-right: 30px;">Visa Type <span
+                                    style="font-size: smaller;">(if NOC)</span>:</label>
                             {{ noc_form.type_noc }}
                         </div>
-                        <div class="form-group">
+                        <div class="form-group wide-input">
                             <label for="country_visit" style="text-align: left; margin-right: 30px;">Country to
                                 Visit:</label>
                             {{ noc_form.country_visit }}
@@ -424,33 +438,37 @@
                     </div>
                     <div class="form-group">
                         <label for="passport_no">Passport No.:</label>
-                        <input type="text" id="passport_no" name="passport_no" required> 
+                        <input type="text" id="passport_no" name="passport_no" required>
                     </div>
                 </div>
 
 
                 <div class="row">
                     <div class="form-group">
-                        <label for="passport_copy">Passport Copy (Scan):</label>
-                        <input type="file" id="passport_copy" name="passport_copy" accept=".pdf, image/jpeg, image/png" required>
+                        <label for="passport_copy">Passport Copy <span
+                            style="font-size: smaller;">(Identity Page)</span>:</label>
+                        <input type="file" id="passport_copy" name="passport_copy" accept=".pdf, image/jpeg, image/png"
+                            required>
                     </div>
                     <div class="form-group">
-                        <label for="invitation_letter">Invitation Letter (if applicable):</label>
-                        <input type="file" id="invitation_letter" name="invitation_letter" accept=".pdf, image/jpeg, image/png">
+                        <label for="invitation_letter">Invitation Letter <span
+                            style="font-size:smaller;">(if applicable)</span>:</label>
+                        <input type="file" id="invitation_letter" name="invitation_letter"
+                            accept=".pdf, image/jpeg, image/png">
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="form-group">
-                        <label for="no_of_travelers">No. of Additional Travellers:</label>
-                        <input type="number" id="no_of_travelers" name="no_of_travelers" min="0" 
+                        <label for="no_of_travelers">No. of Accompanying Travellers:</label>
+                        <input type="number" id="no_of_travelers" name="no_of_travelers" min="0" style="width: 40%;"
                             oninput="addTravelerFields()">
                     </div>
                 </div>
             </div>
 
             <!-- Additional Travelers Information -->
-            <h3>Information of Additional Travellers</h3>
+            <h3>Information of Accompanying Travellers</h3>
             <div id="additionalTravelersContainer" class="form-section">
                 <!-- Additional traveler information boxes will be dynamically added here -->
             </div>
@@ -476,23 +494,25 @@
                 travelerBox.className = 'additional-traveler-box';
 
                 travelerBox.innerHTML = `
+                <h4 style="font-weight:bold">Traveller - ${i}</h4>
             <div class="row">
                 <div class="form-group">
-                    <label for="relationship_${i}"><i class="fas fa-user-friends"></i>Relationship with Traveler:</label>
+                    <label for="relationship_${i}">Relationship with Traveler:</label>
                     <input type="text" id="relationship_${i}" name="relationship_${i}" required>
                 </div>
                 <div class="form-group">
-                    <label for="additional_passport_name_${i}"><i class="fas fa-passport"></i>Passport Name:</label>
+                    <label for="additional_passport_name_${i}">Passport Name:</label>
                     <input type="text" id="additional_passport_name_${i}" name="additional_passport_name_${i}" required>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <label for="additional_passport_no_${i}"><i class="fas fa-id-card"></i>Passport No:</label>
+                    <label for="additional_passport_no_${i}">Passport No:</label>
                     <input type="text" id="additional_passport_no_${i}" name="additional_passport_no_${i}" required>
                 </div>
                 <div class="form-group">
-                    <label for="additional_passport_copy_${i}"><i class="fas fa-file-upload"></i>Passport Copy (scan):</label>
+                    <label for="additional_passport_copy_${i}">Passport Copy <span
+                                    style="font-size: smaller;">(Scan)</span>:</label>
                     <input type="file" id="additional_passport_copy_${i}" name="additional_passport_copy_${i}" accept=".pdf, image/jpeg, image/png" required>
                 </div>
             </div>

@@ -23,6 +23,7 @@ class RecruitmentForm(models.Model):
     date = models.DateField()
     department = models.CharField(max_length=255)
     unit_name = models.CharField(max_length=255)
+    # raiser_unit_name = models.CharField(max_length=255)
     approved_by = models.CharField(max_length=255)
     designation = models.CharField(max_length=255)
     recruitment_type = models.CharField(max_length=50)
@@ -195,7 +196,7 @@ class AdditionalTraveler(models.Model):
 class PusherNotification(models.Model):
     channel_name = models.CharField(max_length=255)
     event_name = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pusher_notifications')
+    user = models.ForeignKey(Em, on_delete=models.CASCADE, related_name='pusher_notifications')
     message = jsonfield.JSONField()  # JSON field to store message as a JSON string
     has_viewed = models.BooleanField(default=False)
 

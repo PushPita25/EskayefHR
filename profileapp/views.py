@@ -5,7 +5,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from .forms import ProfileForm, RecruitmentFormForm, VacancyDetailForm, EmployeeIDForm, OTPForm, SetPasswordForm,ExpenseForm,NOCForm
-from .models import RecruitmentForm, VacancyDetail,Expense,User,AdditionalTraveler, NOC, NOCCountry, Employees, VisaType
+from .models import RecruitmentForm, VacancyDetail,Expense,User,AdditionalTraveler, NOC, NOCCountry, Employees, VisaType, PusherNotification
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db import connection
@@ -21,6 +21,9 @@ import os
 from django.http import JsonResponse
 from django.urls import reverse
 import pusher
+# from docx import Document
+# from bs4 import BeautifulSoup
+# import io
 
 
 # Dashboard
@@ -270,7 +273,8 @@ def recruitment_form_view(request):
                 subject,
                 email_body,
                 settings.DEFAULT_FROM_EMAIL,
-                [approved_by_email, 'ashraphy.tahmida@skf.transcombd.com', request.user.email],
+                # [approved_by_email, 'ashraphy.tahmida@skf.transcombd.com', request.user.email],
+                [approved_by_email, 'pushpita.zarin@gmail.com', request.user.email],
             )
             email.attach('Recruitment_Form.pdf', pdf_file, 'application/pdf')
             email.send()
@@ -285,13 +289,15 @@ def recruitment_form_view(request):
         employee_id = request.user.username  
         units = get_units(employee_id)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT Name, Department FROM Employees WHERE EmployeeID = %s", [employee_id])
+            cursor.execute("SELECT Name, Department, Unit FROM Employees WHERE EmployeeID = %s", [employee_id])
             row = cursor.fetchone()
         initial_data = {
             'raised_by': row[0] if row else '',
             'department': row[1] if row else '',
+            'unit_name': row[2] if row else '',
             'date': date.today().isoformat(),  
         }
+        print(initial_data)
         form = RecruitmentFormForm(initial=initial_data)
     return render(request, 'profileapp/recruitment_form.html', {'form': form, 'units': units})
 
@@ -670,11 +676,8 @@ def noc_form_list(request):
 
                 print(result)
 
-                print(result)
-
                 if result and result[0] > 0:
                     is_ed = True
-                print(is_ed)
                 print(is_ed)
 
         # Fetch NOC forms based on ED status
@@ -689,18 +692,23 @@ def noc_form_list(request):
         is_noc_admin = False  # Mark the user as not noc admin
 
     # Pass 'is_noc_admin' to the template
-    return render(request, 'profileapp/noc_form_list.html', {'noc_forms': noc_forms, 'is_noc_admin': is_noc_admin})
+    return render(request, 'profileapp/noc_form_list.html', {'noc_forms': noc_forms, 'is_noc_admin': is_noc_admin, 'is_ed': is_ed})
 
-def view_noc_form(request, form_id):
-    noc_instance = NOC.objects.get(id=form_id)
-    additional_travelers = AdditionalTraveler.objects.filter(travel_recommendation=noc_instance)
+# def view_noc_form(request, form_id):
+#     noc_instance = NOC.objects.get(id=form_id)
+#     additional_travelers = AdditionalTraveler.objects.filter(travel_recommendation=noc_instance)
 
-    return render(request, 'profileapp/noc_template.html', {
-        'noc_instance': noc_instance,
-        'additional_travelers': additional_travelers,
-    })
+#     return render(request, 'profileapp/noc_template.html', {
+#         'noc_instance': noc_instance,
+#         'additional_travelers': additional_travelers,
+#     })
 
-def send_approval_notification(executive_email, department_name):
+def view_noc_form(request, noc_id):
+    return render(request, 'profileapp/view_pdf.html', {
+        'noc_id': noc_id
+        })
+
+def send_approval_notification(executive_email, department_name, url=None):
     pusher_client = pusher.Pusher(
     app_id='1857539',
     key='0cc1f0e0cf6638ebb54f',
@@ -712,12 +720,19 @@ def send_approval_notification(executive_email, department_name):
 
     message = f"Need your approval for NOC form."
 
+
     # Create a unique channel name for the executive director
     # unique_channel_name = f"ed-channel-{executive_email.replace('@', '-').replace('.', '-')}"
     unique_channel_name = f"ed-channel-{executive_email}"
     
     # Trigger a Pusher event on the unique channel
-    pusher_client.trigger(unique_channel_name, 'approval-event', {'message': message, 'email': executive_email})
+    pusher_client.trigger(unique_channel_name, 'approval-event', {'message': message, 'url':url, 'email': executive_email})
+
+    # PusherNotification.objects.create({
+    #     'channel_name': unique_channel_name,
+    #     'event_name': 'approval-event',
+    #     'user': 
+    #                                    })
 
 @login_required(login_url='login')
 def download_noc_pdf(request, noc_id):
@@ -735,9 +750,9 @@ def download_noc_pdf(request, noc_id):
 
     # Determine which PDF to generate based on the form type
     if noc_instance.type == 'NOC':
-        return generate_noc_pdf(noc_instance)  # Generate NOC PDF
+        return generate_noc_pdf(request, noc_id)  # Generate NOC PDF
     elif noc_instance.type == 'Immigration':
-        return generate_immigration_pdf(noc_instance)  # Generate Immigration PDF
+        return generate_immigration_pdf(request, noc_id)  # Generate Immigration PDF
     else:
         # If an unknown type is found, display an error
         messages.error(request, "Unknown form type. Cannot generate PDF.")
@@ -773,7 +788,7 @@ def generate_noc_pdf(request, noc_id):
 
     # Prepare the family members text if there are additional travelers
     if noc_instance.no_of_travelers > 0:
-        travelers_list = [f"{traveler.relationship_with_traveler} named {traveler.additional_passport_name} bearing Passport No. {traveler.additional_passport_no}" for traveler in additional_travelers]
+        travelers_list = [f"({traveler.relationship_with_traveler}) named {traveler.additional_passport_name} bearing Passport No. {traveler.additional_passport_no}" for traveler in additional_travelers]
         family_members_text = ", ".join(travelers_list)
     else:
         family_members_text = ""
@@ -801,10 +816,12 @@ def generate_noc_pdf(request, noc_id):
     # Visa type ID dictionary
     visa_type_ids = {
         'tourist': '294',
-        'business purpose': '345',
+        'business': '345',
         'medical purpose': '556',
         'medical attendant': '789'
     }
+
+    print(visa_type.lower())
 
     # Get specific visa type identifier from the dictionary
     visa_type_id = visa_type_ids.get(visa_type.lower(), '000')  # Default to '000' if visa type not found
@@ -850,6 +867,7 @@ def generate_noc_pdf(request, noc_id):
         'applicant_name': noc_instance.applicant_name,
         'applicant_id': employee_id,
         'passport_no': noc_instance.passport_no,
+        'passport_name': noc_instance.passport_name,
         'joining_date': noc_instance.joining_date.strftime("%d-%b-%Y"),
         'country_visit': noc_instance.country_visit,
         'travel_date_from': noc_instance.travel_date_from.strftime("%d %B %Y"),
@@ -946,6 +964,7 @@ def generate_immigration_pdf(request, noc_id):
         'date': timezone.now().strftime("%d %B %Y"),  # Current date
         'designation': noc_instance.designation,
         'applicant_name': noc_instance.applicant_name,
+        'passport_name': noc_instance.passport_name,
         'applicant_id': noc_instance.applicant_id,
         'passport_no': noc_instance.passport_no,
         'joining_date': noc_instance.joining_date.strftime("%d-%b-%Y"),

@@ -35,7 +35,7 @@ body, html {
 }
 
 .logo {
-    width: 150px; /* Adjusted for smaller screens */
+    width: 180px; 
     cursor: pointer;
 }
 
@@ -121,6 +121,7 @@ p {
 .card h5 {
     text-align: center;
     font-size: 1.5em; 
+    color: white !important;
     /* 
     font-weight: 500;
     margin-top: 15px;
@@ -157,7 +158,8 @@ p {
 
 .notification {
     padding: .8em 5%;
-    background-color: rgba(64, 243, 243, 0.808);
+    background-color: rgb(8, 56, 91);
+    color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -181,7 +183,7 @@ p {
 }
 
 header {
-    background-color: rgb(103, 175, 223);
+    background-color: rgb(137 194 231);
     height: 5em;
     display: flex;
     align-items: center;

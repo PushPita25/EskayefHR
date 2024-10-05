@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Expense Report</title>
 
     <style>
@@ -60,7 +61,8 @@
             font-weight: bold;
         }
 
-        input[type="text"] {
+        input[type="text"],
+        input[type="month"] {
             width: calc(100% - 10px);
             padding: 10px;
             border: 2px solid #333;
@@ -68,7 +70,8 @@
             background-color: #f9f9f9;
         }
 
-        input[type="text"]::placeholder {
+        input[type="text"]::placeholder,
+        input[type="month"]::placeholder {
             color: #888;
         }
 
@@ -97,7 +100,7 @@
 
         button {
             display: block;
-            width: 100%;
+            width: 15%;
             padding: 10px;
             background-color: #132876;
             color: white;
@@ -165,6 +168,54 @@
             font-weight: bold;
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-content button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .btn-confirm {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+        }
+
+
 
 
 
@@ -229,15 +280,6 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const monthNames = [
-                "January 2024", "February 2024", "March 2024", "April 2024", "May 2024", "June 2024",
-                "January 2024", "February 2024", "March 2024", "April 2024", "May 2024", "June 2024",
-                "July 2024", "August 2024", "September 2024", "October 2024", "November 2024", "December 2024"
-            ];
-            const currentDate = new Date();
-            const currentMonth = monthNames[currentDate.getMonth()];
-            document.getElementById("month").value = currentMonth;
-
             document.querySelectorAll('.expense-input').forEach(function (input) {
                 input.addEventListener('input', function () {
                     updateTotal();
@@ -254,6 +296,7 @@
             }
 
             const form = document.querySelector('form');
+            const modal = document.getElementById('confirmationModal');
             form.addEventListener('submit', function (event) {
                 event.preventDefault(); // Prevent the default form submission
                 document.getElementById('submitBtn').disabled = true;
@@ -262,43 +305,36 @@
                 const formData = new FormData(form);
                 const url = window.location.href;
 
-                // console.log('form',form);
-
                 // Example: Send form data using AJAX
                 fetch(url, {
                     method: 'POST',
                     body: formData,
                 })
-                .then(response => response.blob())
-                .then(blob => {
-                    const link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = 'expense_report.pdf';
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'expense_report.pdf';
 
-                    document.body.appendChild(link);
-                    link.click();
+                        document.body.appendChild(link);
+                        link.click();
 
-                    document.body.removeChild(link);
-
-                    window.location.href = '/';
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-
-                
-
-                // Here you might want to add actual form submission logic
-                 // This will submit the form. Remove this line if using AJAX or another method to submit the form.
-                 // This will submit the form. Remove this line if using AJAX or another method to submit the form.
+                        document.body.removeChild(link);
+                        modal.style.display = "flex";
+                        
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
             });
 
-            
-
-
-            
-
         });
+        function redirectToDashboard(){
+            const modal = document.getElementById('confirmationModal');
+            modal.style.display='none';
+            window.location.href = '/';
+
+        }
     </script>
 </head>
 
@@ -306,7 +342,7 @@
 <body>
     <div>
         <a href="{% url 'dashboard' %}" style="text-decoration: none;">
-            <button type="submit" style="width: 120px; margin-left: 77%; margin-bottom: 15px;" >Back</button>
+            <button type="submit" style="width: 120px; margin-left: 77%; margin-bottom: 15px;"><i class="fas fa-arrow-left"></i> Back</button>
         </a>
     </div>
     <div class="container">
@@ -348,8 +384,7 @@
                     </div>
                     <div class="form-group">
                         <label for="month">Month</label>
-                        <input type="text" id="month" name="month" value="{{ form.month.value|default_if_none:'' }}"
-                            required autocomplete="off">
+                        <input type="month" id="month" name="month" required autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="unit">Unit</label>
@@ -364,14 +399,14 @@
             <table>
                 <thead>
                     <tr>
-                        <th>EXPENSES HEAD</th>
+                        <th>EXPENSES HEAD [Fixed]</th>
                         <th>TAKA</th>
                         <th>REMARKS</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Utility-Water Gas Electricity</td>
+                        <td>Utility - Water Gas Electricity</td>
                         <td><input type="text" name="utility" class="expense-input"
                                 value="{{ form.utility.value|default_if_none:'' }}" autocomplete="off"></td>
                         <td><input type="text" name="utility_remarks" class="remarks-input"
@@ -405,17 +440,42 @@
                                 autocomplete="off"></td>
                     </tr>
                     <tr>
-                        <td>Leave Fare Assistance-LFA</td>
+                        <td>Leave Fare Assistance - LFA</td>
                         <td><input type="text" name="leave_fare_assistance" class="expense-input"
                                 value="{{ form.leave_fare_assistance.value|default_if_none:'' }}" autocomplete="off">
                         </td>
-                    
+
                         <td><input type="text" name="leave_fare_assistance_remarks" class="remarks-input"
                                 value="{{ form.leave_fare_assistance_remarks.value|default_if_none:'' }}"
                                 autocomplete="off"></td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="subheader">Car Expenses</td>
+                        <td>Car Allowance</td>
+                        <td><input type="text" name="car_allowance" class="expense-input" autocomplete="off">
+                        </td>
+
+                        <td><input type="text" name="car_allowance_remarks" class="remarks-input" autocomplete="off">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Car Fuel</td>
+                        <td><input type="text" name="car_fuel" class="expense-input" autocomplete="off">
+                        </td>
+
+                        <td><input type="text" name="car_fuel_remarks" class="remarks-input" autocomplete="off">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Car Repairment</td>
+                        <td><input type="text" name="car_repairment" class="expense-input"
+                                 autocomplete="off">
+                        </td>
+
+                        <td><input type="text" name="car_repairment_remarks" class="remarks-input"
+                                autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="subheader">Car Expenses [Variable]</td>
                     </tr>
                     <tr>
                         <td>Fuel Cost</td>
@@ -434,7 +494,7 @@
                                 value="{{ form.gas_cost_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
                     </tr>
                     <tr>
-                        <td>Repair & Maintenance Allowance</td>
+                        <td>Repair & Maintenance Expense</td>
                         <td><input type="text" name="repair_maintenance" class="expense-input"
                                 value="{{ form.repair_maintenance.value|default_if_none:'' }}" autocomplete="off">
                         </td>
@@ -443,10 +503,10 @@
                                 autocomplete="off"></td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="subheader">Car Maintenance Expenses</td>
+                        <td colspan="3" class="subheader">Car Maintenance Expenses [Variable]</td>
                     </tr>
                     <tr>
-                        <td>Tyre(s)</td>
+                        <td>Tyre (s)</td>
                         <td><input type="text" name="tyres" class="expense-input"
                                 value="{{ form.tyres.value|default_if_none:'' }}" autocomplete="off"></td>
                         <td><input type="text" name="tyres_remarks" class="remarks-input"
@@ -464,11 +524,11 @@
                         <td><input type="text" name="car_denting_painting" class="expense-input"
                                 value="{{ form.car_denting_painting.value|default_if_none:'' }}" autocomplete="off">
                         </td>
-                        
+
                         <td><input type="text" name="car_denting_painting_remarks" class="remarks-input"
                                 value="{{ form.car_denting_painting_remarks.value|default_if_none:'' }}"
                                 autocomplete="off"></td>
-                                
+
                     </tr>
                     <tr>
                         <td>Car Decorations</td>
@@ -477,7 +537,7 @@
                         <td><input type="text" name="car_decorations_remarks" class="remarks-input"
                                 value="{{ form.car_decorations_remarks.value|default_if_none:'' }}" autocomplete="off">
                         </td>
-                                
+
                     </tr>
                     <tr>
                         <td>Toll</td>
@@ -494,7 +554,7 @@
                                 value="{{ form.others_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="subheader">Mobile Expenses</td>
+                        <td colspan="3" class="subheader">Mobile Expenses [Variable]</td>
                     </tr>
                     <tr>
                         <td>Telephone</td>
@@ -512,7 +572,7 @@
                                 value="{{ form.mobile_set_remarks.value|default_if_none:'' }}" autocomplete="off"></td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="subheader">Medical Expenses</td>
+                        <td colspan="3" class="subheader">Medical Expenses [Variable]</td>
                     </tr>
                     <tr>
                         <td>Medical Expense</td>
@@ -521,10 +581,10 @@
                         <td><input type="text" name="medical_expense_remarks" class="remarks-input"
                                 value="{{ form.medical_expense_remarks.value|default_if_none:'' }}" autocomplete="off">
                         </td>
-                                
+
                     </tr>
                     <tr>
-                        <td>Medical Expense[Non-taxable, e.g., surgery cost related to heart, kidney, eye, liver and
+                        <td>Medical Expense [Non-taxable, e.g., surgery cost related to heart, kidney, eye, liver and
                             cancer]</td>
                         <td><input type="text" name="medical_expense_surgery" class="expense-input"
                                 value="{{ form.medical_expense_surgery.value|default_if_none:'' }}" autocomplete="off">
@@ -538,7 +598,7 @@
                         <td>Total Taka</td>
                         <td><input type="text" id="total_taka" name="total_taka"
                                 value="{{ form.total_taka.value|default_if_none:'' }}" required autocomplete="off"></td>
-                            
+
                     </tr>
                 </tbody>
             </table>
@@ -548,16 +608,16 @@
 
                 <div class="left">
                     <div class="row">
-                        <label>I.O.U / Advance Drawn(Tk.):</label>
+                        <label>I.O.U / Advance Drawn (Tk.):</label>
                         <input type="text" name="advance" autocomplete="off" />
 
                     </div>
                     <div class="row">
-                        <label>Expenses as Above(Tk.):</label>
+                        <label>Expenses as Above (Tk.):</label>
                         <input type="text" name="expenses_as_above" autocomplete="off" />
                     </div>
                     <div class="row">
-                        <label>Amount due to Company / Employees(Tk.):</label>
+                        <label>Amount due to Company / Employees (Tk.):</label>
                         <input type="text" name="amount_due" autocomplete="off" />
                     </div>
                 </div>
@@ -571,10 +631,17 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" id="submitBtn">Submit</button>
+                <button type="submit" id="submitBtn" style="margin-left: 43%;"><i
+                    class="fas fa-paper-plane"></i> Submit</button>
             </div>
         </form>
-        
+    </div>
+    <div id="confirmationModal"  class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Are you sure you want to submit this form?</h2>
+            <button class="btn-confirm" id="confirmSubmit" onclick="redirectToDashboard()">Okay</button>
+            
+        </div>
     </div>
 </body>
 
